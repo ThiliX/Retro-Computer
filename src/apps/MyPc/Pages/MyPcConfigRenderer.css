@@ -1,0 +1,91 @@
+.my-pc-renderer-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	color: #00ff41;
+	font-family: 'VT323', monospace;
+}
+
+.my-pc-renderer-container-2 {
+	display: flex;
+	flex-direction: column;
+	width: 90%;
+	background-color: #0a0a15;
+	border: 2px solid #00ff41;
+	box-shadow: 0 0 10px rgba(0, 255, 65, 0.1);
+}
+
+.my-pc-info-father-container {
+	margin: 20px;
+}
+
+.my-pc-info-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	column-gap: 15px;
+}
+
+.my-pc-info-container-2 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 15px;
+}
+
+.my-pc-title {
+	font-size: 12.6px;
+	font-weight: bold;
+	font-family: 'Press Start 2P', monospace;
+	color: #00ff41;
+	text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+
+}
+
+.my-pc-renderer-title {
+	font-size: 16px;
+	text-align: right;
+	font-family: 'Press Start 2P', monospace;
+	font-weight: 400;
+	color: #00ff41;
+	text-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+	text-transform: uppercase;
+	letter-spacing: 5px;
+}
+
+.my-pc-renderer-title-container {
+	display: flex;
+	width: 90%;
+	padding: 8px 0;
+}
+
+.my-pc-title2-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 12px;
+}
+
+.my-pc-title2-container a {
+	color: #00cc33;
+	font-family: 'VT323', monospace;
+	font-size: 16px;
+	text-shadow: 0 0 4px rgba(0, 255, 65, 0.2);
+}
+
+.my-pc-title-2 {
+	font-size: 12px;
+	font-weight: 500;
+	font-family: 'Press Start 2P', monospace;
+	color: #ffb000;
+	text-shadow: 0 0 8px rgba(255, 176, 0, 0.4);
+}
+
+.my-pc-config-button-container {
+	display: flex;
+	justify-content: right;
+	width: 90%;
+	padding: 8px 0;
+}

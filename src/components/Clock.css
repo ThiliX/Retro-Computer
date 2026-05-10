@@ -1,0 +1,17 @@
+.date-time-container {
+	display: flex;
+	align-items: end;
+	flex-direction: column;
+	position: absolute;
+	width: 780px;
+	margin-top: 568px;
+}
+
+.date-time-container span {
+	color: #cccccc !important;
+	font-family: 'VT323', monospace !important;
+	font-size: 15px !important;
+	font-weight: normal !important;
+	letter-spacing: 0.5px;
+	text-shadow: none !important;
+}

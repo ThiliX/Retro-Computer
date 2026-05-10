@@ -1,0 +1,53 @@
+.terminal-renderer-container {
+	color: #00ff41;
+	font-family: 'VT323', 'Share Tech Mono', monospace;
+	background-color: #0a0a0a;
+	padding-left: 10px;
+	padding-top: 5px;
+	overflow-y: auto;
+	height: 100%;
+	text-shadow: 0 0 4px rgba(0, 255, 65, 0.3);
+}
+
+@keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 0; }
+	100% { opacity: 1; }
+}
+
+.terminal-input {
+	color: #00ff41;
+	background-color: transparent;
+	font-size: 18px;
+	font-family: 'VT323', monospace;
+	border: none;
+	outline: none;
+	width: 100%;
+	caret-color: #00ff41;
+	animation: blink-caret 1s step-end infinite;
+	margin: 0;
+	padding: 0;
+	text-shadow: 0 0 4px rgba(0, 255, 65, 0.3);
+}
+
+.input-container {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	font-family: 'VT323', monospace;
+	font-size: 18px;
+}
+
+.fixed-text {
+	color: #00ff41;
+	margin: 0;
+	padding: 0;
+	font-size: 18px;
+	line-height: 1.5;
+	text-shadow: 0 0 4px rgba(0, 255, 65, 0.3);
+}
+
+@keyframes blink-caret {
+	from, to { border-right-color: transparent; }
+	50% { border-right-color: #00ff41; }
+}

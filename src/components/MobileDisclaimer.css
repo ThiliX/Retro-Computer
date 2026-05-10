@@ -1,0 +1,19 @@
+.mobile-disclaimer {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	color: #00ff41;
+	font-family: 'VT323', monospace;
+	font-size: 18px;
+	text-align: center;
+	padding: 20px;
+	text-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+	background: #0a0a0a;
+	letter-spacing: 1px;
+}
+
+.mobile-disclaimer-icons img {
+	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(85deg);
+}

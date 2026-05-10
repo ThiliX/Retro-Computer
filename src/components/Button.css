@@ -1,0 +1,26 @@
+.windows-button-container {
+	display: flex;
+}
+
+.windows-button {
+	background: linear-gradient(180deg, #1a1a2e, #111125);
+	color: #00ff41;
+	border: 1px solid #00ff41;
+	border-radius: 2px;
+	font-family: 'VT323', monospace;
+	font-size: 14px;
+	cursor: pointer;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	transition: all 0.2s ease;
+	padding: 2px 8px;
+}
+
+.windows-button:hover {
+	background: rgba(0, 255, 65, 0.15);
+	box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
+}
+
+.windows-button:active {
+	background: rgba(0, 255, 65, 0.25);
+}

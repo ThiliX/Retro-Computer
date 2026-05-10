@@ -1,0 +1,57 @@
+.clippy-container {
+	display: flex;
+	height: 25px;
+	width: 160px;
+	position: absolute;
+	justify-content: end;
+	align-items: center;
+	flex-direction: column;
+	margin-top: 430px;
+	margin-left: -200px;
+	animation: clippy-float 3s ease-in-out infinite;
+}
+
+@keyframes clippy-float {
+	0%, 100% { transform: translateY(0); }
+	50% { transform: translateY(-5px); }
+}
+
+.clippy-balloon {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #1a1a2e;
+	width: 100%;
+	height: 60px;
+	border-radius: 4px;
+	padding: 10px;
+	border: 1px solid #00ff41;
+	box-shadow: 0 0 12px rgba(0, 255, 65, 0.2);
+}
+
+.clippy-balloon-arrow {
+	display: flex;
+	position: absolute;
+	border-bottom: 10px solid #1a1a2e;
+	border-left: 6px solid rgba(0, 0, 0, 0);
+	border-right: 6px solid rgba(0, 0, 0, 0);
+	border-top: none;
+	top: -55px;
+	margin-right: 50px;
+	transform: rotate(280deg);
+}
+
+.clippy-balloon-text {
+	font-size: 14px;
+	text-align: center;
+	color: #00ff41;
+	font-family: 'VT323', monospace;
+	text-shadow: 0 0 6px rgba(0, 255, 65, 0.4);
+	letter-spacing: 0.5px;
+}
+
+.clippy-img {
+	display: flex;
+	justify-content: center;
+	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(85deg);
+}

@@ -1,0 +1,36 @@
+.volume-icon-container {
+	display: flex;
+	width: 800px;
+	height: 25px;
+	position: absolute;
+	justify-content: end;
+	align-items: center;
+	margin-top: 568px;
+	margin-left: -120px;
+	z-index: 31000;
+}
+
+.volume-icon-container img {
+	width: 26px;
+	height: 26px;
+	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(85deg);
+	transition: all 0.2s ease;
+}
+
+.volume-icon-container img:hover {
+	cursor: pointer;
+	filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(85deg) drop-shadow(0 0 6px #00ff41);
+}
+
+.easter-egg {
+	height: 95px;
+	width: 10px;
+	display: flex;
+	position: absolute;
+	bottom: 30px;
+	left: 730px;
+}
+
+.easter-egg img {
+	filter: hue-rotate(80deg) brightness(0.8);
+}
