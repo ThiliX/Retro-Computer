@@ -5,14 +5,16 @@
 	background: #0a0a0a;
 }
 
-#DOOM > .dosbox-container {
+#DOOM>.dosbox-container {
 	width: 640px;
 	height: 400px;
 }
-#DOOM > .dosbox-container > .dosbox-overlay {
+
+#DOOM>.dosbox-container>.dosbox-overlay {
 	background: url("https://thedoggybrad.github.io/doom_on_js-dos/DOOM.png");
 }
-#DOOM > .dosbox-container > .dosbox-overlay > .dosbox-start {
+
+#DOOM>.dosbox-container>.dosbox-overlay>.dosbox-start {
 	border-radius: 4px;
 	border: 1px solid #ff4444;
 	background-color: rgba(50, 0, 0, 0.8);
@@ -23,7 +25,7 @@
 	margin: 0 auto;
 	color: #ff4444;
 	font-family: 'VT323', monospace;
-	text-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
+	text-shadow: 0 0 4px rgba(255, 68, 68, 0.25);
 	box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
 }
 

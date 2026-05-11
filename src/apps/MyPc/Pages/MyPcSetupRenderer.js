@@ -21,7 +21,7 @@ function MyPcSetupRenderer({ appRef }) {
 							<br/>{userConfig.pcSpecs.cooling}
 						</div>
 						<div>
-							<img src="icons/computer.png" style={{ width: "140px", height: "140px", filter: "hue-rotate(80deg) brightness(0.8)" }} alt="computer"></img>
+							<img src="icons/retro-pc.png" style={{ width: "140px", height: "140px", borderRadius: "4px", border: "2px solid #00ff41", boxShadow: "0 0 15px rgba(0, 255, 65, 0.2)" }} alt="computer"></img>
 						</div>
 					</div>
 				</div>

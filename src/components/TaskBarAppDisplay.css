@@ -33,7 +33,7 @@
 	font-size: 14px;
 	color: #00ff41;
 	font-family: 'VT323', monospace;
-	text-shadow: 0 0 4px rgba(0, 255, 65, 0.3);
+	text-shadow: 0 0 2px rgba(0, 255, 65, 0.15);
 	letter-spacing: 0.5px;
 	text-transform: uppercase;
 }

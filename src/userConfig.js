@@ -15,7 +15,7 @@ const userConfig = {
 	pronouns: "He/Him",                  // Your pronouns
 	age: "24",                           // Your age
 	location: "Earth",                   // Where you're from
-	copyright: "Thilix ©",             // Footer copyright text
+	copyright: "Thilix©",             // Footer copyright text
 	terminalUser: "User",                // Terminal prompt username (C:\Users\____)
 
 	// ─── PAGE TITLE & META ────────────────────────────────────
@@ -29,7 +29,7 @@ const userConfig = {
 		instagram: "",
 		spotify: "https://open.spotify.com/user/31xa3bx2mr6szitrkdethfvfdrfq?si=dfbe8170095c404f",
 		steam: "https://steamcommunity.com/profiles/76561199050292984/",
-		linkedin: "",
+		linkedin: "https://www.linkedin.com/in/thilix",
 		youtube: "",
 	},
 

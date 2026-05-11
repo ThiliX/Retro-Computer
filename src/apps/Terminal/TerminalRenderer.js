@@ -76,7 +76,7 @@ function TerminalRenderer({ appCoreRef }) {
 	useEffect(() => {
 		setTerminalLog([
 			"╔══════════════════════════════════════════╗",
-			`║  ${userConfig.name}'s RetroPC Terminal             ║`,
+			`║  ${userConfig.name}'s RetroPC Terminal   ║`,
 			"║  Type 'help' for available commands      ║",
 			"╚══════════════════════════════════════════╝",
 			"",

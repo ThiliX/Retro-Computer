@@ -30,7 +30,7 @@
 
 .browser-header-container a:hover {
 	color: #00ff41;
-	text-shadow: 0 0 6px rgba(0, 255, 65, 0.4);
+	text-shadow: 0 0 3px rgba(0, 255, 65, 0.2);
 }
 
 .browser-header-container .bar {
@@ -79,7 +79,7 @@
 	color: #00ff41;
 	font-family: 'VT323', monospace;
 	font-size: 14px;
-	text-shadow: 0 0 4px rgba(0, 255, 65, 0.3);
+	text-shadow: 0 0 2px rgba(0, 255, 65, 0.15);
 	flex: 1;
 }
 

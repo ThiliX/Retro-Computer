@@ -31,7 +31,7 @@ function PageWithOptions({ appCoreRef, AppRenderer, options, initialOption, appD
 											zIndex: 50000,
 											height: "28px",
 											color: "#00ff41",
-											textShadow: "0 0 6px rgba(0,255,65,0.4)",
+											textShadow: "0 0 3px rgba(0,255,65,0.2)",
 										}
 									: {}
 							}

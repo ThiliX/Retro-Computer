@@ -56,38 +56,68 @@ function playRetroClick() {
 function playBootSound() {
 	try {
 		const ctx = getAudioCtx();
-		const notes = [440, 554, 659, 880];
-		notes.forEach((freq, i) => {
-			const osc = ctx.createOscillator();
-			const gain = ctx.createGain();
-			osc.connect(gain);
-			gain.connect(ctx.destination);
-			osc.type = "square";
-			osc.frequency.value = freq;
-			gain.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.12);
-			gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.15);
-			osc.start(ctx.currentTime + i * 0.12);
-			osc.stop(ctx.currentTime + i * 0.12 + 0.15);
-		});
+		
+		// Simulate a satisfying mechanical "click-clack" of a heavy power switch being turned ON
+		// First contact (higher pitch 'click')
+		const click1Osc = ctx.createOscillator();
+		const click1Gain = ctx.createGain();
+		click1Osc.type = "square";
+		click1Osc.frequency.setValueAtTime(800, ctx.currentTime);
+		click1Osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.02);
+		click1Gain.gain.setValueAtTime(0.5, ctx.currentTime);
+		click1Gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02);
+		click1Osc.connect(click1Gain);
+		click1Gain.connect(ctx.destination);
+		click1Osc.start(ctx.currentTime);
+		click1Osc.stop(ctx.currentTime + 0.02);
+
+		// Bottoming out (lower pitch, heavier 'clack' 35ms later)
+		const click2Osc = ctx.createOscillator();
+		const click2Gain = ctx.createGain();
+		click2Osc.type = "triangle";
+		click2Osc.frequency.setValueAtTime(150, ctx.currentTime + 0.035);
+		click2Osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.08);
+		click2Gain.gain.setValueAtTime(0.6, ctx.currentTime + 0.035);
+		click2Gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+		click2Osc.connect(click2Gain);
+		click2Gain.connect(ctx.destination);
+		click2Osc.start(ctx.currentTime + 0.035);
+		click2Osc.stop(ctx.currentTime + 0.08);
+
 	} catch (e) { /* silently fail */ }
 }
 
 function playShutdownSound() {
 	try {
 		const ctx = getAudioCtx();
-		const notes = [880, 659, 554, 330];
-		notes.forEach((freq, i) => {
-			const osc = ctx.createOscillator();
-			const gain = ctx.createGain();
-			osc.connect(gain);
-			gain.connect(ctx.destination);
-			osc.type = "square";
-			osc.frequency.value = freq;
-			gain.gain.setValueAtTime(0.1, ctx.currentTime + i * 0.15);
-			gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.2);
-			osc.start(ctx.currentTime + i * 0.15);
-			osc.stop(ctx.currentTime + i * 0.15 + 0.2);
-		});
+		
+		// Simulate the switch being turned OFF (Reverse sequence: heavy pull, then snap)
+		// Initial heavy pull
+		const click1Osc = ctx.createOscillator();
+		const click1Gain = ctx.createGain();
+		click1Osc.type = "triangle";
+		click1Osc.frequency.setValueAtTime(120, ctx.currentTime);
+		click1Osc.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 0.05);
+		click1Gain.gain.setValueAtTime(0.5, ctx.currentTime);
+		click1Gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+		click1Osc.connect(click1Gain);
+		click1Gain.connect(ctx.destination);
+		click1Osc.start(ctx.currentTime);
+		click1Osc.stop(ctx.currentTime + 0.05);
+
+		// Switch snaps back up
+		const click2Osc = ctx.createOscillator();
+		const click2Gain = ctx.createGain();
+		click2Osc.type = "square";
+		click2Osc.frequency.setValueAtTime(600, ctx.currentTime + 0.04);
+		click2Osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.06);
+		click2Gain.gain.setValueAtTime(0.4, ctx.currentTime + 0.04);
+		click2Gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+		click2Osc.connect(click2Gain);
+		click2Gain.connect(ctx.destination);
+		click2Osc.start(ctx.currentTime + 0.04);
+		click2Osc.stop(ctx.currentTime + 0.06);
+
 	} catch (e) { /* silently fail */ }
 }
 
