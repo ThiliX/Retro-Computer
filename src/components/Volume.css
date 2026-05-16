@@ -1,12 +1,11 @@
 .volume-icon-container {
 	display: flex;
-	width: 800px;
 	height: 25px;
 	position: absolute;
 	justify-content: end;
 	align-items: center;
-	margin-top: 568px;
-	margin-left: -120px;
+	bottom: 7px;
+	right: 120px;
 	z-index: 31000;
 }
 

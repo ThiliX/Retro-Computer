@@ -10,12 +10,12 @@ function TaskBarAppDisplay({ appRef }) {
 
 	return (
 		<div className="task-bar-app-display" onClick={handleAppClick}>
-			<div className="task-bar-app-icon-container" style={{ pointerEvents: 'none' }}>
-				<img src={appRef?.appearence?.icon} style={{ width: "20px", height: "20px", pointerEvents: 'pointer' }} alt="" />
+			<div className="task-bar-app-icon-container">
+				<img src={appRef?.appearence?.icon} style={{ width: "20px", height: "20px" }} alt="" />
 			</div>
 
-			<div className="task-bar-app-title-container" style={{ pointerEvents: 'pointer' }}>
-				<span className="task-bar-app-title" style={{ pointerEvents: 'pointer' }}>{appRef?.appearence.title}</span>
+			<div className="task-bar-app-title-container">
+				<span className="task-bar-app-title">{appRef?.appearence.title}</span>
 			</div>
 		</div>
 	);
