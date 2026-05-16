@@ -11,7 +11,7 @@ import Clippy from "./components/Clippy";
 import Terminal from "./apps/Terminal/Terminal";
 import Txt from "./apps/Txt/Txt";
 import MyPc from "./apps/MyPc/MyPc";
-import Doom from "./apps/Doom/Doom";
+import Synth from "./apps/Synth/Synth";
 import Paint from "./apps/Paint/Paint";
 import Browser from "./apps/Browser/Browser";
 import InternetExplorer from "./apps/InternetExplorer/InternetExplorer";
@@ -151,7 +151,7 @@ function App() {
 	const terminalRef = useRef(null);
 	const txtRef = useRef(null);
 	const myPcRef = useRef(null);
-	const doomRef = useRef(null);
+	const synthRef = useRef(null);
 	const computerScreenRef = useRef(null);
 	const browserRef = useRef(null);
 	const ieRef = useRef(null);
@@ -161,7 +161,7 @@ function App() {
 	const [isTxtOpened, setIsTxtOpened] = useState(false);
 	const [isMyPcOpened, setIsMyPcOpened] = useState(false);
 	const [isScreenTurnedOn, setIsScreenTurnedOn] = useState(false);
-	const [isDoomOpened, setIsDoomOpened] = useState(false);
+	const [isSynthOpened, setIsSynthOpened] = useState(false);
 	const [isBrowserOpened, setIsBrowserOpened] = useState(false);
 	const [isIeOpened, setIsIeOpened] = useState(false);
 	const [isPaintOpened, setIsPaintOpened] = useState(false);
@@ -170,7 +170,7 @@ function App() {
 	const [isTerminalMinimized, setIsTerminalMinimized] = useState(false);
 	const [isTxtMinimized, setIsTxtMinimized] = useState(false);
 	const [isMyPcMinimized, setIsMyPcMinimized] = useState(false);
-	const [isDoomMinimized, setIsDoomMinimized] = useState(false);
+	const [isSynthMinimized, setIsSynthMinimized] = useState(false);
 	const [isBrowserMinimized, setIsBrowserMinimized] = useState(false);
 	const [isIeMinimized, setIsIeMinimized] = useState(false);
 	const [isPaintMinimized, setIsPaintMinimized] = useState(false);
@@ -179,7 +179,7 @@ function App() {
 		terminal: { ref: terminalRef, isOpened: isTerminalOpened, setIsOpened: setIsTerminalOpened, setIsMinimized: setIsTerminalMinimized },
 		txt: { ref: txtRef, isOpened: isTxtOpened, setIsOpened: setIsTxtOpened, setIsMinimized: setIsTxtMinimized },
 		mypc: { ref: myPcRef, isOpened: isMyPcOpened, setIsOpened: setIsMyPcOpened, setIsMinimized: setIsMyPcMinimized },
-		doom: { ref: doomRef, isOpened: isDoomOpened, setIsOpened: setIsDoomOpened, setIsMinimized: setIsDoomMinimized },
+		synth: { ref: synthRef, isOpened: isSynthOpened, setIsOpened: setIsSynthOpened, setIsMinimized: setIsSynthMinimized },
 		browser: { ref: browserRef, isOpened: isBrowserOpened, setIsOpened: setIsBrowserOpened, setIsMinimized: setIsBrowserMinimized },
 		ie: { ref: ieRef, isOpened: isIeOpened, setIsOpened: setIsIeOpened, setIsMinimized: setIsIeMinimized },
 		paint: { ref: paintRef, isOpened: isPaintOpened, setIsOpened: setIsPaintOpened, setIsMinimized: setIsPaintMinimized },
@@ -206,7 +206,7 @@ function App() {
 		return () => {
 			registeredStateListeners.forEach((removeListener) => removeListener());
 		};
-	}, [terminalRef, txtRef, myPcRef, doomRef, isScreenTurnedOn, browserRef, ieRef, paintRef]);
+	}, [terminalRef, txtRef, myPcRef, synthRef, isScreenTurnedOn, browserRef, ieRef, paintRef]);
 
 	useEffect(() => {
 		function onClick({ x, y }) {
@@ -295,7 +295,7 @@ function App() {
 						{isTerminalOpened ? terminalRef?.current?.render(isTerminalMinimized) : null}
 						{isTxtOpened ? txtRef?.current?.render(isTxtMinimized) : null}
 						{isMyPcOpened ? myPcRef?.current?.render(isMyPcMinimized) : null}
-						{isDoomOpened ? doomRef?.current?.render(isDoomMinimized) : null}
+						{isSynthOpened ? synthRef?.current?.render(isSynthMinimized) : null}
 						{isBrowserOpened ? browserRef?.current?.render(isBrowserMinimized) : null}
 						{isIeOpened ? ieRef?.current?.render(isIeMinimized) : null}
 						{isPaintOpened ? paintRef?.current?.render(isPaintMinimized) : null}
@@ -381,10 +381,10 @@ function App() {
 									desktopHeight={DESKTOP_HEIGHT}
 									taskbarHeight={TASKBAR_HEIGHT}
 								/>
-								<Doom
-									iconX={pos.doom?.x ?? 13}
-									iconY={pos.doom?.y ?? 1}
-									ref={doomRef}
+								<Synth
+									iconX={pos.synth?.x ?? 13}
+									iconY={pos.synth?.y ?? 1}
+									ref={synthRef}
 									parentRef={appsDisplayParentRef}
 									desktopWidth={DESKTOP_WIDTH}
 									desktopHeight={DESKTOP_HEIGHT}

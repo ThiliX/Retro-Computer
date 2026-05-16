@@ -124,7 +124,7 @@ const userConfig = {
 		terminal: { x: 14.5, y: 0 },
 		myPc: { x: 14.5, y: 1 },
 		txt: { x: 3, y: 3 },
-		doom: { x: 13, y: 1 },
+		synth: { x: 13, y: 1 },
 		paint: { x: 13, y: 2 },
 		bin: { x: 14.5, y: 6.5 },
 		folder: { x: 14.5, y: 2 },

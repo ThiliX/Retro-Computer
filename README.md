@@ -27,7 +27,7 @@ A retro-themed desktop environment built with React, simulating a fully interact
 | **Netscape Browser** | Embedded iframe browser loading a configurable URL |
 | **Internet Explorer** | Optional secondary browser window |
 | **Paint** | A drawing canvas app |
-| **DOOM** | Playable DOOM via js-dos emulation |
+| **Synth-80** | Retro polyphonic synthesizer with 4 waveforms, octave control, reverb, and keyboard input |
 
 ## 🚀 Getting Started
 
@@ -64,7 +64,7 @@ npm run deploy
 - **Styling** — Vanilla CSS with CSS custom properties
 - **Audio** — Web Audio API for retro sound synthesis
 - **Music** — `react-youtube` for background music playback
-- **Game Emulation** — js-dos for running DOOM
+- **Synth Engine** — Web Audio API for retro sound synthesis and the Synth-80 synthesizer
 - **SEO** — `react-helmet` for dynamic page metadata
 - **Deployment** — `gh-pages` for GitHub Pages hosting
 
@@ -74,7 +74,6 @@ npm run deploy
 Retro-Computer/
 ├── public/
 │   ├── icons/              # App icons, wallpapers, social icons, assets
-│   ├── doom.jsdos           # DOOM game bundle for js-dos
 │   └── index.html           # HTML entry point
 ├── src/
 │   ├── apps/                # Individual app modules
@@ -85,7 +84,7 @@ Retro-Computer/
 │   │   ├── Browser/         # Netscape browser (iframe)
 │   │   ├── InternetExplorer/# IE browser (iframe)
 │   │   ├── Paint/           # Drawing canvas
-│   │   └── Doom/            # DOOM via js-dos
+│   │   └── Synth/           # Retro polyphonic synthesizer
 │   ├── components/          # Shared UI components
 │   │   ├── AppDisplay.*     # Window chrome (title bar, buttons, drag)
 │   │   ├── TaskBarAppDisplay.* # Taskbar app entries
