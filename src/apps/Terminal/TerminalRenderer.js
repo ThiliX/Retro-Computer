@@ -75,10 +75,10 @@ function TerminalRenderer({ appCoreRef }) {
 
 	useEffect(() => {
 		setTerminalLog([
-			"╔══════════════════════════════════════════╗",
-			`║  ${userConfig.name}'s RetroPC Terminal   ║`,
-			"║  Type 'help' for available commands      ║",
-			"╚══════════════════════════════════════════╝",
+			<div key="welcome" className="terminal-welcome-box">
+				<div className="terminal-welcome-line">{userConfig.name}'s RetroPC Terminal</div>
+				<div className="terminal-welcome-line">Type 'help' for available commands</div>
+			</div>,
 			"",
 		]);
 	}, []);

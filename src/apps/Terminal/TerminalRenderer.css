@@ -9,6 +9,21 @@
 	text-shadow: 0 0 2px rgba(0, 255, 65, 0.15);
 }
 
+/* ─── Welcome Box ─── */
+.terminal-welcome-box {
+	border: 2px solid #00ff41;
+	padding: 6px 12px;
+	margin: 4px 10px 4px 0;
+	display: inline-block;
+	box-shadow: 0 0 6px rgba(0, 255, 65, 0.1);
+}
+
+.terminal-welcome-line {
+	font-size: 18px;
+	line-height: 1.5;
+	color: inherit;
+}
+
 @keyframes blink {
 	0% {
 		opacity: 1;

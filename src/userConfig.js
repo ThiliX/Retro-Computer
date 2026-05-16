@@ -10,7 +10,7 @@
 
 const userConfig = {
 	// ─── IDENTITY ─────────────────────────────────────────────
-	name: "Thilina  Wickramanayake",                    // Your display name
+	name: "Thilina Wickramanayake",                    // Your display name
 	tagline: "Developer ➧ Tech Enthusiast ➧ Gamer",  // Short bio line
 	pronouns: "He/Him",                  // Your pronouns
 	age: "24",                           // Your age
