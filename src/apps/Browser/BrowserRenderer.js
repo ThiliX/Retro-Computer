@@ -21,7 +21,7 @@ function BrowserRenderer({ appCoreRef }) {
 					<a>Address</a>
 					<div className="browser-address-field">
 						<a>{userConfig.browserUrl}</a>
-						<button type="button" className="windows-button" style={{width: "18px"}}>▾</button>
+						<button type="button" className="windows-button" style={{width: "18px", height: "18px", padding: 0, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1}}>▾</button>
 					</div>
 				</div>
 			</div>
