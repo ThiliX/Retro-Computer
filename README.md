@@ -1,78 +1,130 @@
-# Retro-Computer: A Visual Personal Resume
+# 🖥️ ThiliX's Retro PC
 
-A retro-themed desktop environment built with React, designed as a dynamic, visual resume. This project showcases my professional journey as a "Computer" that has evolved over the years.
+A retro-themed desktop environment built with React, simulating a fully interactive 80s/90s CRT computer — complete with draggable windows, a taskbar, desktop icons, and working apps. Customized and personalized by **ThiliX**.
 
-## ✨ Key Features
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-- **Retro 2000s Desktop UI**: A nostalgia-inducing interface with window management, a taskbar, and system tray.
-- **3D/Sci-Fi Aesthetic**: A custom "High Energy" 3D loading animation, command-line interfaces, and terminal-style windows.
-- **Dynamic Profiling**: The "computer" analyzes your personality and work style in real-time to adjust the interface, wallpaper, and "status effects" (e.g., focus, creativity, calm).
-- **Modular Structure**: Built with **React** and **Vite**, featuring a modern build pipeline behind the retro facade.
-- **Interactive "Core"**: You can click and drag the "Core" to move the entire desktop, simulating a physical system unit.
+## ✨ Features
+
+- **CRT Monitor Simulation** — Realistic CRT effects including scanlines, vignette, and phosphor glow
+- **Draggable Windows** — Fully functional window management with minimize, close, and drag support
+- **Taskbar** — Active app display with minimize/restore toggle, volume control, and system clock
+- **Desktop Icons** — Clickable app shortcuts and social media links arranged on a configurable grid
+- **Retro Sound Effects** — Synthesized boot, shutdown, click, and error sounds via the Web Audio API
+- **Clippy Assistant** — An animated assistant that greets visitors with timed messages
+- **Background Music** — Integrated YouTube player for ambient lofi beats
+- **Responsive Scaling** — Automatically scales the CRT monitor to fit any screen size
+- **Fully Configurable** — One config file (`userConfig.js`) controls all personal details, icons, and layout
+
+## 🕹️ Built-in Apps
+
+| App | Description |
+|-----|-------------|
+| **Terminal** | Retro command-line interface with commands like `help`, `about`, `ask`, and more |
+| **me.txt** | A text viewer displaying personal bio and info |
+| **My PC** | System specs viewer with config and setup tabs |
+| **Netscape Browser** | Embedded iframe browser loading a configurable URL |
+| **Internet Explorer** | Optional secondary browser window |
+| **Paint** | A drawing canvas app |
+| **DOOM** | Playable DOOM via js-dos emulation |
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v14 or higher recommended)
+- [Node.js](https://nodejs.org/) (v14 or higher)
 - [npm](https://www.npmjs.com/)
 
 ### Installation
 
-1.  Clone the repository:
-    ```bash
-    git clone <repository-url>
-    cd Retro-Computer
-    ```
+```bash
+git clone https://github.com/ThiliX/Retro-Computer.git
+cd Retro-Computer
+npm install
+```
 
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-
-### Running the App
-
-Start the development server:
+### Running Locally
 
 ```bash
 npm start
 ```
 
-The application will open automatically in your browser, usually at `http://localhost:3000`.
+Opens at `http://localhost:3000`. Click the **power button** on the monitor to turn on the desktop.
 
-## 🛠️ Technical Stack
+### Deploy to GitHub Pages
 
-- **Framework**: React 18 + Vite
-- **State Management**: Redux Toolkit
-- **Styling**: SCSS/CSS Modules, CSS Custom Properties
-- **Core Logic**: Custom hooks for state management and event handling
+```bash
+npm run deploy
+```
 
-## 🏗️ Project Structure
+## 🛠️ Tech Stack
+
+- **Framework** — React 18 (Create React App)
+- **Styling** — Vanilla CSS with CSS custom properties
+- **Audio** — Web Audio API for retro sound synthesis
+- **Music** — `react-youtube` for background music playback
+- **Game Emulation** — js-dos for running DOOM
+- **SEO** — `react-helmet` for dynamic page metadata
+- **Deployment** — `gh-pages` for GitHub Pages hosting
+
+## 📁 Project Structure
 
 ```
 Retro-Computer/
-├── public/            # Static assets and preload scripts
+├── public/
+│   ├── icons/              # App icons, wallpapers, social icons, assets
+│   ├── doom.jsdos           # DOOM game bundle for js-dos
+│   └── index.html           # HTML entry point
 ├── src/
-│   ├── assets/        # Images, fonts, sounds
-│   ├── components/    # Reusable React components (windows, taskbar, etc.)
-│   ├── core/          # Core application logic and state management
-│   ├── styles/        # Global styles and themes
-│   └── views/         # Different desktop views/modes
-└── index.html       # Entry point
+│   ├── apps/                # Individual app modules
+│   │   ├── AppCore.js       # Shared app lifecycle (open, close, minimize, drag)
+│   │   ├── Terminal/        # Terminal emulator
+│   │   ├── Txt/             # Text file viewer (me.txt)
+│   │   ├── MyPc/            # PC specs viewer
+│   │   ├── Browser/         # Netscape browser (iframe)
+│   │   ├── InternetExplorer/# IE browser (iframe)
+│   │   ├── Paint/           # Drawing canvas
+│   │   └── Doom/            # DOOM via js-dos
+│   ├── components/          # Shared UI components
+│   │   ├── AppDisplay.*     # Window chrome (title bar, buttons, drag)
+│   │   ├── TaskBarAppDisplay.* # Taskbar app entries
+│   │   ├── IconDisplay.*    # Desktop shortcut icons
+│   │   ├── Clock.*          # System tray clock
+│   │   ├── Volume.*         # Volume toggle + YouTube player
+│   │   ├── Clippy.*         # Clippy assistant
+│   │   └── PopUp.*          # Modal popup windows
+│   ├── context/             # React context providers
+│   ├── userConfig.js        # ⭐ All personal configuration
+│   ├── App.js               # Main app — CRT monitor, desktop, taskbar
+│   └── App.css              # CRT styling, monitor, stand, case
+└── package.json
 ```
 
-## 🎨 Customizing the "Computer"
+## ⚙️ Customization
 
-This project is designed to be personalized. You can modify the following:
+Everything is configured through **`src/userConfig.js`**:
 
-- **Backgrounds**: Edit `src/assets/backgrounds/` and update `SYSTEM.WALLPAPER` in `src/core/constants.js`.
-- **Themes**: Adjust colors in `src/styles/themes.scss`.
-- **Sounds**: Replace `.wav` files in `src/assets/sounds/`.
-
-## 🤝 Contributing
-
-Contributions are welcome! This is a personal project, but if you have ideas for features or improvements, feel free to open an issue or submit a pull request.
+| Section | What it controls |
+|---------|-----------------|
+| `name`, `tagline`, `age` | Your identity displayed across apps |
+| `socials` | Desktop shortcut links (GitHub, Twitter, Spotify, Steam, LinkedIn, etc.) |
+| `aboutMe` | Content shown in the me.txt app |
+| `pcSpecs` / `peripherals` | Hardware specs in the My PC app |
+| `terminalQA` | Q&A pairs for the terminal `ask` command |
+| `clippyMessages` | Timed Clippy assistant messages |
+| `browserUrl` | URL loaded in the Netscape browser |
+| `musicVideoId` | YouTube video ID for background music |
+| `wallpaper` | Desktop wallpaper (supports `.gif`, `.png`, `.jpg`) |
+| `profilePicture` | Your profile picture |
+| `iconPositions` | Desktop icon grid positions |
 
 ## 📄 License
 
 This project is licensed under the **MIT License**.
+
+---
+
+<p align="center">
+  <b>Thilix©</b> — Built with ☕ and nostalgia
+</p>
