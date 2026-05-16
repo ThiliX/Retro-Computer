@@ -15,6 +15,7 @@ import Synth from "./apps/Synth/Synth";
 import Paint from "./apps/Paint/Paint";
 import Browser from "./apps/Browser/Browser";
 import InternetExplorer from "./apps/InternetExplorer/InternetExplorer";
+import Kitt from "./apps/Kitt/Kitt";
 
 import { useAppsManager } from "./context/AppsManagerContext";
 import { usePopUpsManager } from "./context/PopUpsManagerContext";
@@ -156,6 +157,7 @@ function App() {
 	const browserRef = useRef(null);
 	const ieRef = useRef(null);
 	const paintRef = useRef(null);
+	const kittRef = useRef(null);
 
 	const [isTerminalOpened, setIsTerminalOpened] = useState(false);
 	const [isTxtOpened, setIsTxtOpened] = useState(false);
@@ -165,6 +167,7 @@ function App() {
 	const [isBrowserOpened, setIsBrowserOpened] = useState(false);
 	const [isIeOpened, setIsIeOpened] = useState(false);
 	const [isPaintOpened, setIsPaintOpened] = useState(false);
+	const [isKittOpened, setIsKittOpened] = useState(false);
 
 	// Minimize states for each app
 	const [isTerminalMinimized, setIsTerminalMinimized] = useState(false);
@@ -174,6 +177,7 @@ function App() {
 	const [isBrowserMinimized, setIsBrowserMinimized] = useState(false);
 	const [isIeMinimized, setIsIeMinimized] = useState(false);
 	const [isPaintMinimized, setIsPaintMinimized] = useState(false);
+	const [isKittMinimized, setIsKittMinimized] = useState(false);
 
 	const appsStateMap = {
 		terminal: { ref: terminalRef, isOpened: isTerminalOpened, setIsOpened: setIsTerminalOpened, setIsMinimized: setIsTerminalMinimized },
@@ -183,6 +187,7 @@ function App() {
 		browser: { ref: browserRef, isOpened: isBrowserOpened, setIsOpened: setIsBrowserOpened, setIsMinimized: setIsBrowserMinimized },
 		ie: { ref: ieRef, isOpened: isIeOpened, setIsOpened: setIsIeOpened, setIsMinimized: setIsIeMinimized },
 		paint: { ref: paintRef, isOpened: isPaintOpened, setIsOpened: setIsPaintOpened, setIsMinimized: setIsPaintMinimized },
+		kitt: { ref: kittRef, isOpened: isKittOpened, setIsOpened: setIsKittOpened, setIsMinimized: setIsKittMinimized },
 	};
 
 	useEffect(() => {
@@ -206,7 +211,7 @@ function App() {
 		return () => {
 			registeredStateListeners.forEach((removeListener) => removeListener());
 		};
-	}, [terminalRef, txtRef, myPcRef, synthRef, isScreenTurnedOn, browserRef, ieRef, paintRef]);
+	}, [terminalRef, txtRef, myPcRef, synthRef, isScreenTurnedOn, browserRef, ieRef, paintRef, kittRef]);
 
 	useEffect(() => {
 		function onClick({ x, y }) {
@@ -299,6 +304,7 @@ function App() {
 						{isBrowserOpened ? browserRef?.current?.render(isBrowserMinimized) : null}
 						{isIeOpened ? ieRef?.current?.render(isIeMinimized) : null}
 						{isPaintOpened ? paintRef?.current?.render(isPaintMinimized) : null}
+						{isKittOpened ? kittRef?.current?.render(isKittMinimized) : null}
 					</div>
 					<div className="computer-taskbar-container" ref={appsTaskBarParentRef}>
 						{openedApps.map((appRef, idx) => {
@@ -394,6 +400,15 @@ function App() {
 									iconX={pos.paint?.x ?? 13}
 									iconY={pos.paint?.y ?? 2}
 									ref={paintRef}
+									parentRef={appsDisplayParentRef}
+									desktopWidth={DESKTOP_WIDTH}
+									desktopHeight={DESKTOP_HEIGHT}
+									taskbarHeight={TASKBAR_HEIGHT}
+								/>
+								<Kitt
+									iconX={pos.kitt?.x ?? 13}
+									iconY={pos.kitt?.y ?? 0}
+									ref={kittRef}
 									parentRef={appsDisplayParentRef}
 									desktopWidth={DESKTOP_WIDTH}
 									desktopHeight={DESKTOP_HEIGHT}

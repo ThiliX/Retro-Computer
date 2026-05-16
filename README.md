@@ -28,6 +28,7 @@ A retro-themed desktop environment built with React, simulating a fully interact
 | **Internet Explorer** | Optional secondary browser window |
 | **Paint** | A drawing canvas app |
 | **Synth-80** | Retro polyphonic synthesizer with 4 waveforms, octave control, reverb, and keyboard input |
+| **K.I.T.T.** | Knight Rider's AI — iconic red Larson scanner with KITT speaking in-character |
 
 ## 🚀 Getting Started
 
@@ -84,7 +85,8 @@ Retro-Computer/
 │   │   ├── Browser/         # Netscape browser (iframe)
 │   │   ├── InternetExplorer/# IE browser (iframe)
 │   │   ├── Paint/           # Drawing canvas
-│   │   └── Synth/           # Retro polyphonic synthesizer
+│   │   ├── Synth/           # Retro polyphonic synthesizer
+│   │   └── Kitt/            # K.I.T.T. — Knight Rider AI scanner
 │   ├── components/          # Shared UI components
 │   │   ├── AppDisplay.*     # Window chrome (title bar, buttons, drag)
 │   │   ├── TaskBarAppDisplay.* # Taskbar app entries

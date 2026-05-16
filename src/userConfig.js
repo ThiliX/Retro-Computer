@@ -126,6 +126,7 @@ const userConfig = {
 		txt: { x: 3, y: 3 },
 		synth: { x: 13, y: 1 },
 		paint: { x: 13, y: 2 },
+		kitt: { x: 13, y: 0 },
 		bin: { x: 14.5, y: 6.5 },
 		folder: { x: 14.5, y: 2 },
 		// Social icons start at this position, stacking vertically
