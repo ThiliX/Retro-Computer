@@ -120,9 +120,11 @@ Everything is configured through **`src/userConfig.js`**:
 | `profilePicture` | Your profile picture |
 | `iconPositions` | Desktop icon grid positions |
 
-## 📄 License
+## 📄 License & Credits
 
 This project is licensed under the **MIT License**.
+
+**Credits:** This project was built by extending and customizing the original [my-personal-computer](https://github.com/stefani16bit/my-personal-computer) repository created by [stefani16bit](https://github.com/stefani16bit).
 
 ---
 
