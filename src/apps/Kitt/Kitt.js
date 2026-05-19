@@ -10,8 +10,8 @@ const Kitt = React.forwardRef(({ iconX, iconY, parentRef, ...others }, ref) => {
 			iconX={iconX}
 			iconY={iconY}
 			title="K.I.T.T."
-			icon="icons/kitt.png"
-			width={480}
+			icon="icons/new-kitt.svg"
+			width={550}
 			height={340}
 			backgroundColor="#0a0a0a"
 			topBarColor="#1a0000"

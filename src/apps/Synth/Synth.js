@@ -10,8 +10,8 @@ const Synth = React.forwardRef(({ iconX, iconY, parentRef, ...others }, ref) => 
 			iconX={iconX}
 			iconY={iconY}
 			title="Synth-80"
-			icon="icons/synth.png"
-			width={520}
+			icon="icons/new-synth.svg"
+			width={450}
 			height={310}
 			backgroundColor="#0a0a15"
 			topBarColor="#1a0033"

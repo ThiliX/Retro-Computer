@@ -10,8 +10,8 @@ const Paint = React.forwardRef(({ iconX, iconY, parentRef, ...others }, ref) => 
 			iconX={iconX}
 			iconY={iconY}
 			title="pixelart"
-			icon="icons/paint.png"
-			width={400}
+			icon="icons/new-paint.svg"
+			width={650}
 			height={490}
 			backgroundColor="#0a0a15"
 			topBarColor="#003300"

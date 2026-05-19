@@ -280,7 +280,7 @@ function App() {
 	}
 	if (userConfig.socials.linkedin) {
 		socialIcons.push(
-			<IconDisplay key="linkedin" icon="icons/linkedin.png" title="linkedin" x={socialsX} y={socialsStartY + socialIcons.length} href={userConfig.socials.linkedin} />
+			<IconDisplay key="linkedin" icon="icons/linkedin.svg" title="linkedin" x={socialsX} y={socialsStartY + socialIcons.length} href={userConfig.socials.linkedin} />
 		);
 	}
 	if (userConfig.socials.youtube) {
@@ -354,8 +354,8 @@ function App() {
 									taskbarHeight={TASKBAR_HEIGHT}
 								/>
 
-								<IconDisplay icon="icons/bin.png" title="bin" x={pos.bin?.x ?? 14.5} y={pos.bin?.y ?? 6.5} />
-								<IconDisplay icon="icons/windows-folder.png" title="folder" x={pos.folder?.x ?? 14.5} y={pos.folder?.y ?? 2} />
+								<IconDisplay icon="icons/new-bin.svg" title="bin" x={pos.bin?.x ?? 14.5} y={pos.bin?.y ?? 6.5} />
+								<IconDisplay icon="icons/new-folder.svg" title="folder" x={pos.folder?.x ?? 14.5} y={pos.folder?.y ?? 2} />
 
 								{/* Social link icons from config */}
 								{socialIcons}

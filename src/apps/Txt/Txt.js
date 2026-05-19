@@ -10,7 +10,7 @@ const Txt = React.forwardRef(({ iconX, iconY, parentRef, ...others }, ref) => {
 			iconX={iconX}
 			iconY={iconY}
 			title="me.txt"
-			icon="icons/txt.png"
+			icon="icons/new-txt.svg"
 			width={340}
 			height={450}
 			backgroundColor="#0a0a15"
