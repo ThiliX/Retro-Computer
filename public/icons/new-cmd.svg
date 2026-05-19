@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect x="10" y="15" width="80" height="70" rx="4" fill="#000" stroke="#555" stroke-width="2"/>
-  <path d="M 10 19 C 10 17 12 15 14 15 L 86 15 C 88 15 90 17 90 19 L 90 30 L 10 30 Z" fill="#ccc"/>
-  <rect x="75" y="18" width="8" height="8" fill="#ff4040"/>
-  <rect x="63" y="18" width="8" height="8" fill="#c0c0c0" stroke="#888" stroke-width="1"/>
-  <rect x="51" y="18" width="8" height="8" fill="#c0c0c0" stroke="#888" stroke-width="1"/>
-  <text x="15" y="50" font-family="monospace" font-size="16" fill="#00ff00" font-weight="bold">C:\&gt;_</text>
-</svg>
