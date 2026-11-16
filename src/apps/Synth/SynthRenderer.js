@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useCallback } from "react";
 import "./SynthRenderer.css";
+import { useAppsManager } from "../../context/AppsManagerContext";
 
 // ─── Note frequencies (4th octave) ────────────────────────────
 const NOTES = [
@@ -23,7 +24,8 @@ const NOTES = [
 const WAVE_TYPES = ["sawtooth", "square", "triangle", "sine"];
 const WAVE_LABELS = ["SAW", "SQR", "TRI", "SIN"];
 
-function SynthRenderer() {
+function SynthRenderer({ appCoreRef }) {
+	const { focusedApp } = useAppsManager();
 	const audioCtxRef = useRef(null);
 	const activeNotesRef = useRef({});
 	const [waveType, setWaveType] = React.useState(0);
@@ -138,14 +140,32 @@ function SynthRenderer() {
 		});
 	}, []);
 
+	// Only the focused synth window should react to the keyboard.
+	const isFocusedRef = useRef(false);
+	isFocusedRef.current = !!focusedApp && focusedApp === appCoreRef?.current?.appDisplayRef;
+
+	// Release held notes when the window loses focus so nothing drones on.
+	useEffect(() => {
+		if (!isFocusedRef.current) {
+			Object.keys(activeNotesRef.current).forEach(stopNote);
+		}
+	}, [focusedApp, stopNote]);
+
 	// Keyboard events
 	useEffect(() => {
+		const isTypingInField = (e) => {
+			const tag = e.target?.tagName;
+			return tag === "INPUT" || tag === "TEXTAREA" || e.target?.isContentEditable;
+		};
+
 		const handleKeyDown = (e) => {
-			if (e.repeat) return;
+			if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+			if (!isFocusedRef.current || isTypingInField(e)) return;
 			const key = e.key.toUpperCase();
 			playNote(key);
 		};
 
+		// Always allow key-up so a note started before focus moved can still be released.
 		const handleKeyUp = (e) => {
 			const key = e.key.toUpperCase();
 			stopNote(key);

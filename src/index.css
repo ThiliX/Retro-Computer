@@ -1,11 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&family=Share+Tech+Mono&display=swap');
-
 body {
 	margin: 0;
 	font-family: 'VT323', 'Share Tech Mono', 'Courier New', monospace;
 	-webkit-font-smoothing: none;
 	-moz-osx-font-smoothing: unset;
-	background-color: #0a0a0a;
+	background: radial-gradient(ellipse at 50% 115%, #5a1a2e 0%, #1a0b1e 55%, #0e0610 100%);
+	min-height: 100vh;
 	overflow: hidden;
 	cursor: crosshair;
 	image-rendering: pixelated;
@@ -16,8 +15,8 @@ body {
 }
 
 ::selection {
-	background: #00ff41;
-	color: #0a0a0a;
+	background: #ff7a1a;
+	color: #1a0b1e;
 }
 
 ::-webkit-scrollbar {
@@ -26,23 +25,23 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-	background: #1a1a2e;
-	border: 1px solid #00ff41;
+	background: #2b1233;
+	border: 1px solid #ffb627;
 }
 
 ::-webkit-scrollbar-thumb {
-	background: #00ff41;
-	border: 2px solid #1a1a2e;
-	box-shadow: inset 0 0 6px rgba(0, 255, 65, 0.3);
+	background: #ffb627;
+	border: 2px solid #2b1233;
+	box-shadow: inset 0 0 6px rgba(255, 182, 39, 0.3);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: #33ff66;
+	background: #ffd27a;
 	cursor: pointer;
 }
 
 ::-webkit-scrollbar-corner {
-	background: #1a1a2e;
+	background: #2b1233;
 }
 
 ::-webkit-scrollbar:horizontal {
@@ -56,26 +55,26 @@ body {
 	display: block;
 	width: 14px;
 	height: 14px;
-	background: #1a1a2e;
-	border: 1px solid #00ff41;
+	background: #2b1233;
+	border: 1px solid #ffb627;
 }
 
 ::-webkit-scrollbar-button:vertical:start:decrement {
-	background: #1a1a2e;
-	border: 1px solid #00ff41;
+	background: #2b1233;
+	border: 1px solid #ffb627;
 }
 
 ::-webkit-scrollbar-button:vertical:end:increment {
-	background: #1a1a2e;
-	border: 1px solid #00ff41;
+	background: #2b1233;
+	border: 1px solid #ffb627;
 }
 
 ::-webkit-scrollbar-button:horizontal:start:decrement {
-	background: #1a1a2e;
-	border: 1px solid #00ff41;
+	background: #2b1233;
+	border: 1px solid #ffb627;
 }
 
 ::-webkit-scrollbar-button:horizontal:end:increment {
-	background: #1a1a2e;
-	border: 1px solid #00ff41;
+	background: #2b1233;
+	border: 1px solid #ffb627;
 }

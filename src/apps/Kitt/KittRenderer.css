@@ -258,8 +258,8 @@
 }
 
 .kitt-stat-fill-green {
-	background: linear-gradient(90deg, #00cc33, #00ff41);
-	box-shadow: 0 0 4px rgba(0, 255, 65, 0.4);
+	background: linear-gradient(90deg, #1f9e93, #2ec4b6);
+	box-shadow: 0 0 4px rgba(46, 196, 182, 0.4);
 }
 
 .kitt-stat-version {

@@ -8,6 +8,8 @@ class EraserTool extends Tool {
 
 	onMousePressBegin(event) {
 		this.isErasing = true;
+		const [x, y] = this.paintRendererRef.current.getPixelFromMousePosition(event);
+		this.paintRendererRef.current.erasePixel(x, y);
 	}
 
 	onMousePressLeave(event) {

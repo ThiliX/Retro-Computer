@@ -3,7 +3,7 @@
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
-	color: #00ff41;
+	color: #ffb627;
 	font-family: 'VT323', monospace;
 }
 
@@ -11,9 +11,9 @@
 	display: flex;
 	flex-direction: column;
 	width: 90%;
-	background-color: #0a0a15;
-	border: 2px solid #00ff41;
-	box-shadow: 0 0 10px rgba(0, 255, 65, 0.1);
+	background-color: #1a0b1e;
+	border: 2px solid #ffb627;
+	box-shadow: 0 0 10px rgba(255, 182, 39, 0.1);
 }
 
 .my-pc-info-father-container {
@@ -38,8 +38,8 @@
 	font-size: 12.6px;
 	font-weight: bold;
 	font-family: 'Press Start 2P', monospace;
-	color: #00ff41;
-	text-shadow: 0 0 5px rgba(0, 255, 65, 0.25);
+	color: #ffb627;
+	text-shadow: 0 0 5px rgba(255, 182, 39, 0.25);
 
 }
 
@@ -48,8 +48,8 @@
 	text-align: right;
 	font-family: 'Press Start 2P', monospace;
 	font-weight: 400;
-	color: #00ff41;
-	text-shadow: 0 0 4px rgba(0, 255, 65, 0.2);
+	color: #ffb627;
+	text-shadow: 0 0 4px rgba(255, 182, 39, 0.2);
 	text-transform: uppercase;
 	letter-spacing: 5px;
 }
@@ -69,10 +69,10 @@
 }
 
 .my-pc-title2-container a {
-	color: #00cc33;
+	color: #ff7a1a;
 	font-family: 'VT323', monospace;
 	font-size: 16px;
-	text-shadow: 0 0 2px rgba(0, 255, 65, 0.1);
+	text-shadow: 0 0 2px rgba(255, 182, 39, 0.1);
 }
 
 .my-pc-title-2 {

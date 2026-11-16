@@ -5,10 +5,11 @@
 	position: absolute;
 	width: 780px;
 	margin-top: 568px;
+	z-index: 950;
 }
 
 .date-time-container span {
-	color: #cccccc !important;
+	color: var(--sa-cream) !important;
 	font-family: 'VT323', monospace !important;
 	font-size: 15px !important;
 	font-weight: normal !important;

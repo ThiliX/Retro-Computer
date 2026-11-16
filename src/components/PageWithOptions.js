@@ -23,15 +23,15 @@ function PageWithOptions({ appCoreRef, AppRenderer, options, initialOption, appD
 							style={
 								currentOption === option
 									? {
-											backgroundColor: "#1a1a2e",
-											borderBottom: "2px solid #1a1a2e",
-											borderTop: "1px solid #00ff41",
-											borderLeft: "1px solid #00ff41",
-											borderRight: "1px solid #00ff41",
+											backgroundColor: "#2b1233",
+											borderBottom: "2px solid #2b1233",
+											borderTop: "1px solid #ffb627",
+											borderLeft: "1px solid #ffb627",
+											borderRight: "1px solid #ffb627",
 											zIndex: 50000,
 											height: "28px",
-											color: "#00ff41",
-											textShadow: "0 0 3px rgba(0,255,65,0.2)",
+											color: "#ffb627",
+											textShadow: "0 0 3px rgba(255, 182, 39,0.2)",
 										}
 									: {}
 							}

@@ -11,7 +11,7 @@ function TaskBarAppDisplay({ appRef }) {
 	return (
 		<div className="task-bar-app-display" onClick={handleAppClick}>
 			<div className="task-bar-app-icon-container">
-				<img src={appRef?.appearence?.icon} style={{ width: "20px", height: "20px" }} alt="" />
+				<img src={appRef?.appearence?.icon} style={{ width: "18px", height: "18px" }} alt="" />
 			</div>
 
 			<div className="task-bar-app-title-container">

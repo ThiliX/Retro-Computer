@@ -7,13 +7,13 @@ function MyPcConfigRenderer({ appRef }) {
 	return (
 		<div className="my-pc-renderer-container">
 			<div className="my-pc-renderer-title-container">
-				<span className="my-pc-renderer-title">ABOUT ME</span>
+				<span className="my-pc-renderer-title">about me</span>
 			</div>
 			<div className="my-pc-renderer-container-2">
 				<div className="my-pc-info-father-container">
 					<div className="my-pc-info-container">
 						<div>
-							<img src={userConfig.profilePicture} style={{ width: "140px", height: "140px", border: "1px solid #00ff41", boxShadow: "0 0 10px rgba(0,255,65,0.2)" }} alt="selfie"></img>
+							<img src={userConfig.profilePicture} style={{ width: "140px", height: "140px", border: "1px solid #ffb627", boxShadow: "0 0 10px rgba(255, 182, 39,0.2)" }} alt="selfie"></img>
 						</div>
 						<div className="my-pc-title2-container">
 							<span className="my-pc-title">{userConfig.name}</span>
@@ -29,7 +29,7 @@ function MyPcConfigRenderer({ appRef }) {
 				</div>
 			</div>
 			<div className="my-pc-config-button-container">
-				<Button text={"Ok"} width={"70px"} height={"22px"} />
+				<Button text={"Ok"} width={"70px"} height={"22px"} onClick={() => appRef?.current?.close()} />
 			</div>
 		</div>
 	);

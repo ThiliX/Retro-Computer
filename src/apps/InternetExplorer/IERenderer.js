@@ -1,5 +1,8 @@
 import "../Browser/BrowserRenderer.css";
 import "../../components/Button.css";
+import userConfig from "../../userConfig";
+
+const IE_URL = userConfig.ieUrl || userConfig.browserUrl;
 
 function IERenderer({ appCoreRef }) {
 	return (
@@ -20,14 +23,14 @@ function IERenderer({ appCoreRef }) {
 					<div className="bar"></div>
 					<a>Address</a>
 					<div className="browser-address-field">
-						<a>https://justaurl.com</a>
+						<a>{IE_URL}</a>
 						<button type="button" className="windows-button" style={{width: "18px"}}>▾</button>
 					</div>
 				</div>
 			</div>
 			<div className="browser-bottom-container">
 				<div className="browser-content">
-					<iframe src="https://justaurl.com" width="100%" height="100%" title="Internet Explorer"></iframe>
+					<iframe src={IE_URL} width="100%" height="100%" title="Internet Explorer"></iframe>
 				</div>
 			</div>
 		</div>

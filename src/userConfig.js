@@ -93,6 +93,7 @@ const userConfig = {
 
 	// ─── BROWSER IFRAME URL ───────────────────────────────────
 	browserUrl: "https://cat-bounce.com/",
+	ieUrl: "", // optional second URL for the Internet Explorer window (falls back to browserUrl)
 
 	// ─── BACKGROUND MUSIC (YouTube video ID) ──────────────────
 	musicVideoId: "0QKQlf8r7ls",  // lofi hip hop radio
@@ -101,10 +102,10 @@ const userConfig = {
 	// Supports .gif (animated) or any image format (.png, .jpg, etc.)
 	// Place your wallpaper file in the public/icons/ folder
 	// then set the path below. Examples:
-	//   "icons/bg1.gif"         ← animated GIF (default)
-	//   "icons/my-wallpaper.png" ← static image
-	//   "icons/cool-bg.jpg"      ← JPEG photo
-	wallpaper: "icons/bg1.gif",
+	//   "icons/sunset-wallpaper.svg" ← animated sunset grid (default)
+	//   "icons/bg1.gif"              ← animated GIF
+	//   "icons/my-wallpaper.png"     ← static image
+	wallpaper: "icons/sunset-wallpaper.svg",
 
 	// ─── PROFILE PICTURE ────────────────────────────────────
 	// Place your photo in the public/icons/ folder

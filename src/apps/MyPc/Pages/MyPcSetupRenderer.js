@@ -6,7 +6,7 @@ function MyPcSetupRenderer({ appRef }) {
 	return (
 		<div className="my-pc-renderer-container">
 			<div className="my-pc-renderer-title-container">
-				<span className="my-pc-renderer-title">config</span>
+				<span className="my-pc-renderer-title">specs</span>
 			</div>
 			<div className="my-pc-renderer-container-2">
 				<div className="my-pc-info-father-container">
@@ -21,13 +21,13 @@ function MyPcSetupRenderer({ appRef }) {
 							<br/>{userConfig.pcSpecs.cooling}
 						</div>
 						<div>
-							<img src="icons/retro-pc.png" style={{ width: "140px", height: "140px", borderRadius: "4px", border: "2px solid #00ff41", boxShadow: "0 0 15px rgba(0, 255, 65, 0.2)" }} alt="computer"></img>
+							<img src="icons/retro-pc.png" style={{ width: "140px", height: "140px", borderRadius: "4px", border: "2px solid #ffb627", boxShadow: "0 0 15px rgba(255, 182, 39, 0.2)" }} alt="computer"></img>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div className="my-pc-renderer-title-container">
-				<span className="my-pc-renderer-title">setup</span>
+				<span className="my-pc-renderer-title">peripherals</span>
 			</div>
 			<div className="my-pc-renderer-container-2">
 				<div className="my-pc-info-father2-container">

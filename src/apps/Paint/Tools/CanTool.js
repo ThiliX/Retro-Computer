@@ -1,55 +1,50 @@
 import Tool from "./Tool";
 
 class CanTool extends Tool {
-	constructor(paintRendererRef) {
-		super(paintRendererRef);
-		this.colorToBeReplaced = null;
-		this.visitedPixels = null;
-	}
-
-	#floodFill(x, y) {
-		if (!this.paintRendererRef?.current) {
-			return;
-		}
-
-		if (
-			x < 0 ||
-			y < 0 ||
-			x >= this.paintRendererRef.current.CANVAS_WIDTH / this.paintRendererRef.current.CANVAS_RESOLUTION ||
-			y >= this.paintRendererRef.current.CANVAS_HEIGHT / this.paintRendererRef.current.CANVAS_RESOLUTION
-		) {
-			return;
-		}
-
-		if (`${x}:${y}` in this.visitedPixels) {
-			return;
-		}
-
-		const [r, g, b] = this.paintRendererRef.current.pickPixelColor(x, y);
-		if (r !== this.colorToBeReplaced[0] || g !== this.colorToBeReplaced[1] || b !== this.colorToBeReplaced[2]) {
-			return;
-		}
-
-		this.visitedPixels[`${x}:${y}`] = true;
-
-		setTimeout(() => {
-			this.#floodFill(x - 1, y);
-			this.#floodFill(x + 1, y);
-			this.#floodFill(x, y - 1);
-			this.#floodFill(x, y + 1);
-		}, 200);
-
-		this.paintRendererRef.current.paintPixel(x, y);
-	}
-
+	// Breadth-first flood fill over the cell grid, reading the canvas once.
 	onMouse1Click(event) {
-		this.visitedPixels = {};
+		const renderer = this.paintRendererRef?.current;
+		if (!renderer) {
+			return;
+		}
 
-		const [x, y] = this.paintRendererRef.current.getPixelFromMousePosition(event);
-		const [r, g, b] = this.paintRendererRef.current.pickPixelColor(x, y);
-		this.colorToBeReplaced = [r, g, b];
+		const { CANVAS_RESOLUTION: res, CANVAS_COLUMNS: cols, CANVAS_ROWS: rows, CANVAS_WIDTH, CANVAS_HEIGHT } = renderer;
+		const ctx = renderer.getContext();
+		const pixels = ctx.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
 
-		this.#floodFill(x, y);
+		const colorAt = (x, y) => {
+			const i = (y * res * CANVAS_WIDTH + x * res) * 4;
+			return (pixels[i] << 16) | (pixels[i + 1] << 8) | pixels[i + 2];
+		};
+
+		const [startX, startY] = renderer.getPixelFromMousePosition(event);
+		const target = colorAt(startX, startY);
+		const [r, g, b] = renderer.getSelectedColorRgb();
+		if (target === ((r << 16) | (g << 8) | b)) {
+			return;
+		}
+
+		const visited = new Uint8Array(cols * rows);
+		const queue = [[startX, startY]];
+		visited[startY * cols + startX] = 1;
+
+		while (queue.length) {
+			const [x, y] = queue.shift();
+			renderer.paintPixel(x, y);
+
+			for (const [nx, ny] of [
+				[x - 1, y],
+				[x + 1, y],
+				[x, y - 1],
+				[x, y + 1],
+			]) {
+				if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue;
+				const index = ny * cols + nx;
+				if (visited[index] || colorAt(nx, ny) !== target) continue;
+				visited[index] = 1;
+				queue.push([nx, ny]);
+			}
+		}
 	}
 
 	onToolActivated() {

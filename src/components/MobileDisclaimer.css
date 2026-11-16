@@ -4,16 +4,16 @@
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
-	color: #00ff41;
+	color: #ffb627;
 	font-family: 'VT323', monospace;
 	font-size: 18px;
 	text-align: center;
 	padding: 20px;
-	text-shadow: 0 0 4px rgba(0, 255, 65, 0.25);
-	background: #0a0a0a;
+	text-shadow: 0 0 4px rgba(255, 182, 39, 0.25);
+	background: #140812;
 	letter-spacing: 1px;
 }
 
 .mobile-disclaimer-icons img {
-	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(85deg);
+	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(-12deg);
 }

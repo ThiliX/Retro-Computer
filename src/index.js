@@ -8,6 +8,10 @@ import reportWebVitals from "./reportWebVitals";
 import { AppsManagerContextProvider } from "./context/AppsManagerContext";
 import MobileDisclaimer from "./components/MobileDisclaimer";
 import { PopUpsManagerContextProvider } from "./context/PopUpsManagerContext";
+import userConfig from "./userConfig";
+
+document.title = userConfig.pageTitle;
+document.querySelector('meta[name="description"]')?.setAttribute("content", userConfig.pageDescription);
 
 window.mobileCheck = function () {
 	let check = false;

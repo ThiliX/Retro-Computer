@@ -7,7 +7,7 @@
 	flex-direction: column;
 	width: 100%;
 	height: 100%;
-	background: linear-gradient(180deg, #0d0d1a, #0a0a12);
+	background: linear-gradient(180deg, #0d0d1a, #1a0b1e);
 	font-family: 'VT323', monospace;
 	user-select: none;
 }
@@ -18,8 +18,8 @@
 	justify-content: space-between;
 	align-items: center;
 	padding: 6px 12px;
-	background: linear-gradient(180deg, #1a0033, #120022);
-	border-bottom: 1px solid #ff00ff;
+	background: linear-gradient(180deg, #2b0f1f, #120022);
+	border-bottom: 1px solid #ff2e88;
 }
 
 .synth-brand {
@@ -30,14 +30,14 @@
 .synth-brand-name {
 	font-size: 18px;
 	font-weight: bold;
-	color: #ff00ff;
-	text-shadow: 0 0 8px rgba(255, 0, 255, 0.5);
+	color: #ff2e88;
+	text-shadow: 0 0 8px rgba(255, 46, 136, 0.5);
 	letter-spacing: 3px;
 }
 
 .synth-brand-sub {
 	font-size: 10px;
-	color: #cc66ff;
+	color: #ff5fa2;
 	letter-spacing: 2px;
 	opacity: 0.7;
 }
@@ -59,14 +59,14 @@
 }
 
 .synth-led.active {
-	background: #ff00ff;
-	box-shadow: 0 0 8px #ff00ff, 0 0 16px rgba(255, 0, 255, 0.4);
+	background: #ff2e88;
+	box-shadow: 0 0 8px #ff2e88, 0 0 16px rgba(255, 46, 136, 0.4);
 }
 
 .synth-led-power.active {
-	background: #00ff41;
-	box-shadow: 0 0 8px #00ff41, 0 0 16px rgba(0, 255, 65, 0.4);
-	border-color: #00cc33;
+	background: #ffb627;
+	box-shadow: 0 0 8px #ffb627, 0 0 16px rgba(255, 182, 39, 0.4);
+	border-color: #ff7a1a;
 }
 
 /* ─── Controls Panel ─── */
@@ -99,7 +99,7 @@
 }
 
 .synth-wave-btn {
-	background: #1a1a2e;
+	background: #2b1233;
 	color: #666;
 	border: 1px solid #333;
 	border-radius: 2px;
@@ -112,15 +112,15 @@
 }
 
 .synth-wave-btn:hover {
-	border-color: #ff00ff;
-	color: #ff00ff;
+	border-color: #ff2e88;
+	color: #ff2e88;
 }
 
 .synth-wave-btn.active {
-	background: rgba(255, 0, 255, 0.2);
-	border-color: #ff00ff;
-	color: #ff00ff;
-	box-shadow: 0 0 6px rgba(255, 0, 255, 0.3);
+	background: rgba(255, 46, 136, 0.2);
+	border-color: #ff2e88;
+	color: #ff2e88;
+	box-shadow: 0 0 6px rgba(255, 46, 136, 0.3);
 }
 
 /* Octave controls */
@@ -131,8 +131,8 @@
 }
 
 .synth-oct-btn {
-	background: #1a1a2e;
-	color: #cc66ff;
+	background: #2b1233;
+	color: #ff5fa2;
 	border: 1px solid #333;
 	border-radius: 2px;
 	font-family: 'VT323', monospace;
@@ -148,21 +148,21 @@
 }
 
 .synth-oct-btn:hover {
-	border-color: #ff00ff;
-	background: rgba(255, 0, 255, 0.15);
+	border-color: #ff2e88;
+	background: rgba(255, 46, 136, 0.15);
 }
 
 .synth-oct-display {
 	font-size: 14px;
-	color: #ff00ff;
+	color: #ff2e88;
 	width: 28px;
 	text-align: center;
-	text-shadow: 0 0 4px rgba(255, 0, 255, 0.4);
+	text-shadow: 0 0 4px rgba(255, 46, 136, 0.4);
 }
 
 /* Reverb button */
 .synth-reverb-btn {
-	background: #1a1a2e;
+	background: #2b1233;
 	color: #666;
 	border: 1px solid #333;
 	border-radius: 2px;
@@ -175,15 +175,15 @@
 }
 
 .synth-reverb-btn:hover {
-	border-color: #00ff41;
-	color: #00ff41;
+	border-color: #ffb627;
+	color: #ffb627;
 }
 
 .synth-reverb-btn.active {
-	background: rgba(0, 255, 65, 0.15);
-	border-color: #00ff41;
-	color: #00ff41;
-	box-shadow: 0 0 6px rgba(0, 255, 65, 0.3);
+	background: rgba(255, 182, 39, 0.15);
+	border-color: #ffb627;
+	color: #ffb627;
+	box-shadow: 0 0 6px rgba(255, 182, 39, 0.3);
 }
 
 /* ─── Keyboard ─── */
@@ -192,7 +192,7 @@
 	display: flex;
 	position: relative;
 	padding: 10px 8px 6px;
-	background: linear-gradient(180deg, #0a0a12, #0d0d18);
+	background: linear-gradient(180deg, #1a0b1e, #0d0d18);
 	min-height: 140px;
 }
 
@@ -220,8 +220,8 @@
 
 .synth-key-white.pressed {
 	background: linear-gradient(180deg, #cc99ff, #aa66ee);
-	border-color: #ff00ff;
-	box-shadow: 0 0 12px rgba(255, 0, 255, 0.4), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+	border-color: #ff2e88;
+	box-shadow: 0 0 12px rgba(255, 46, 136, 0.4), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
 	transform: scaleY(0.98);
 	transform-origin: top;
 }
@@ -252,8 +252,8 @@
 
 .synth-key-black.pressed {
 	background: linear-gradient(180deg, #9933cc, #6600aa);
-	border-color: #ff00ff;
-	box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+	border-color: #ff2e88;
+	box-shadow: 0 0 10px rgba(255, 46, 136, 0.5);
 	transform: scaleY(0.96);
 	transform-origin: top;
 }
@@ -294,13 +294,13 @@
 .synth-key.pressed .synth-key-bind {
 	color: #fff;
 	opacity: 1;
-	text-shadow: 0 0 4px rgba(255, 0, 255, 0.8);
+	text-shadow: 0 0 4px rgba(255, 46, 136, 0.8);
 }
 
 /* ─── Footer ─── */
 .synth-footer {
 	padding: 4px 12px;
-	background: #0a0a12;
+	background: #1a0b1e;
 	border-top: 1px solid #222;
 }
 

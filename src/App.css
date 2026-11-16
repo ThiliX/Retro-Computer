@@ -1,19 +1,43 @@
+/* ═══════════════════════════════════════════════════════════
+   SUNSET ARCADE — 90s beige PC, amber CRT, red/orange dusk
+   ═══════════════════════════════════════════════════════════ */
 :root {
-	--initial-scale: 0.3;
-	--scale-multiplier: 0.08;
-	--scale-offset-index: 1;
+	/* Set from JS (useFitToViewport) so the whole rig fits any window */
+	--rig-scale: 0.8;
 
-	/* Retro Color Palette */
-	--retro-green: #00ff41;
-	--retro-green-dim: #00cc33;
-	--retro-amber: #ffb000;
-	--retro-cyan: #00e5ff;
-	--retro-dark: #0a0a0a;
-	--retro-panel: #1a1a2e;
-	--retro-panel-light: #252545;
-	--retro-panel-border: #00ff41;
-	--retro-text: #00ff41;
-	--retro-crt-glow: rgba(0, 255, 65, 0.15);
+	/* Core palette */
+	--sa-night: #1a0b1e;
+	--sa-night-deep: #0e0610;
+	--sa-panel: #2b1233;
+	--sa-panel-light: #3d1a40;
+	--sa-border: #5a2a3e;
+	--sa-oxblood: #8c1c13;
+	--sa-red: #e8352b;
+	--sa-orange: #ff7a1a;
+	--sa-amber: #ffb627;
+	--sa-cream: #ffe8c2;
+	--sa-magenta: #ff2e88;
+	--sa-teal: #2ec4b6;
+
+	/* 90s beige plastic */
+	--sa-case: #d8cbb0;
+	--sa-case-light: #ece3cf;
+	--sa-case-shadow: #a89a7e;
+	--sa-case-dark: #8a7d63;
+
+	--sa-titlebar: linear-gradient(90deg, #8c1c13 0%, #e8352b 55%, #ff7a1a 100%);
+
+	/* Legacy names still used by some app stylesheets */
+	--retro-glow: var(--sa-amber);
+	--retro-orange: var(--sa-orange);
+	--retro-amber: var(--sa-amber);
+	--retro-cyan: var(--sa-teal);
+	--retro-dark: var(--sa-night-deep);
+	--retro-panel: var(--sa-panel);
+	--retro-panel-light: var(--sa-panel-light);
+	--retro-panel-border: var(--sa-amber);
+	--retro-text: var(--sa-amber);
+	--retro-crt-glow: rgba(255, 122, 26, 0.15);
 	--retro-scanline: rgba(0, 0, 0, 0.15);
 }
 
@@ -24,8 +48,7 @@
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
-	scale: calc(var(--initial-scale) + var(--scale-multiplier) * var(--scale-offset-index));
-	background: radial-gradient(ellipse at center, #111125 0%, #0a0a0a 70%);
+	scale: var(--rig-scale);
 }
 
 .lock-computer-screen-container {
@@ -39,6 +62,7 @@
 	overflow: hidden;
 }
 
+/* ═══ TASKBAR ═══ */
 .computer-taskbar-container {
 	width: 800px;
 	height: 38px;
@@ -48,7 +72,8 @@
 	position: absolute;
 	top: 614px;
 	gap: 5px;
-	right: 2px;
+	padding-left: 100px;
+	box-sizing: border-box;
 	z-index: 25000;
 }
 
@@ -60,24 +85,32 @@
 	justify-content: center;
 	align-items: center;
 	position: absolute;
+	pointer-events: none;
 }
 
-/* ═══ CRT MONITOR BODY ═══ */
+.lock-computer-crt-container > * {
+	pointer-events: auto;
+}
+
+/* ═══ CRT MONITOR BODY — beige plastic ═══ */
 .computer-crt-container {
+	position: relative;
 	width: 1000px;
 	height: 770px;
 	min-height: 770px;
-	background: linear-gradient(145deg, #2a2a3a, #1a1a2e);
+	background: linear-gradient(170deg, var(--sa-case-light) 0%, var(--sa-case) 40%, #c7b99c 100%);
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
-	border-radius: 12px;
-	border: 2px solid #333355;
+	border-radius: 18px;
+	border: 2px solid var(--sa-case-shadow);
 	box-shadow:
-		inset 0px 3px 0px 6px #222240,
-		0 0 40px rgba(0, 255, 65, 0.08),
-		0 20px 60px rgba(0, 0, 0, 0.6);
+		inset 0 3px 0 rgba(255, 255, 255, 0.55),
+		inset 0 -8px 0 var(--sa-case-shadow),
+		inset 6px 0 0 rgba(255, 255, 255, 0.18),
+		0 0 80px rgba(255, 122, 26, 0.12),
+		0 24px 60px rgba(0, 0, 0, 0.65);
 }
 
 /* ═══ CRT SCREEN ═══ */
@@ -85,86 +118,144 @@
 	width: 800px;
 	height: 600px;
 	display: flex;
-	border-radius: 8px;
-	border: 20px solid #111125;
+	border-radius: 14px;
+	border: 20px solid #1c1416;
 	box-shadow:
-		inset 0 0 80px rgba(0, 255, 65, 0.05),
-		0 0 15px rgba(0, 255, 65, 0.1);
+		0 0 0 5px #b3a585,
+		0 0 0 7px var(--sa-case-light),
+		inset 0 0 80px rgba(255, 122, 26, 0.06),
+		0 0 18px rgba(255, 122, 26, 0.12);
 	position: relative;
 	overflow: hidden;
+	background: #0b0508;
 }
 
-/* CRT Scanline overlay */
+/* CRT scanlines */
 .computer-screen::before {
-	content: '';
+	content: "";
 	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: repeating-linear-gradient(0deg,
-			transparent,
-			transparent 2px,
-			rgba(0, 0, 0, 0.08) 2px,
-			rgba(0, 0, 0, 0.08) 4px);
+	inset: 0;
+	background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.1) 2px, rgba(0, 0, 0, 0.1) 4px);
 	pointer-events: none;
 	z-index: 30000;
 }
 
-/* CRT vignette */
+/* CRT vignette + glass curvature */
 .computer-screen::after {
-	content: '';
+	content: "";
 	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.5);
+	inset: 0;
+	box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.55);
+	background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 45%);
 	pointer-events: none;
 	z-index: 30001;
 	border-radius: 6px;
 }
 
+.computer-screen-off {
+	align-items: flex-end;
+	justify-content: center;
+	background: radial-gradient(ellipse at center, #1a1213 0%, #0a0607 70%);
+}
+
+.screen-off-hint {
+	margin-bottom: 40px;
+	font-family: "Press Start 2P", monospace;
+	font-size: 12px;
+	color: rgba(255, 182, 39, 0.45);
+	letter-spacing: 2px;
+	animation: screen-off-blink 1.6s steps(1) infinite;
+}
+
+@keyframes screen-off-blink {
+	50% {
+		opacity: 0;
+	}
+}
+
 /* ═══ SCREEN BACKGROUND ═══ */
 .computer-screen-background {
+	width: 100%;
+	height: 100%;
 	object-fit: cover;
-	filter: brightness(0.6) saturate(0.4) hue-rotate(80deg);
+	overflow: hidden;
+	filter: saturate(1.05) contrast(1.02);
+}
+
+/* ═══ MONITOR BADGE ═══ */
+.computer-badge {
+	position: absolute;
+	left: 100px;
+	bottom: 30px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 4px 10px;
+	border-radius: 3px;
+	background: linear-gradient(180deg, #c9bb9f, #b8aa8c);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+
+.computer-badge-stripes {
+	width: 26px;
+	height: 14px;
+	background: linear-gradient(180deg, var(--sa-amber) 0 25%, var(--sa-orange) 25% 50%, var(--sa-red) 50% 75%, var(--sa-magenta) 75% 100%);
+	border-radius: 2px;
+}
+
+.computer-badge-text {
+	font-family: "Press Start 2P", monospace;
+	font-size: 10px;
+	color: #5e523d;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+	letter-spacing: 1px;
 }
 
 /* ═══ POWER BUTTON AREA ═══ */
 .computer-button-container {
 	display: flex;
 	justify-content: right;
+	align-items: center;
 	position: relative;
 	height: 50px;
 	width: 100%;
 	right: 75px;
 	top: 35px;
-	gap: 10px;
+	gap: 12px;
 }
 
 .computer-button-light {
 	width: 12px;
 	height: 12px;
-	background-color: var(--retro-green);
-	border: none;
+	background-color: #4a2a1c;
 	border-radius: 50%;
-	box-shadow: 0px 0px 20px 4px var(--retro-green);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
 	transition: all 0.3s ease;
+}
+
+.computer-button-light.on {
+	background-color: var(--sa-amber);
+	box-shadow: 0 0 14px 3px rgba(255, 182, 39, 0.8);
 }
 
 .computer-button {
 	width: 80px;
-	background: linear-gradient(145deg, #2a2a3a, #1a1a2e);
+	height: 34px;
+	background: linear-gradient(180deg, var(--sa-case-light), var(--sa-case-shadow));
 	border-radius: 4px;
-	border: 1px solid #333355;
-	box-shadow: inset 0px 0px 0px 4px #222240;
-	transition: all 0.2s ease;
+	border: 1px solid var(--sa-case-dark);
+	box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5), 0 2px 0 var(--sa-case-dark);
+	transition: all 0.1s ease;
 }
 
 .computer-button:hover {
 	cursor: pointer;
-	box-shadow: inset 0px 0px 0px 4px #333355, 0 0 10px rgba(0, 255, 65, 0.2);
+	filter: brightness(1.04);
+}
+
+.computer-button:active {
+	transform: translateY(2px);
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 /* ═══ CRT EFFECTS ═══ */
@@ -174,8 +265,8 @@
 	height: 600px;
 	top: 52px;
 	z-index: 20000;
-	box-shadow: inset 0px 0px 80px 0 rgba(0, 255, 65, 0.1);
-	pointer-events: none;
+	box-shadow: inset 0px 0px 80px 0 rgba(255, 122, 26, 0.08);
+	pointer-events: none !important;
 }
 
 .out-light {
@@ -184,8 +275,38 @@
 	height: 600px;
 	top: 52px;
 	z-index: 10000;
-	box-shadow: 0px 0px 400px 0 rgba(0, 255, 65, 0.15);
-	pointer-events: none;
+	box-shadow: 0px 0px 400px 0 rgba(255, 122, 26, 0.12);
+	pointer-events: none !important;
+}
+
+/* Slow rolling refresh band — replaces the 6 MB glitch.gif */
+.crt-roll-bar {
+	position: absolute;
+	width: 800px;
+	height: 600px;
+	top: 52px;
+	z-index: 20001;
+	overflow: hidden;
+	pointer-events: none !important;
+}
+
+.crt-roll-bar::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	height: 90px;
+	background: linear-gradient(180deg, transparent, rgba(255, 232, 194, 0.04), transparent);
+	animation: crt-roll 7s linear infinite;
+}
+
+@keyframes crt-roll {
+	from {
+		transform: translateY(-100px);
+	}
+	to {
+		transform: translateY(620px);
+	}
 }
 
 /* ═══ MONITOR STAND ═══ */
@@ -195,10 +316,10 @@
 	min-height: 50px;
 	width: 500px;
 	border-radius: 150px 150px 0 0;
-	background: linear-gradient(145deg, #2a2a3a, #1a1a2e);
-	box-shadow: inset 0px 8px 1px 4px #111125;
-	border-left: 1px solid #333355;
-	border-right: 1px solid #333355;
+	background: linear-gradient(180deg, #c7b99c, var(--sa-case-shadow));
+	box-shadow: inset 0px 8px 6px -2px rgba(0, 0, 0, 0.25);
+	border-left: 1px solid var(--sa-case-dark);
+	border-right: 1px solid var(--sa-case-dark);
 }
 
 /* ═══ COMPUTER CASE ═══ */
@@ -207,13 +328,14 @@
 	height: 200px;
 	min-height: 200px;
 	width: 1000px;
-	background: linear-gradient(145deg, #2a2a3a, #1a1a2e);
+	background: linear-gradient(175deg, var(--sa-case-light) 0%, var(--sa-case) 45%, #c4b698 100%);
 	margin-top: 5px;
-	border-radius: 8px;
-	border: 2px solid #333355;
+	border-radius: 10px;
+	border: 2px solid var(--sa-case-shadow);
 	box-shadow:
-		inset 0px 10px 0px 6px #222240,
-		0 10px 30px rgba(0, 0, 0, 0.4);
+		inset 0 3px 0 rgba(255, 255, 255, 0.5),
+		inset 0 -8px 0 var(--sa-case-shadow),
+		0 14px 30px rgba(0, 0, 0, 0.5);
 }
 
 /* ═══ FLOPPY DISK DRIVE ═══ */
@@ -221,13 +343,13 @@
 	display: flex;
 	height: 100px;
 	width: 300px;
-	background: #222240;
+	background: linear-gradient(180deg, #cbbda1, #bcae90);
 	border-radius: 4px;
 	margin: 40px;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
-	border: 1px solid #333355;
+	border: 1px solid var(--sa-case-dark);
 }
 
 .computer-diskhat-input-container {
@@ -238,36 +360,59 @@
 	justify-content: center;
 	align-items: center;
 	border-radius: 4px;
-	border: 1px solid #444466;
-	box-shadow: inset 0px 6px 0px 0px #1a1a2e;
+	border: 1px solid var(--sa-case-shadow);
+	box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35);
 }
 
 .computer-diskhat-input {
 	display: flex;
 	height: 18px;
 	width: 240px;
-	background-color: #111125;
+	background-color: #2a2220;
 	border-radius: 3px;
 	justify-content: center;
 	align-items: center;
-	box-shadow: inset 0px 4px 0px 0px #0a0a15;
-	border: 1px solid #333355;
+	box-shadow: inset 0px 4px 0px 0px #140e0d;
+	border: 1px solid var(--sa-case-dark);
 }
 
 .computer-diskhat-input-2 {
 	display: flex;
 	height: 35px;
 	width: 70px;
-	background-color: #111125;
+	background-color: #2a2220;
 	border-radius: 3px;
-	box-shadow: inset 0px 4px 0px 0px #0a0a15;
+	box-shadow: inset 0px 4px 0px 0px #140e0d;
+}
+
+.computer-diskhat-led {
+	position: absolute;
+	left: 30px;
+	top: 82px;
+	width: 14px;
+	height: 5px;
+	border-radius: 1px;
+	background: #4a3a1c;
+}
+
+.computer-diskhat-led.active {
+	background: var(--sa-amber);
+	box-shadow: 0 0 8px var(--sa-amber);
+	animation: drive-flicker 0.12s steps(2) infinite;
+}
+
+@keyframes drive-flicker {
+	50% {
+		opacity: 0.45;
+	}
 }
 
 .computer-diskhat-button {
 	display: flex;
 	height: 8px;
 	width: 35px;
-	background-color: #333355;
+	background: linear-gradient(180deg, var(--sa-case-light), var(--sa-case-shadow));
+	border: 1px solid var(--sa-case-dark);
 	border-radius: 2px;
 	position: absolute;
 	left: 250px;
@@ -276,8 +421,7 @@
 }
 
 .computer-diskhat-button:hover {
-	background-color: var(--retro-green);
-	box-shadow: 0 0 8px var(--retro-green);
+	filter: brightness(1.05);
 }
 
 /* ═══ CASE POWER BUTTON ═══ */
@@ -289,16 +433,17 @@
 .computer-turn-button {
 	width: 50px;
 	height: 50px;
-	background: linear-gradient(145deg, #2a2a3a, #1a1a2e);
-	border: 1px solid #444466;
+	background: radial-gradient(circle at 40% 35%, var(--sa-case-light), var(--sa-case-shadow));
+	border: 1px solid var(--sa-case-dark);
 	border-radius: 50%;
-	box-shadow: inset 0px 0px 0px 4px #222240;
+	box-shadow: inset 0 0 0 4px rgba(0, 0, 0, 0.06), 0 2px 0 var(--sa-case-dark);
 	cursor: pointer;
-	transition: all 0.3s ease;
+	transition: all 0.1s ease;
 }
 
-.computer-turn-button:hover {
-	box-shadow: inset 0px 0px 0px 4px #333355, 0 0 15px rgba(0, 255, 65, 0.3);
+.computer-turn-button:active {
+	transform: translateY(2px);
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .computer-case-fans-container {
@@ -307,33 +452,14 @@
 }
 
 .computer-case-fans-container img {
-	filter: brightness(0.5) hue-rotate(80deg);
+	filter: sepia(0.5) brightness(0.75) contrast(1.1);
+	opacity: 0.8;
 }
 
 /* ═══ DESKTOP ICON HOVER ═══ */
 .computer-screen-icons-container img:hover {
 	cursor: pointer;
-	filter: brightness(1.3) drop-shadow(0 0 4px var(--retro-green));
-}
-
-/* ═══ GLITCH OVERLAY ═══ */
-.glitch-screen-effect {
-	width: 800px;
-	height: 600px;
-	top: 52px;
-	position: absolute;
-	overflow: hidden;
-	z-index: 20000;
-	opacity: 3%;
-	pointer-events: none;
-	filter: hue-rotate(80deg);
-	mix-blend-mode: screen;
-}
-
-.screen-off-overlay {
-	width: 800px;
-	height: 600px;
-	display: flex;
+	filter: brightness(1.2) drop-shadow(0 0 4px var(--sa-orange));
 }
 
 .pop-ups-container {
@@ -350,129 +476,47 @@
 	margin-left: 10px;
 	font-size: 14px;
 	font-weight: bold;
-	color: var(--retro-green);
-	text-shadow: 0 0 4px rgba(0, 255, 65, 0.25);
-	font-family: 'VT323', monospace;
+	color: var(--sa-cream);
+	text-shadow: 0 0 4px rgba(255, 122, 26, 0.6);
+	font-family: "VT323", monospace;
+	letter-spacing: 1px;
+	z-index: 31000;
+}
+
+/* ═══ DESKTOP TASKBAR STRIP ═══ */
+.desktop-taskbar {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 38px;
+	display: flex;
+	align-items: center;
+	padding-left: 6px;
+	box-sizing: border-box;
+	background: linear-gradient(180deg, #3d1a40 0%, #2b1233 100%);
+	border-top: 2px solid #ff7a1a;
+	box-shadow: 0 -4px 14px rgba(255, 122, 26, 0.18);
+	z-index: 900;
+}
+
+/* The START button sits under the taskbar items, which begin right after it */
+.desktop-taskbar-start {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	height: 26px;
+	padding: 0 10px;
+	font-family: "Press Start 2P", monospace;
+	font-size: 10px;
+	color: #2b1233;
+	background: var(--sa-cream);
+	border: 2px solid;
+	border-color: #fff6e6 #8a5a3a #8a5a3a #fff6e6;
 	letter-spacing: 1px;
 }
 
-/* ═══ RESPONSIVE SCALING ═══ */
-@media (max-height: 399px) {
-	.main {
-		--scale-offset-index: 2;
-	}
-}
-
-@media (min-height: 400px) and (max-height: 499px) {
-	.main {
-		--scale-offset-index: 3;
-	}
-}
-
-@media (min-height: 500px) and (max-height: 599px) {
-	.main {
-		--scale-offset-index: 4;
-	}
-}
-
-@media (min-height: 600px) and (max-height: 699px) {
-	.main {
-		--scale-offset-index: 4;
-	}
-}
-
-@media (min-height: 700px) and (max-height: 799px) {
-	.main {
-		--scale-offset-index: 5;
-	}
-}
-
-@media (min-height: 800px) and (max-height: 899px) {
-	.main {
-		--scale-offset-index: 6;
-	}
-}
-
-@media (min-height: 900px) and (max-height: 999px) {
-	.main {
-		--scale-offset-index: 7;
-	}
-}
-
-@media (min-height: 1000px) and (max-height: 1099px) {
-	.main {
-		--scale-offset-index: 8;
-	}
-}
-
-@media (min-height: 1100px) and (max-height: 1199px) {
-	.main {
-		--scale-offset-index: 9;
-	}
-}
-
-@media (min-height: 1200px) and (max-height: 1299px) {
-	.main {
-		--scale-offset-index: 10;
-	}
-}
-
-@media (min-height: 1300px) and (max-height: 1399px) {
-	.main {
-		--scale-offset-index: 11;
-	}
-}
-
-@media (min-height: 1400px) and (max-height: 1499px) {
-	.main {
-		--scale-offset-index: 12;
-	}
-}
-
-@media (min-height: 1500px) and (max-height: 1599px) {
-	.main {
-		--scale-offset-index: 13;
-	}
-}
-
-@media (min-height: 1600px) and (max-height: 1699px) {
-	.main {
-		--scale-offset-index: 14;
-	}
-}
-
-@media (min-height: 1700px) and (max-height: 1799px) {
-	.main {
-		--scale-offset-index: 15;
-	}
-}
-
-@media (min-height: 1800px) and (max-height: 1899px) {
-	.main {
-		--scale-offset-index: 16;
-	}
-}
-
-@media (min-height: 1900px) and (max-height: 1999px) {
-	.main {
-		--scale-offset-index: 17;
-	}
-}
-
-@media (min-height: 2000px) and (max-height: 2099px) {
-	.main {
-		--scale-offset-index: 18;
-	}
-}
-
-@media (min-height: 2100px) and (max-height: 2199px) {
-	.main {
-		--scale-offset-index: 19;
-	}
-}
-
-@media (min-height: 2200px) {
-	.main {
-		--scale-offset-index: 20;
-	}
+.desktop-taskbar-start .computer-badge-stripes {
+	width: 14px;
+	height: 12px;
 }

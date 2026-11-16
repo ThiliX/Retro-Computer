@@ -12,13 +12,13 @@
 .volume-icon-container img {
 	width: 26px;
 	height: 26px;
-	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(85deg);
+	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(-12deg);
 	transition: all 0.2s ease;
 }
 
 .volume-icon-container img:hover {
 	cursor: pointer;
-	filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(85deg) drop-shadow(0 0 6px #00ff41);
+	filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(-12deg) drop-shadow(0 0 6px #ffb627);
 }
 
 .easter-egg {
@@ -31,5 +31,5 @@
 }
 
 .easter-egg img {
-	filter: hue-rotate(80deg) brightness(0.8);
+	filter: sepia(0.6) saturate(1.8) hue-rotate(-20deg) brightness(0.9);
 }

@@ -27,19 +27,19 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: #1a1a2e;
+	background-color: #2b1233;
 	width: 100%;
 	height: 60px;
 	border-radius: 4px;
 	padding: 10px;
-	border: 1px solid #00ff41;
-	box-shadow: 0 0 12px rgba(0, 255, 65, 0.2);
+	border: 1px solid #ffb627;
+	box-shadow: 0 0 12px rgba(255, 182, 39, 0.2);
 }
 
 .clippy-balloon-arrow {
 	display: flex;
 	position: absolute;
-	border-bottom: 10px solid #1a1a2e;
+	border-bottom: 10px solid #2b1233;
 	border-left: 6px solid rgba(0, 0, 0, 0);
 	border-right: 6px solid rgba(0, 0, 0, 0);
 	border-top: none;
@@ -51,14 +51,14 @@
 .clippy-balloon-text {
 	font-size: 14px;
 	text-align: center;
-	color: #00ff41;
+	color: #ffb627;
 	font-family: 'VT323', monospace;
-	text-shadow: 0 0 3px rgba(0, 255, 65, 0.2);
+	text-shadow: 0 0 3px rgba(255, 182, 39, 0.2);
 	letter-spacing: 0.5px;
 }
 
 .clippy-img {
 	display: flex;
 	justify-content: center;
-	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(85deg);
+	filter: sepia(0.4) saturate(1.3) hue-rotate(-10deg) drop-shadow(0 0 6px rgba(255, 122, 26, 0.5));
 }

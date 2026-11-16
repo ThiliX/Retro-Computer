@@ -8,6 +8,8 @@ class PencilTool extends Tool {
 
 	onMousePressBegin(event) {
 		this.isDrawing = true;
+		const [x, y] = this.paintRendererRef.current.getPixelFromMousePosition(event);
+		this.paintRendererRef.current.paintPixel(x, y);
 	}
 
 	onMousePressLeave(event) {
