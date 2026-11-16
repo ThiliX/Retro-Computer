@@ -52,7 +52,11 @@ function Keyboard(props) {
 	);
 }
 
-function RetroPC({ powerState, isDriveActive, anchorRef, onSitDown, onPowerButton, ...props }) {
+/**
+ * The beige 90s PC. With `showPeripherals={false}` it becomes a compact display
+ * piece (no keyboard, mouse or glow light) whose clicks are handled by the parent.
+ */
+function RetroPC({ powerState, isDriveActive, anchorRef, onSitDown, onPowerButton, showPeripherals = true, ...props }) {
 	const isOn = powerState !== "off";
 	const driveLedRef = useRef();
 
@@ -63,7 +67,7 @@ function RetroPC({ powerState, isDriveActive, anchorRef, onSitDown, onPowerButto
 		driveLedRef.current.emissiveIntensity = lit ? 3 : 0;
 	});
 
-	const clickable = {
+	const clickable = !showPeripherals ? {} : {
 		onClick: (event) => {
 			event.stopPropagation();
 			onSitDown();
@@ -75,7 +79,7 @@ function RetroPC({ powerState, isDriveActive, anchorRef, onSitDown, onPowerButto
 		onPointerOut: () => setCursor("auto"),
 	};
 
-	const powerClickable = {
+	const powerClickable = !showPeripherals ? {} : {
 		onClick: (event) => {
 			event.stopPropagation();
 			onPowerButton();
@@ -184,20 +188,24 @@ function RetroPC({ powerState, isDriveActive, anchorRef, onSitDown, onPowerButto
 				</mesh>
 			</group>
 
-			{/* CRT glow spilling onto the desk and keyboard */}
-			<pointLight position={[0, 0.4, 0.35]} color="#ffb36b" intensity={isOn ? 0.9 : 0} distance={2.2} decay={2} />
+			{showPeripherals && (
+				<>
+					{/* CRT glow spilling onto the desk and keyboard */}
+					<pointLight position={[0, 0.4, 0.35]} color="#ffb36b" intensity={isOn ? 0.9 : 0} distance={2.2} decay={2} />
 
-			<Keyboard position={[0, -0.005, 0.42]} rotation={[0.06, 0, 0]} />
+					<Keyboard position={[0, -0.005, 0.42]} rotation={[0.06, 0, 0]} />
 
-			{/* mouse + pad */}
-			<mesh position={[0.36, -0.008, 0.42]} receiveShadow>
-				<boxGeometry args={[0.2, 0.004, 0.17]} />
-				<meshStandardMaterial color="#2b1233" roughness={0.9} />
-			</mesh>
-			<mesh position={[0.36, 0.008, 0.42]} castShadow>
-				<boxGeometry args={[0.055, 0.03, 0.09]} />
-				<meshStandardMaterial color={BEIGE} roughness={0.6} />
-			</mesh>
+					{/* mouse + pad */}
+					<mesh position={[0.36, -0.008, 0.42]} receiveShadow>
+						<boxGeometry args={[0.2, 0.004, 0.17]} />
+						<meshStandardMaterial color="#2b1233" roughness={0.9} />
+					</mesh>
+					<mesh position={[0.36, 0.008, 0.42]} castShadow>
+						<boxGeometry args={[0.055, 0.03, 0.09]} />
+						<meshStandardMaterial color={BEIGE} roughness={0.6} />
+					</mesh>
+				</>
+			)}
 		</group>
 	);
 }

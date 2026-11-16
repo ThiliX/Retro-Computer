@@ -196,6 +196,17 @@ function App() {
 		sound.setAmbience(powerState !== POWER_OFF);
 	}, [powerState]);
 
+	// Rain against the window while in the room. Audio may only start after a user gesture.
+	useEffect(() => {
+		if (viewMode !== VIEW_3D) {
+			sound.setRain(false);
+			return;
+		}
+		const start = () => sound.setRain(true);
+		window.addEventListener("pointerdown", start, { once: true });
+		return () => window.removeEventListener("pointerdown", start);
+	}, [viewMode]);
+
 	// Across the room the PC sounds muffled; at the desk it is crisp.
 	useEffect(() => {
 		sound.setListenerNear(viewMode === VIEW_CLASSIC || isZoomed);
@@ -206,12 +217,37 @@ function App() {
 		bootTimeoutsRef.current = [];
 	}
 
-	function powerOn() {
-		sound.playPowerSwitch(true);
-		sound.playCrtPowerOn();
+	// The emulated 90s machine's POST: beep, floppy seek, hard disk.
+	function startEmulatedBoot() {
 		clearBootSounds();
 		bootTimeoutsRef.current = [setTimeout(sound.playPostBeep, 1400), setTimeout(() => sound.playFloppySeek(0.7), 1900), setTimeout(() => sound.playHddChatter(0.9), 2600)];
 		setPowerState(POWER_BOOTING);
+	}
+
+	function powerOn() {
+		if (viewMode === VIEW_3D) {
+			// Modern gaming PC: soft button, fans spin up, then RetroBox boots the 90s machine.
+			sound.playModernPowerOn();
+		} else {
+			sound.playPowerSwitch(true);
+			sound.playCrtPowerOn();
+		}
+		startEmulatedBoot();
+	}
+
+	// RetroBox "Reset": restart only the emulated machine, not the host PC.
+	function handleReset() {
+		for (const app of openedApps) {
+			app.close();
+		}
+		sound.playClick();
+		startEmulatedBoot();
+	}
+
+	function handleInsertDisk() {
+		sound.playFloppySeek(1.1);
+		setIsDriveActive(true);
+		setTimeout(() => setIsDriveActive(false), 1100);
 	}
 
 	function powerOff() {
@@ -219,8 +255,12 @@ function App() {
 			app.close();
 		}
 		clearBootSounds();
-		sound.playPowerSwitch(false);
-		sound.playCrtPowerOff();
+		if (viewMode === VIEW_3D) {
+			sound.playModernPowerOff();
+		} else {
+			sound.playPowerSwitch(false);
+			sound.playCrtPowerOff();
+		}
 		setPowerState(POWER_OFF);
 	}
 
@@ -254,7 +294,10 @@ function App() {
 	}
 
 	function handleToggleView() {
-		const next = viewMode === VIEW_3D ? VIEW_CLASSIC : VIEW_3D;
+		switchView(viewMode === VIEW_3D ? VIEW_CLASSIC : VIEW_3D);
+	}
+
+	function switchView(next) {
 		try {
 			window.localStorage.setItem(VIEW_STORAGE_KEY, next);
 		} catch (e) {
@@ -362,7 +405,9 @@ function App() {
 						isDriveActive={isDriveActive || powerState === POWER_BOOTING}
 						onSitDown={handleSitDown}
 						onStandUp={handleStandUp}
-						onPowerButton={handlePowerButton}
+						onOpenClassic={() => switchView(VIEW_CLASSIC)}
+						onReset={handleReset}
+						onInsertDisk={handleInsertDisk}
 					/>
 				</Suspense>
 			) : (

@@ -2,17 +2,15 @@ import { useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Quaternion, Vector3 } from "three";
 
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "./RetroPC";
-
-// Standing in the doorway-ish corner, looking at the desk and window.
-export const ROOM_CAMERA_POSITION = [0.8, 1.42, 0.78];
-const ROOM_CAMERA_TARGET = [-0.3, 1.02, -0.9];
+// Standing behind and to the right of the chair, taking in the whole setup.
+export const ROOM_CAMERA_POSITION = [0.95, 1.5, 1.05];
+const ROOM_CAMERA_TARGET = [-0.2, 1.15, -1.0];
 
 /**
  * Glides between the room view and "sitting at the desk", where the CRT glass
  * exactly fills the viewport. Adds a slow idle drift and mouse parallax in the room.
  */
-function CameraRig({ isZoomed, anchorRef }) {
+function CameraRig({ isZoomed, anchorRef, screenWidth, screenHeight }) {
 	const { camera, size } = useThree();
 	const lookTarget = useRef(new Vector3(...ROOM_CAMERA_TARGET));
 	const temp = useMemo(
@@ -37,8 +35,8 @@ function CameraRig({ isZoomed, anchorRef }) {
 			// Distance at which the 4:3 glass fits the viewport, with a hair of margin.
 			const halfFov = (camera.fov * Math.PI) / 360;
 			const aspect = size.width / size.height;
-			const fitHeight = SCREEN_HEIGHT / 2 / Math.tan(halfFov);
-			const fitWidth = SCREEN_WIDTH / 2 / (Math.tan(halfFov) * aspect);
+			const fitHeight = screenHeight / 2 / Math.tan(halfFov);
+			const fitWidth = screenWidth / 2 / (Math.tan(halfFov) * aspect);
 			const distance = Math.max(fitHeight, fitWidth) * 1.02;
 
 			position.copy(target).addScaledVector(normal, distance);
