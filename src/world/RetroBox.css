@@ -1,0 +1,254 @@
+/* ═══ Modern host screen (1280×720) ═══ */
+.host {
+	position: relative;
+	width: 1280px;
+	height: 720px;
+	overflow: hidden;
+	background: #07050a;
+	color: #f3e9ff;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Modern UI font only for the host's own chrome — the 90s screen keeps its pixel fonts */
+.host-brand,
+.host-brand *,
+.retrobox-titlebar,
+.retrobox-titlebar *,
+.retrobox-statusbar,
+.retrobox-statusbar *,
+.host-dock,
+.host-dock * {
+	font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.host-off {
+	background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.04), transparent 50%), #050407;
+}
+
+.host-wallpaper {
+	position: absolute;
+	inset: 0;
+	background:
+		radial-gradient(ellipse at 50% 120%, rgba(255, 122, 26, 0.45) 0%, transparent 55%),
+		radial-gradient(ellipse at 85% -10%, rgba(255, 46, 136, 0.35) 0%, transparent 50%),
+		radial-gradient(ellipse at 0% 30%, rgba(46, 196, 182, 0.15) 0%, transparent 45%),
+		linear-gradient(180deg, #120a1a 0%, #1c0c22 60%, #2a0f1e 100%);
+}
+
+.host-wallpaper::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+	background-size: 40px 40px;
+	mask-image: linear-gradient(180deg, transparent, black 70%);
+}
+
+.host-brand {
+	position: absolute;
+	top: 18px;
+	left: 24px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 3px;
+	color: #fff;
+	opacity: 0.85;
+}
+
+.host-brand-sub {
+	font-weight: 400;
+	letter-spacing: 1px;
+	opacity: 0.55;
+}
+
+.host-brand-mark {
+	width: 14px;
+	height: 14px;
+	border-radius: 4px;
+	background: linear-gradient(135deg, #ffb627, #e8352b 55%, #ff2e88);
+	box-shadow: 0 0 12px rgba(255, 46, 136, 0.7);
+}
+
+/* ═══ RetroBox emulator window ═══ */
+.retrobox-window {
+	position: absolute;
+	top: 14px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 802px;
+	border-radius: 12px;
+	overflow: hidden;
+	background: rgba(18, 12, 24, 0.92);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	box-shadow:
+		0 30px 80px rgba(0, 0, 0, 0.6),
+		0 0 0 1px rgba(0, 0, 0, 0.6),
+		0 0 50px rgba(255, 90, 60, 0.18);
+}
+
+.retrobox-titlebar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 34px;
+	padding: 0 8px 0 12px;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+	border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.retrobox-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.retrobox-title-dim {
+	font-weight: 400;
+	opacity: 0.55;
+}
+
+.retrobox-logo {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	border-radius: 5px;
+	font-size: 9px;
+	font-weight: 800;
+	color: #1a0b1e;
+	background: linear-gradient(135deg, #ffb627, #ff7a1a);
+}
+
+.retrobox-toolbar {
+	display: flex;
+	gap: 6px;
+}
+
+.retrobox-tool {
+	height: 24px;
+	padding: 0 10px;
+	border-radius: 6px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	background: rgba(255, 255, 255, 0.05);
+	color: #f3e9ff;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.retrobox-tool:hover {
+	background: rgba(255, 255, 255, 0.12);
+}
+
+.retrobox-tool.active {
+	border-color: rgba(255, 122, 26, 0.6);
+	color: #ffb627;
+}
+
+.retrobox-display {
+	width: 800px;
+	height: 600px;
+	margin: 0 1px;
+	background: #000;
+}
+
+/* CRT filter switch hides the scanlines, vignette and roll bar */
+.crt-filter-off .screen-surface::before,
+.crt-filter-off .screen-surface::after,
+.crt-filter-off .crt-roll-bar {
+	display: none;
+}
+
+.retrobox-statusbar {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	height: 26px;
+	padding: 0 12px;
+	font-size: 11px;
+	color: rgba(243, 233, 255, 0.7);
+	border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.retrobox-status-sep {
+	opacity: 0.3;
+	margin: 0 4px;
+}
+
+.retrobox-status-right {
+	margin-left: auto;
+	opacity: 0.6;
+}
+
+.retrobox-led {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #3a2a30;
+}
+
+.retrobox-led.on {
+	background: #2ec4b6;
+	box-shadow: 0 0 6px #2ec4b6;
+}
+
+.retrobox-led.drive.on {
+	background: #ffb627;
+	box-shadow: 0 0 6px #ffb627;
+}
+
+/* ═══ Host dock ═══ */
+.host-dock {
+	position: absolute;
+	left: 50%;
+	bottom: 6px;
+	transform: translateX(-50%);
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	height: 34px;
+	padding: 0 6px;
+	border-radius: 12px;
+	background: rgba(20, 12, 26, 0.75);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	backdrop-filter: blur(8px);
+}
+
+.host-dock-item {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	border-radius: 7px;
+	font-size: 11px;
+	font-weight: 800;
+	background: rgba(255, 255, 255, 0.06);
+	color: #f3e9ff;
+}
+
+.host-dock-item.active {
+	color: #1a0b1e;
+	background: linear-gradient(135deg, #ffb627, #ff7a1a);
+	box-shadow: 0 0 10px rgba(255, 122, 26, 0.6);
+}
+
+.host-clock {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	padding: 0 6px 0 10px;
+	font-size: 11px;
+	line-height: 1.15;
+	border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.host-clock-date {
+	opacity: 0.6;
+	font-size: 10px;
+}

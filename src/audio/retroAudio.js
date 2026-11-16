@@ -303,3 +303,114 @@ export function setListenerNear(isNear) {
 	master.gain.cancelScheduledValues(t);
 	master.gain.setTargetAtTime(isNear ? 0.9 : 0.55, t, 0.25);
 }
+
+/** Modern PC: a soft tactile button, then fans whooshing up to speed. */
+export const playModernPowerOn = safely((audio) => {
+	noiseBurst(audio, { duration: 0.012, freq: 3800, q: 2, gain: 0.18 });
+	noiseBurst(audio, { start: 0.07, duration: 0.01, freq: 2600, q: 2, gain: 0.1 });
+
+	const t = audio.currentTime + 0.1;
+	const fans = audio.createBufferSource();
+	fans.buffer = getBrownNoise(audio);
+	const sweep = audio.createBiquadFilter();
+	sweep.type = "bandpass";
+	sweep.Q.value = 0.9;
+	sweep.frequency.setValueAtTime(120, t);
+	sweep.frequency.exponentialRampToValueAtTime(900, t + 1.1);
+	sweep.frequency.exponentialRampToValueAtTime(420, t + 2.2);
+	const env = audio.createGain();
+	env.gain.setValueAtTime(0.0001, t);
+	env.gain.linearRampToValueAtTime(0.35, t + 0.6);
+	env.gain.linearRampToValueAtTime(0.0001, t + 2.4);
+	fans.connect(sweep);
+	sweep.connect(env);
+	env.connect(master);
+	fans.start(t, Math.random());
+	fans.stop(t + 2.5);
+
+	// tiny two-note "ready" blip, like a modern motherboard
+	tone(audio, { start: 0.35, type: "sine", from: 880, duration: 0.09, gain: 0.04 });
+	tone(audio, { start: 0.47, type: "sine", from: 1318.5, duration: 0.14, gain: 0.04 });
+});
+
+/** Modern PC shutting down: fans winding down. */
+export const playModernPowerOff = safely((audio) => {
+	noiseBurst(audio, { duration: 0.012, freq: 3200, q: 2, gain: 0.15 });
+	const t = audio.currentTime;
+	const fans = audio.createBufferSource();
+	fans.buffer = getBrownNoise(audio);
+	const sweep = audio.createBiquadFilter();
+	sweep.type = "bandpass";
+	sweep.Q.value = 0.9;
+	sweep.frequency.setValueAtTime(500, t);
+	sweep.frequency.exponentialRampToValueAtTime(90, t + 1.4);
+	const env = audio.createGain();
+	env.gain.setValueAtTime(0.25, t);
+	env.gain.linearRampToValueAtTime(0.0001, t + 1.5);
+	fans.connect(sweep);
+	sweep.connect(env);
+	env.connect(master);
+	fans.start(t, Math.random());
+	fans.stop(t + 1.6);
+});
+
+let rain = null;
+
+/**
+ * Soft rain against the window. Routed straight to the speakers (not through the
+ * room filter) because it belongs to the room, not to the PC.
+ */
+export const setRain = safely((audio, isOn) => {
+	const t = audio.currentTime;
+	if (isOn && !rain) {
+		const wash = audio.createBufferSource();
+		wash.buffer = getWhiteNoise(audio);
+		wash.loop = true;
+		const washFilter = audio.createBiquadFilter();
+		washFilter.type = "bandpass";
+		washFilter.frequency.value = 1400;
+		washFilter.Q.value = 0.4;
+
+		const rumble = audio.createBufferSource();
+		rumble.buffer = getBrownNoise(audio);
+		rumble.loop = true;
+		const rumbleGain = audio.createGain();
+		rumbleGain.gain.value = 0.5;
+
+		const out = audio.createGain();
+		out.gain.setValueAtTime(0.0001, t);
+		out.gain.linearRampToValueAtTime(0.035, t + 3);
+
+		wash.connect(washFilter);
+		washFilter.connect(out);
+		rumble.connect(rumbleGain);
+		rumbleGain.connect(out);
+		out.connect(audio.destination);
+		wash.start(t);
+		rumble.start(t);
+
+		// occasional heavier drops tapping the glass
+		const dropTimer = setInterval(() => {
+			if (Math.random() < 0.5) return; // irregular, not a metronome
+			try {
+				const drop = audio.createGain();
+				drop.gain.value = 1;
+				drop.connect(audio.destination);
+				noiseBurst(audio, { duration: 0.01, freq: 2000 + Math.random() * 2500, q: 4, gain: 0.03 + Math.random() * 0.03, destination: drop });
+			} catch (e) {
+				/* ignore */
+			}
+		}, 180);
+
+		rain = { wash, rumble, out, dropTimer };
+	} else if (!isOn && rain) {
+		const { wash, rumble, out, dropTimer } = rain;
+		clearInterval(dropTimer);
+		out.gain.cancelScheduledValues(t);
+		out.gain.setValueAtTime(out.gain.value, t);
+		out.gain.linearRampToValueAtTime(0.0001, t + 1);
+		wash.stop(t + 1.1);
+		rumble.stop(t + 1.1);
+		rain = null;
+	}
+});

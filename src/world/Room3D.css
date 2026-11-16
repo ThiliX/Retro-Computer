@@ -29,16 +29,37 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 800px;
-	height: 600px;
+	width: 1280px;
+	height: 720px;
 	pointer-events: none;
 	transform-origin: 50% 50%;
-	/* the desktop glows a little into the dark room */
-	box-shadow: 0 0 60px rgba(255, 140, 60, 0.35);
-	border-radius: 8px;
+	/* the lit screen spills a little light into the dark room */
+	box-shadow: 0 0 80px rgba(255, 110, 90, 0.28);
+	transition: box-shadow 0.6s ease;
+}
+
+.room3d-screen.off {
+	box-shadow: none;
 }
 
 /* Only clickable when the visitor is sitting at the desk */
 .room3d-screen.interactive {
 	pointer-events: auto;
+}
+
+/* Name of whatever the mouse is over in the room */
+.room3d-hover-label {
+	position: fixed;
+	left: 50%;
+	bottom: 28px;
+	transform: translateX(-50%);
+	padding: 8px 16px;
+	font-family: "VT323", monospace;
+	font-size: 22px;
+	color: var(--sa-cream);
+	background: rgba(14, 10, 18, 0.8);
+	border: 1px solid rgba(255, 122, 26, 0.6);
+	text-shadow: 0 0 6px rgba(255, 122, 26, 0.6);
+	pointer-events: none;
+	z-index: 100000;
 }
