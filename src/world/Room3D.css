@@ -1,0 +1,44 @@
+.room3d {
+	position: fixed;
+	inset: 0;
+	overflow: hidden;
+	background: #1a0b1e;
+}
+
+.room3d-canvas {
+	position: absolute !important;
+	inset: 0;
+}
+
+.room3d-css-viewer {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.room3d-css-camera {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform-style: preserve-3d;
+	pointer-events: none;
+}
+
+.room3d-screen {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 800px;
+	height: 600px;
+	pointer-events: none;
+	transform-origin: 50% 50%;
+	/* the desktop glows a little into the dark room */
+	box-shadow: 0 0 60px rgba(255, 140, 60, 0.35);
+	border-radius: 8px;
+}
+
+/* Only clickable when the visitor is sitting at the desk */
+.room3d-screen.interactive {
+	pointer-events: auto;
+}
