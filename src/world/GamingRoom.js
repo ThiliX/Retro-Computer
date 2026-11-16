@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { createContext, useContext, useLayoutEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Color, Object3D } from "three";
 
@@ -20,6 +20,15 @@ export const MONITOR_SCREEN_WIDTH = 0.72;
 export const MONITOR_SCREEN_HEIGHT = 0.405;
 
 const HOST_NAME = (userConfig.copyright || "RETRO").replace(/©/g, "").trim().toUpperCase();
+
+/** "high" or "low" — provided inside the Canvas by Room3D. */
+export const QualityContext = createContext("high");
+
+/** Accent lights that sell the RGB look but cost a lot; skipped in low-power mode. */
+function DecorLight(props) {
+	const quality = useContext(QualityContext);
+	return quality === "low" ? null : <pointLight {...props} />;
+}
 
 function setCursor(value) {
 	document.body.style.cursor = value;
@@ -123,7 +132,7 @@ function NeonSign({ palette, onHoverLabel, onCyclePalette, ...props }) {
 				<planeGeometry args={[0.78, 0.195]} />
 				<meshBasicMaterial map={texture} color={tint} transparent toneMapped={false} depthWrite={false} />
 			</mesh>
-			<pointLight position={[0, 0, 0.25]} color={palette[0]} intensity={1.6} distance={2} decay={2} />
+			<DecorLight position={[0, 0, 0.25]} color={palette[0]} intensity={1.6} distance={2} decay={2} />
 		</group>
 	);
 }
@@ -166,7 +175,7 @@ function HexPanels({ palette, onHoverLabel, onCyclePalette, ...props }) {
 					<meshStandardMaterial ref={(m) => (materials.current[i] = m)} color="#000" emissive={palette[0]} emissiveIntensity={2} toneMapped={false} />
 				</mesh>
 			))}
-			<pointLight position={[0, 0, 0.3]} color={palette[1]} intensity={1.4} distance={1.8} decay={2} />
+			<DecorLight position={[0, 0, 0.3]} color={palette[1]} intensity={1.4} distance={1.8} decay={2} />
 		</group>
 	);
 }
@@ -200,7 +209,7 @@ function Desk({ matTexture, palette }) {
 			</mesh>
 			{/* LED strip under the back edge washes the wall */}
 			<LedStrip position={[0, DESK_TOP_Y - 0.045, -0.34]} length={1.7} color={palette[1]} />
-			<pointLight position={[0, DESK_TOP_Y - 0.1, -0.4]} color={palette[1]} intensity={1.5} distance={1.6} decay={2} />
+			<DecorLight position={[0, DESK_TOP_Y - 0.1, -0.4]} color={palette[1]} intensity={1.5} distance={1.6} decay={2} />
 		</group>
 	);
 }
@@ -331,7 +340,7 @@ function GamingTower({ palette, isOn, ...props }) {
 				<circleGeometry args={[0.008, 20]} />
 				<Glow color={isOn ? "#2ec4b6" : "#203030"} intensity={isOn ? 3 : 0.2} />
 			</mesh>
-			<pointLight position={[W / 2 + 0.15, 0, 0]} color={palette[2]} intensity={1.2} distance={1.2} decay={2} />
+			<DecorLight position={[W / 2 + 0.15, 0, 0]} color={palette[2]} intensity={1.2} distance={1.2} decay={2} />
 		</group>
 	);
 }
@@ -498,7 +507,7 @@ function CollectiblesShelf({ palette, onHoverLabel, onOpenClassic, ...props }) {
 				<meshStandardMaterial color="#1a1720" roughness={0.5} metalness={0.3} />
 			</mesh>
 			<LedStrip position={[0, -0.02, 0.1]} length={0.76} color={palette[2]} />
-			<pointLight position={[0, -0.12, 0.15]} color={palette[2]} intensity={0.8} distance={1} decay={2} />
+			<DecorLight position={[0, -0.12, 0.15]} color={palette[2]} intensity={0.8} distance={1} decay={2} />
 
 			{/* the old beige PC, kept as a display piece — click it for Classic mode */}
 			<group position={[-0.2, 0.015, 0]} scale={0.34} {...hoverable("Boot the original 90s PC (Classic mode)", onHoverLabel, onOpenClassic)}>
@@ -629,7 +638,7 @@ function GamingRoom({ powerState, palette, anchorRef, onSitDown, onOpenClassic, 
 			</mesh>
 			{/* ceiling cove LED along the back wall */}
 			<LedStrip position={[0, ROOM_HEIGHT - 0.04, BACK_WALL_Z + 0.03]} length={ROOM_WIDTH} color={palette[0]} />
-			<pointLight position={[0.3, ROOM_HEIGHT - 0.2, BACK_WALL_Z + 0.3]} color={palette[0]} intensity={1.6} distance={3} decay={2} />
+			<DecorLight position={[0.3, ROOM_HEIGHT - 0.2, BACK_WALL_Z + 0.3]} color={palette[0]} intensity={1.6} distance={3} decay={2} />
 
 			<RainyWindow skyTexture={textures.sky} rainTexture={textures.rain} />
 			<NeonSign position={[0.1, 1.92, BACK_WALL_Z + 0.02]} palette={palette} onHoverLabel={onHoverLabel} onCyclePalette={onCyclePalette} />

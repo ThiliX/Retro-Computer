@@ -196,17 +196,6 @@ function App() {
 		sound.setAmbience(powerState !== POWER_OFF);
 	}, [powerState]);
 
-	// Rain against the window while in the room. Audio may only start after a user gesture.
-	useEffect(() => {
-		if (viewMode !== VIEW_3D) {
-			sound.setRain(false);
-			return;
-		}
-		const start = () => sound.setRain(true);
-		window.addEventListener("pointerdown", start, { once: true });
-		return () => window.removeEventListener("pointerdown", start);
-	}, [viewMode]);
-
 	// Across the room the PC sounds muffled; at the desk it is crisp.
 	useEffect(() => {
 		sound.setListenerNear(viewMode === VIEW_CLASSIC || isZoomed);

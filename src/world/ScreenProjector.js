@@ -1,6 +1,6 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Matrix4 } from "three";
+import { Matrix4, Vector3 } from "three";
 
 /**
  * Pins a normal DOM element (the 800×600 desktop) onto a 3D plane using CSS 3D
@@ -9,6 +9,11 @@ import { Matrix4 } from "three";
  *
  * World units are metres, which would make CSS values tiny, so the CSS world is
  * scaled up by CSS_SCALE; all that matters is that camera and object agree.
+ *
+ * When `flat` is set (the visitor is seated and the camera is still), the screen
+ * faces the camera head-on, so a plain 2D translate + scale gives the same
+ * picture. That is much cheaper to composite — especially without GPU
+ * acceleration — and keeps text crisp.
  */
 const CSS_SCALE = 1000;
 
@@ -27,10 +32,47 @@ function objectMatrixCSS(m) {
 	return `translate(-50%,-50%) matrix3d(${n(e[0])},${n(e[1])},${n(e[2])},${n(e[3])},${n(-e[4])},${n(-e[5])},${n(-e[6])},${n(-e[7])},${n(e[8])},${n(e[9])},${n(e[10])},${n(e[11])},${n(e[12])},${n(e[13])},${n(e[14])},${n(e[15])})`;
 }
 
-function ScreenProjector({ anchorRef, viewerRef, cameraElRef, screenElRef, screenWidthMetres, elementWidthPx }) {
-	const { camera, size } = useThree();
+function ScreenProjector({ anchorRef, viewerRef, cameraElRef, screenElRef, screenWidthMetres, elementWidthPx, elementHeightPx, flat }) {
+	const { camera, size, invalidate } = useThree();
 	const cache = useRef({});
 	const matrices = useMemo(() => ({ object: new Matrix4(), scale: new Matrix4() }), []);
+	const corner = useMemo(() => new Vector3(), []);
+
+	// Switching modes: forget cached styles and draw one frame to apply the new one.
+	useEffect(() => {
+		cache.current = {};
+		invalidate();
+	}, [flat, invalidate]);
+
+	function applyFlat(anchor, viewer, cameraEl, screenEl) {
+		const halfW = screenWidthMetres / 2;
+		const halfH = (screenWidthMetres * (elementHeightPx / elementWidthPx)) / 2;
+		let minX = Infinity;
+		let minY = Infinity;
+		let maxX = -Infinity;
+		for (const [x, y] of [
+			[-halfW, -halfH],
+			[halfW, -halfH],
+			[-halfW, halfH],
+			[halfW, halfH],
+		]) {
+			corner.set(x, y, 0).applyMatrix4(anchor.matrixWorld).project(camera);
+			const px = ((corner.x + 1) / 2) * size.width;
+			const py = ((1 - corner.y) / 2) * size.height;
+			minX = Math.min(minX, px);
+			maxX = Math.max(maxX, px);
+			minY = Math.min(minY, py);
+		}
+		const scale = (maxX - minX) / elementWidthPx;
+		const style = `translate(${minX}px, ${minY}px) scale(${scale})`;
+		if (cache.current.flat !== style) {
+			viewer.style.perspective = "none";
+			cameraEl.style.transform = "none";
+			screenEl.style.transformOrigin = "0 0";
+			screenEl.style.transform = style;
+			cache.current.flat = style;
+		}
+	}
 
 	useFrame(() => {
 		const anchor = anchorRef.current;
@@ -41,6 +83,14 @@ function ScreenProjector({ anchorRef, viewerRef, cameraElRef, screenElRef, scree
 
 		camera.updateMatrixWorld();
 		anchor.updateWorldMatrix(true, false);
+
+		if (flat) {
+			applyFlat(anchor, viewer, cameraEl, screenEl);
+			return;
+		}
+		if (!cache.current.fov) {
+			screenEl.style.transformOrigin = "";
+		}
 
 		const halfW = size.width / 2;
 		const halfH = size.height / 2;

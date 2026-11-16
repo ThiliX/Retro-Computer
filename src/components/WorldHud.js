@@ -11,8 +11,9 @@ function WorldHud({ viewMode, isZoomed, isPoweredOn, onToggleView, onStandUp, on
 		function onKeyDown(event) {
 			if (event.key === "Escape") onStandUp();
 		}
-		window.addEventListener("keydown", onKeyDown);
-		return () => window.removeEventListener("keydown", onKeyDown);
+		// Capture phase: apps such as the terminal stop key events from bubbling up.
+		window.addEventListener("keydown", onKeyDown, true);
+		return () => window.removeEventListener("keydown", onKeyDown, true);
 	}, [is3D, isZoomed, onStandUp]);
 
 	return (
