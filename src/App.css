@@ -51,47 +51,6 @@
 	scale: var(--rig-scale);
 }
 
-.lock-computer-screen-container {
-	width: 800px;
-	height: 562px;
-	top: 52px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: absolute;
-	overflow: hidden;
-}
-
-/* ═══ TASKBAR ═══ */
-.computer-taskbar-container {
-	width: 800px;
-	height: 38px;
-	display: flex;
-	justify-content: start;
-	align-items: center;
-	position: absolute;
-	top: 614px;
-	gap: 5px;
-	padding-left: 100px;
-	box-sizing: border-box;
-	z-index: 25000;
-}
-
-.lock-computer-crt-container {
-	width: 1000px;
-	height: 1010px;
-	min-height: 770px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: absolute;
-	pointer-events: none;
-}
-
-.lock-computer-crt-container > * {
-	pointer-events: auto;
-}
-
 /* ═══ CRT MONITOR BODY — beige plastic ═══ */
 .computer-crt-container {
 	position: relative;
@@ -113,7 +72,7 @@
 		0 24px 60px rgba(0, 0, 0, 0.65);
 }
 
-/* ═══ CRT SCREEN ═══ */
+/* ═══ CRT SCREEN (bezel, classic view) ═══ */
 .computer-screen {
 	width: 800px;
 	height: 600px;
@@ -123,15 +82,24 @@
 	box-shadow:
 		0 0 0 5px #b3a585,
 		0 0 0 7px var(--sa-case-light),
-		inset 0 0 80px rgba(255, 122, 26, 0.06),
-		0 0 18px rgba(255, 122, 26, 0.12);
+		0 0 120px rgba(255, 122, 26, 0.18);
 	position: relative;
 	overflow: hidden;
 	background: #0b0508;
 }
 
+/* ═══ SCREEN SURFACE — the 800×600 picture shown in both views ═══ */
+.screen-surface {
+	position: relative;
+	width: 800px;
+	height: 600px;
+	overflow: hidden;
+	background: #0b0508;
+	border-radius: 6px;
+}
+
 /* CRT scanlines */
-.computer-screen::before {
+.screen-surface::before {
 	content: "";
 	position: absolute;
 	inset: 0;
@@ -140,41 +108,47 @@
 	z-index: 30000;
 }
 
-/* CRT vignette + glass curvature */
-.computer-screen::after {
+/* CRT vignette + glass sheen */
+.screen-surface::after {
 	content: "";
 	position: absolute;
 	inset: 0;
-	box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.55);
+	box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.55), inset 0 0 60px rgba(255, 122, 26, 0.06);
 	background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 45%);
 	pointer-events: none;
 	z-index: 30001;
-	border-radius: 6px;
 }
 
-.computer-screen-off {
+.screen-off {
+	width: 100%;
+	height: 100%;
+	display: flex;
 	align-items: flex-end;
 	justify-content: center;
 	background: radial-gradient(ellipse at center, #1a1213 0%, #0a0607 70%);
 }
 
-.screen-off-hint {
-	margin-bottom: 40px;
-	font-family: "Press Start 2P", monospace;
-	font-size: 12px;
-	color: rgba(255, 182, 39, 0.45);
-	letter-spacing: 2px;
-	animation: screen-off-blink 1.6s steps(1) infinite;
+/* Open app windows; the layer ignores clicks so desktop icons underneath stay clickable */
+.windows-layer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 800px;
+	height: 562px;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 5000;
 }
 
-@keyframes screen-off-blink {
-	50% {
-		opacity: 0;
-	}
+.windows-layer .app-interface-container {
+	pointer-events: auto;
 }
 
 /* ═══ SCREEN BACKGROUND ═══ */
 .computer-screen-background {
+	position: absolute;
+	top: 0;
+	left: 0;
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
@@ -258,36 +232,13 @@
 	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
-/* ═══ CRT EFFECTS ═══ */
-.shadow {
-	position: absolute;
-	width: 800px;
-	height: 600px;
-	top: 52px;
-	z-index: 20000;
-	box-shadow: inset 0px 0px 80px 0 rgba(255, 122, 26, 0.08);
-	pointer-events: none !important;
-}
-
-.out-light {
-	position: absolute;
-	width: 800px;
-	height: 600px;
-	top: 52px;
-	z-index: 10000;
-	box-shadow: 0px 0px 400px 0 rgba(255, 122, 26, 0.12);
-	pointer-events: none !important;
-}
-
-/* Slow rolling refresh band — replaces the 6 MB glitch.gif */
+/* Slow rolling refresh band */
 .crt-roll-bar {
 	position: absolute;
-	width: 800px;
-	height: 600px;
-	top: 52px;
-	z-index: 20001;
+	inset: 0;
+	z-index: 29999;
 	overflow: hidden;
-	pointer-events: none !important;
+	pointer-events: none;
 }
 
 .crt-roll-bar::before {
@@ -307,6 +258,10 @@
 	to {
 		transform: translateY(620px);
 	}
+}
+
+.screen-surface-dark .crt-roll-bar {
+	display: none;
 }
 
 /* ═══ MONITOR STAND ═══ */
@@ -497,7 +452,7 @@
 	background: linear-gradient(180deg, #3d1a40 0%, #2b1233 100%);
 	border-top: 2px solid #ff7a1a;
 	box-shadow: 0 -4px 14px rgba(255, 122, 26, 0.18);
-	z-index: 900;
+	z-index: 6000;
 }
 
 /* The START button sits under the taskbar items, which begin right after it */
@@ -514,6 +469,13 @@
 	border: 2px solid;
 	border-color: #fff6e6 #8a5a3a #8a5a3a #fff6e6;
 	letter-spacing: 1px;
+}
+
+.desktop-taskbar-apps {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	margin-left: 6px;
 }
 
 .desktop-taskbar-start .computer-badge-stripes {

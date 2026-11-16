@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 
 import "./App.css";
 
@@ -8,6 +8,8 @@ import TaskBarAppDisplay from "./components/TaskBarAppDisplay";
 import Volume from "./components/Volume";
 import Clippy from "./components/Clippy";
 import BootScreen from "./components/BootScreen";
+import ClassicRig from "./components/ClassicRig";
+import WorldHud from "./components/WorldHud";
 
 import Terminal from "./apps/Terminal/Terminal";
 import Txt from "./apps/Txt/Txt";
@@ -21,14 +23,14 @@ import Kitt from "./apps/Kitt/Kitt";
 import { useAppsManager } from "./context/AppsManagerContext";
 import { usePopUpsManager } from "./context/PopUpsManagerContext";
 import userConfig from "./userConfig";
+import * as sound from "./audio/retroAudio";
+
+// three.js is only downloaded when the 3D room is actually shown.
+const Room3D = lazy(() => import("./world/Room3D"));
 
 const DESKTOP_WIDTH = 800;
 const DESKTOP_HEIGHT = 600;
 const TASKBAR_HEIGHT = 38;
-
-// Total footprint of monitor + stand + case, used to fit the whole PC in the viewport.
-const RIG_WIDTH = 1040;
-const RIG_HEIGHT = 1060;
 
 // "off"     → black glass, waiting for the power button
 // "booting" → BIOS POST screen
@@ -36,6 +38,10 @@ const RIG_HEIGHT = 1060;
 const POWER_OFF = "off";
 const POWER_BOOTING = "booting";
 const POWER_ON = "on";
+
+const VIEW_3D = "3d";
+const VIEW_CLASSIC = "classic";
+const VIEW_STORAGE_KEY = "retro-pc-view";
 
 // Social links, in the order they stack on the desktop.
 const SOCIAL_ICONS = [
@@ -48,124 +54,44 @@ const SOCIAL_ICONS = [
 	{ key: "youtube", icon: "icons/youtube.svg", title: "youtube" },
 ];
 
-// ─── Retro sound effects (generated via Web Audio API) ───
-let globalAudioCtx = null;
-function getAudioCtx() {
-	if (!globalAudioCtx) {
-		globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-	}
-	if (globalAudioCtx.state === "suspended") {
-		globalAudioCtx.resume();
-	}
-	return globalAudioCtx;
-}
+// Keep the old global API that apps (terminal, etc.) call.
+window.retroSounds = {
+	playRetroClick: sound.playClick,
+	playBootSound: () => sound.playPowerSwitch(true),
+	playShutdownSound: () => sound.playPowerSwitch(false),
+	playErrorSound: sound.playError,
+	playStartupChime: sound.playStartupChime,
+};
 
-function playTone(ctx, { type, from, to, start, duration, volume }) {
-	const osc = ctx.createOscillator();
-	const gain = ctx.createGain();
-	osc.type = type;
-	osc.frequency.setValueAtTime(from, ctx.currentTime + start);
-	if (to) {
-		osc.frequency.exponentialRampToValueAtTime(to, ctx.currentTime + start + duration);
-	}
-	gain.gain.setValueAtTime(volume, ctx.currentTime + start);
-	gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + duration);
-	osc.connect(gain);
-	gain.connect(ctx.destination);
-	osc.start(ctx.currentTime + start);
-	osc.stop(ctx.currentTime + start + duration);
-}
-
-function playRetroClick() {
+function supportsWebGL() {
 	try {
-		playTone(getAudioCtx(), { type: "sine", from: 800, to: 400, start: 0, duration: 0.08, volume: 0.15 });
+		const canvas = document.createElement("canvas");
+		return !!(window.WebGLRenderingContext && (canvas.getContext("webgl2") || canvas.getContext("webgl")));
 	} catch (e) {
-		/* silently fail */
+		return false;
 	}
 }
 
-// Heavy power switch being pushed in: a high "click" then a low "clack".
-function playPowerOnSound() {
+function getInitialView() {
+	if (!supportsWebGL()) return VIEW_CLASSIC;
 	try {
-		const ctx = getAudioCtx();
-		playTone(ctx, { type: "square", from: 800, to: 100, start: 0, duration: 0.02, volume: 0.5 });
-		playTone(ctx, { type: "triangle", from: 150, to: 30, start: 0.035, duration: 0.045, volume: 0.6 });
+		return window.localStorage.getItem(VIEW_STORAGE_KEY) === VIEW_CLASSIC ? VIEW_CLASSIC : VIEW_3D;
 	} catch (e) {
-		/* silently fail */
+		return VIEW_3D;
 	}
-}
-
-// Switch released: heavy pull, then the snap back.
-function playShutdownSound() {
-	try {
-		const ctx = getAudioCtx();
-		playTone(ctx, { type: "triangle", from: 120, to: 20, start: 0, duration: 0.05, volume: 0.5 });
-		playTone(ctx, { type: "square", from: 600, to: 80, start: 0.04, duration: 0.02, volume: 0.4 });
-	} catch (e) {
-		/* silently fail */
-	}
-}
-
-// Short rising chiptune arpeggio once the desktop is up.
-function playStartupChime() {
-	try {
-		const ctx = getAudioCtx();
-		[523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
-			playTone(ctx, { type: "square", from: freq, start: i * 0.11, duration: 0.22, volume: 0.07 });
-		});
-		playTone(ctx, { type: "triangle", from: 261.63, start: 0, duration: 0.7, volume: 0.12 });
-	} catch (e) {
-		/* silently fail */
-	}
-}
-
-function playErrorSound() {
-	try {
-		const ctx = getAudioCtx();
-		const osc = ctx.createOscillator();
-		const gain = ctx.createGain();
-		osc.connect(gain);
-		gain.connect(ctx.destination);
-		osc.type = "square";
-		osc.frequency.setValueAtTime(200, ctx.currentTime);
-		osc.frequency.setValueAtTime(150, ctx.currentTime + 0.1);
-		gain.gain.setValueAtTime(0.15, ctx.currentTime);
-		gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-		osc.start(ctx.currentTime);
-		osc.stop(ctx.currentTime + 0.25);
-	} catch (e) {
-		/* silently fail */
-	}
-}
-
-// Make sounds available globally for other components
-window.retroSounds = { playRetroClick, playBootSound: playPowerOnSound, playShutdownSound, playErrorSound, playStartupChime };
-
-function useFitToViewport() {
-	useEffect(() => {
-		function fit() {
-			const scale = Math.min(window.innerWidth / RIG_WIDTH, window.innerHeight / RIG_HEIGHT);
-			document.documentElement.style.setProperty("--rig-scale", String(scale));
-		}
-		fit();
-		window.addEventListener("resize", fit);
-		return () => window.removeEventListener("resize", fit);
-	}, []);
 }
 
 function App() {
 	const { openedApps } = useAppsManager();
 	const { openedPopUps } = usePopUpsManager();
 
-	useFitToViewport();
-
 	const appsDisplayParentRef = useRef(null);
+	const computerScreenRef = useRef(null);
 
 	const terminalRef = useRef(null);
 	const txtRef = useRef(null);
 	const myPcRef = useRef(null);
 	const synthRef = useRef(null);
-	const computerScreenRef = useRef(null);
 	const browserRef = useRef(null);
 	const ieRef = useRef(null);
 	const paintRef = useRef(null);
@@ -174,7 +100,12 @@ function App() {
 	const [powerState, setPowerState] = useState(POWER_OFF);
 	const isDesktopOn = powerState === POWER_ON;
 
+	const [viewMode, setViewMode] = useState(getInitialView);
+	const [isZoomed, setIsZoomed] = useState(false);
+	const canUseKeyboardOnScreen = viewMode === VIEW_CLASSIC || isZoomed;
+
 	const [isDriveActive, setIsDriveActive] = useState(false);
+	const bootTimeoutsRef = useRef([]);
 
 	const [isTerminalOpened, setIsTerminalOpened] = useState(false);
 	const [isTxtOpened, setIsTxtOpened] = useState(false);
@@ -222,18 +153,13 @@ function App() {
 		}
 
 		return () => removers.forEach((remove) => remove());
-	}, [isDesktopOn]);
+	}, [isDesktopOn, viewMode]);
 
-	// Click sound for anything clicked on the desktop.
+	// Mouse click sound for anything clicked on the screen.
 	useEffect(() => {
-		function onClick({ clientX, clientY }) {
-			if (!computerScreenRef.current) {
-				return;
-			}
-
-			const { top, left, width, height } = computerScreenRef.current.getBoundingClientRect();
-			if (clientX >= left && clientX <= left + width && clientY >= top && clientY <= top + height) {
-				playRetroClick();
+		function onClick({ target }) {
+			if (computerScreenRef.current?.contains(target)) {
+				sound.playClick();
 			}
 		}
 
@@ -241,11 +167,30 @@ function App() {
 		return () => document.removeEventListener("click", onClick);
 	}, []);
 
-	// Floppy drive LED flickers whenever a new app is launched.
+	// Keyboard clacks while the visitor is typing at the computer.
+	useEffect(() => {
+		if (!isDesktopOn || !canUseKeyboardOnScreen) {
+			return;
+		}
+
+		function onKeyDown(event) {
+			if (event.repeat || event.ctrlKey || event.metaKey) return;
+			if (event.key.length === 1 || ["Enter", "Backspace", "Tab", "Delete"].includes(event.key)) {
+				sound.playKey();
+			}
+		}
+
+		// Capture phase so apps that stop propagation still sound like a keyboard.
+		window.addEventListener("keydown", onKeyDown, true);
+		return () => window.removeEventListener("keydown", onKeyDown, true);
+	}, [isDesktopOn, canUseKeyboardOnScreen]);
+
+	// Floppy LED + hard disk chatter whenever a new app is launched.
 	const previousOpenedCount = useRef(0);
 	useEffect(() => {
 		if (openedApps.length > previousOpenedCount.current) {
 			setIsDriveActive(true);
+			sound.playHddChatter(0.45);
 			const id = setTimeout(() => setIsDriveActive(false), 700);
 			previousOpenedCount.current = openedApps.length;
 			return () => clearTimeout(id);
@@ -253,24 +198,78 @@ function App() {
 		previousOpenedCount.current = openedApps.length;
 	}, [openedApps.length]);
 
-	const handlePowerButton = () => {
-		if (powerState === POWER_OFF) {
-			playPowerOnSound();
-			setPowerState(POWER_BOOTING);
-			return;
-		}
+	// PC fan hum while powered.
+	useEffect(() => {
+		sound.setAmbience(powerState !== POWER_OFF);
+	}, [powerState]);
 
+	// Across the room the PC sounds muffled; at the desk it is crisp.
+	useEffect(() => {
+		sound.setListenerNear(viewMode === VIEW_CLASSIC || isZoomed);
+	}, [viewMode, isZoomed]);
+
+	function clearBootSounds() {
+		bootTimeoutsRef.current.forEach(clearTimeout);
+		bootTimeoutsRef.current = [];
+	}
+
+	function powerOn() {
+		sound.playPowerSwitch(true);
+		sound.playCrtPowerOn();
+		clearBootSounds();
+		bootTimeoutsRef.current = [setTimeout(sound.playPostBeep, 1400), setTimeout(() => sound.playFloppySeek(0.7), 1900), setTimeout(() => sound.playHddChatter(0.9), 2600)];
+		setPowerState(POWER_BOOTING);
+	}
+
+	function powerOff() {
 		for (const app of openedApps) {
 			app.close();
 		}
-		playShutdownSound();
+		clearBootSounds();
+		sound.playPowerSwitch(false);
+		sound.playCrtPowerOff();
 		setPowerState(POWER_OFF);
-	};
+	}
 
-	const handleBootFinished = () => {
+	function handlePowerButton() {
+		if (powerState === POWER_OFF) {
+			powerOn();
+		} else {
+			powerOff();
+		}
+	}
+
+	function handleBootFinished() {
+		clearBootSounds();
 		setPowerState(POWER_ON);
-		playStartupChime();
-	};
+		sound.playStartupChime();
+	}
+
+	// Sitting down at the computer also switches it on, like reaching for the button.
+	function handleSitDown() {
+		setIsZoomed(true);
+		if (powerState === POWER_OFF) {
+			powerOn();
+		}
+	}
+
+	function handleStandUp() {
+		setIsZoomed(false);
+		if (document.activeElement instanceof HTMLElement) {
+			document.activeElement.blur();
+		}
+	}
+
+	function handleToggleView() {
+		const next = viewMode === VIEW_3D ? VIEW_CLASSIC : VIEW_3D;
+		try {
+			window.localStorage.setItem(VIEW_STORAGE_KEY, next);
+		} catch (e) {
+			/* private mode — the toggle still works for this visit */
+		}
+		setIsZoomed(false);
+		setViewMode(next);
+	}
 
 	const pos = userConfig.iconPositions || {};
 	const socialsX = pos.socialsStartX ?? 1;
@@ -286,25 +285,21 @@ function App() {
 		taskbarHeight: TASKBAR_HEIGHT,
 	};
 
-	function renderScreen() {
+	function renderScreenContent() {
 		if (powerState === POWER_BOOTING) {
-			return (
-				<div className="computer-screen computer-screen-boot">
-					<BootScreen onFinished={handleBootFinished} />
-				</div>
-			);
+			return <BootScreen onFinished={handleBootFinished} />;
 		}
 
 		if (powerState === POWER_OFF) {
 			return (
-				<div className="computer-screen computer-screen-off">
+				<div className="screen-off">
 					<span className="screen-off-hint">▶ PRESS POWER</span>
 				</div>
 			);
 		}
 
 		return (
-			<div className="computer-screen" ref={computerScreenRef}>
+			<>
 				<div className="pop-ups-container">{openedPopUps.map((popUp) => popUp[1])}</div>
 
 				<img className="computer-screen-background" src={userConfig.wallpaper} alt="" />
@@ -316,8 +311,8 @@ function App() {
 					{/* Netscape browser — loads browserUrl from config */}
 					<Browser iconX={pos.netscape?.x ?? 0} iconY={pos.netscape?.y ?? 0} ref={browserRef} {...sharedAppProps} />
 
-					<IconDisplay icon="icons/new-bin.svg" title="bin" x={pos.bin?.x ?? 14.5} y={pos.bin?.y ?? 6.5} onIconClicked={playErrorSound} />
-					<IconDisplay icon="icons/new-folder.svg" title="folder" x={pos.folder?.x ?? 14.5} y={pos.folder?.y ?? 2} onIconClicked={playErrorSound} />
+					<IconDisplay icon="icons/new-bin.svg" title="bin" x={pos.bin?.x ?? 14.5} y={pos.bin?.y ?? 6.5} onIconClicked={sound.playError} />
+					<IconDisplay icon="icons/new-folder.svg" title="folder" x={pos.folder?.x ?? 14.5} y={pos.folder?.y ?? 2} onIconClicked={sound.playError} />
 
 					{socialIcons}
 
@@ -328,87 +323,66 @@ function App() {
 					<Paint iconX={pos.paint?.x ?? 13} iconY={pos.paint?.y ?? 2} ref={paintRef} {...sharedAppProps} />
 					<Kitt iconX={pos.kitt?.x ?? 13} iconY={pos.kitt?.y ?? 0} ref={kittRef} {...sharedAppProps} />
 				</div>
+
+				{/* Open windows live in their own layer above the icons */}
+				<div className="windows-layer" ref={appsDisplayParentRef}>
+					{isTerminalOpened ? terminalRef.current?.render(isTerminalMinimized) : null}
+					{isTxtOpened ? txtRef.current?.render(isTxtMinimized) : null}
+					{isMyPcOpened ? myPcRef.current?.render(isMyPcMinimized) : null}
+					{isSynthOpened ? synthRef.current?.render(isSynthMinimized) : null}
+					{isBrowserOpened ? browserRef.current?.render(isBrowserMinimized) : null}
+					{isIeOpened ? ieRef.current?.render(isIeMinimized) : null}
+					{isPaintOpened ? paintRef.current?.render(isPaintMinimized) : null}
+					{isKittOpened ? kittRef.current?.render(isKittMinimized) : null}
+				</div>
+
 				<div className="desktop-taskbar">
 					<span className="desktop-taskbar-start">
 						<span className="computer-badge-stripes" />
 						START
 					</span>
+					<div className="desktop-taskbar-apps">
+						{openedApps.map((appRef) => (
+							<TaskBarAppDisplay key={appRef.appearence.title} appRef={appRef} />
+						))}
+					</div>
 				</div>
 				<Clock />
 				<Volume />
 				<Clippy />
 				{/* Please, if you're going to copy at least give me credits.*/}
 				<div className="copyright-footer">{userConfig.copyright}</div>
-			</div>
+			</>
 		);
 	}
 
-	return (
-		<div className="main" id="computer-main">
-			{isDesktopOn && (
-				<div className="lock-computer-crt-container">
-					<div className="crt-roll-bar" />
-					<div className="out-light" />
-					<div className="shadow" />
-					<div className="lock-computer-screen-container" ref={appsDisplayParentRef}>
-						{isTerminalOpened ? terminalRef.current?.render(isTerminalMinimized) : null}
-						{isTxtOpened ? txtRef.current?.render(isTxtMinimized) : null}
-						{isMyPcOpened ? myPcRef.current?.render(isMyPcMinimized) : null}
-						{isSynthOpened ? synthRef.current?.render(isSynthMinimized) : null}
-						{isBrowserOpened ? browserRef.current?.render(isBrowserMinimized) : null}
-						{isIeOpened ? ieRef.current?.render(isIeMinimized) : null}
-						{isPaintOpened ? paintRef.current?.render(isPaintMinimized) : null}
-						{isKittOpened ? kittRef.current?.render(isKittMinimized) : null}
-					</div>
-					<div className="computer-taskbar-container">
-						{openedApps.map((appRef) => (
-							<TaskBarAppDisplay key={appRef.appearence.title} appRef={appRef} />
-						))}
-					</div>
-				</div>
-			)}
-
-			<div className="computer-crt-container">
-				<div className="computer-screen-container">{renderScreen()}</div>
-				<div className="computer-badge" aria-hidden="true">
-					<span className="computer-badge-stripes" />
-					<span className="computer-badge-text">SUNSET 586</span>
-				</div>
-				<div className="computer-button-container">
-					<div className={`computer-button-light ${powerState !== POWER_OFF ? "on" : ""}`} />
-					<button className="computer-button" onClick={handlePowerButton} aria-label={powerState === POWER_OFF ? "Power on" : "Power off"} />
-				</div>
-			</div>
-
-			<div className="computer-stand"></div>
-
-			<div className="computer-case">
-				<div className="computer-diskhat-container" style={{ height: "100%", width: "100%" }}>
-					<div className="computer-diskhat">
-						<div className="computer-diskhat-input-container">
-							<div className="computer-diskhat-input">
-								<div className="computer-diskhat-input-2"></div>
-							</div>
-
-							<div className="computer-diskhat-button-container" style={{ height: "100px", width: "300px", position: "absolute" }}>
-								<div className={`computer-diskhat-led ${isDriveActive || powerState === POWER_BOOTING ? "active" : ""}`} />
-								<div className="computer-diskhat-button"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center", paddingTop: "30px" }}>
-					<div className="computer-turn-button-container">
-						<button className="computer-turn-button" onClick={handlePowerButton} aria-label="Power" />
-					</div>
-
-					<div className="computer-case-fans-container">
-						<img src="icons/fans.png" style={{ width: "279px", height: "80px" }} alt=""></img>
-					</div>
-				</div>
-			</div>
+	// The 800×600 screen surface. The same element is shown inside the 2D rig or on the 3D CRT.
+	const screen = (
+		<div className={`screen-surface ${isDesktopOn ? "" : "screen-surface-dark"}`} ref={computerScreenRef}>
+			{renderScreenContent()}
+			<div className="crt-roll-bar" />
 		</div>
+	);
+
+	return (
+		<>
+			{viewMode === VIEW_3D ? (
+				<Suspense fallback={<div className="world-loading">LOADING ROOM…</div>}>
+					<Room3D
+						screen={screen}
+						powerState={powerState}
+						isZoomed={isZoomed}
+						isDriveActive={isDriveActive || powerState === POWER_BOOTING}
+						onSitDown={handleSitDown}
+						onStandUp={handleStandUp}
+						onPowerButton={handlePowerButton}
+					/>
+				</Suspense>
+			) : (
+				<ClassicRig screen={screen} isPoweredOn={powerState !== POWER_OFF} isDriveActive={isDriveActive || powerState === POWER_BOOTING} onPowerButton={handlePowerButton} />
+			)}
+			<WorldHud viewMode={viewMode} isZoomed={isZoomed} isPoweredOn={powerState !== POWER_OFF} onToggleView={handleToggleView} onStandUp={handleStandUp} onPowerButton={handlePowerButton} />
+		</>
 	);
 }
 
