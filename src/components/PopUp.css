@@ -17,28 +17,28 @@
 .pop-up-body {
 	width: 100%;
 	height: 100%;
-	background-color: #1a1a2e;
-	color: #00ff41;
+	background-color: #2b1233;
+	color: #ffb627;
 	font-family: 'VT323', monospace;
 	font-size: 14px;
 	padding: 5px;
-	border: 2px solid #00ff41;
-	box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+	border: 2px solid #ffb627;
+	box-shadow: 0 0 20px rgba(255, 182, 39, 0.2);
 }
 
 .pop-up-topbar {
 	width: 100%;
 	height: 20px;
-	background: linear-gradient(90deg, #003300, #006600);
+	background: linear-gradient(90deg, #8c1c13, #006600);
 	display: flex;
 	justify-content: space-between;
-	border-bottom: 1px solid #00ff41;
+	border-bottom: 1px solid #ffb627;
 }
 
 .pop-up-title {
-	color: #00ff41;
+	color: #ffb627;
 	font-family: 'VT323', monospace;
-	text-shadow: 0 0 3px rgba(0, 255, 65, 0.25);
+	text-shadow: 0 0 3px rgba(255, 182, 39, 0.25);
 	padding-left: 4px;
 }
 
@@ -50,26 +50,26 @@
 	align-items: center;
 	flex-direction: column;
 	row-gap: 10px;
-	color: #00ff41;
+	color: #ffb627;
 	font-family: 'VT323', monospace;
-	text-shadow: 0 0 2px rgba(0, 255, 65, 0.15);
+	text-shadow: 0 0 2px rgba(255, 182, 39, 0.15);
 }
 
 .loading-container {
 	width: 230px;
 	height: 20px;
 	padding: 2px;
-	border: 1px solid #00ff41;
+	border: 1px solid #ffb627;
 	display: flex;
 	column-gap: 3px;
-	background: #0a0a15;
+	background: #1a0b1e;
 }
 
 .loading {
 	width: 20px;
 	height: 20px;
-	background-color: #00ff41;
-	box-shadow: 0 0 4px rgba(0, 255, 65, 0.5);
+	background-color: #ffb627;
+	box-shadow: 0 0 4px rgba(255, 182, 39, 0.5);
 }
 
 .pop-up-button-container {
@@ -78,15 +78,15 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: #1a1a2e;
-	border: 1px solid #00ff41;
-	color: #00ff41;
+	background: #2b1233;
+	border: 1px solid #ffb627;
+	color: #ffb627;
 	font-family: 'VT323', monospace;
 	cursor: pointer;
 	transition: all 0.2s ease;
 }
 
 .pop-up-button-container:hover {
-	background: rgba(0, 255, 65, 0.15);
-	box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
+	background: rgba(255, 182, 39, 0.15);
+	box-shadow: 0 0 8px rgba(255, 182, 39, 0.3);
 }

@@ -8,24 +8,21 @@ function Clippy() {
 	const [clippyText, setClippyText] = useState("[ SYSTEM READY ]");
 
 	useEffect(() => {
-		const textTimeoutId = setTimeout(() => {
-			setIsClippyOpened(true);
+		const timeoutIds = [];
 
-			for (const msg of userConfig.clippyMessages) {
-				setTimeout(() => {
-					setClippyText(msg.text);
-				}, msg.delay * 1000);
-			}
-		}, 5000);
+		timeoutIds.push(
+			setTimeout(() => {
+				setIsClippyOpened(true);
 
-		const hideClippyTimeoutId = setTimeout(() => {
-			setIsClippyOpened(false);
-		}, 27000);
+				for (const msg of userConfig.clippyMessages) {
+					timeoutIds.push(setTimeout(() => setClippyText(msg.text), msg.delay * 1000));
+				}
+			}, 5000)
+		);
 
-		return () => {
-			clearTimeout(textTimeoutId);
-			clearTimeout(hideClippyTimeoutId);
-		};
+		timeoutIds.push(setTimeout(() => setIsClippyOpened(false), 27000));
+
+		return () => timeoutIds.forEach(clearTimeout);
 	}, []);
 
 	return (

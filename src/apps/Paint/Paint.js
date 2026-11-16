@@ -13,9 +13,9 @@ const Paint = React.forwardRef(({ iconX, iconY, parentRef, ...others }, ref) => 
 			icon="icons/new-paint.svg"
 			width={650}
 			height={490}
-			backgroundColor="#0a0a15"
-			topBarColor="#003300"
-			titleColor="#00ff41"
+			backgroundColor="#1a0b1e"
+			topBarColor="var(--sa-titlebar)"
+			titleColor="var(--sa-cream)"
 			ref={ref}
 			parentRef={parentRef}
 			overflowY="hidden"

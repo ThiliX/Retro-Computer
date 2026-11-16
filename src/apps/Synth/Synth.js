@@ -13,9 +13,9 @@ const Synth = React.forwardRef(({ iconX, iconY, parentRef, ...others }, ref) => 
 			icon="icons/new-synth.svg"
 			width={450}
 			height={310}
-			backgroundColor="#0a0a15"
-			topBarColor="#1a0033"
-			titleColor="#ff00ff"
+			backgroundColor="#1a0b1e"
+			topBarColor="linear-gradient(90deg, #2b0f1f 0%, #8c1c3a 50%, #ff2e88 100%)"
+			titleColor="var(--sa-cream)"
 			ref={ref}
 			parentRef={parentRef}
 			overflowY="hidden"

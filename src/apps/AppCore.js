@@ -213,6 +213,11 @@ const AppCore = React.forwardRef(
 				},
 
 				open() {
+					// Centre the window only when it is not already on screen.
+					if (!appDisplayRef.current) {
+						currentX.current = (desktopWidth - width) / 2;
+						currentY.current = (desktopHeight - height) / 2;
+					}
 					focusApp(appDisplayRef);
 					openApp(ref.current);
 					callOnAppCoreOpenStateChangedListeners(true);
@@ -290,11 +295,6 @@ const AppCore = React.forwardRef(
 				appDisplayRef: appDisplayRef,
 
 				render(minimized) {
-					{
-						currentX.current = (desktopWidth - width) / 2;
-						currentY.current = (desktopHeight - height) / 2;
-					}
-
 					return (
 						<AppDisplay
 							appCoreRef={ref}

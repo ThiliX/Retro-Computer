@@ -1,0 +1,60 @@
+.boot-screen {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	padding: 24px 28px;
+	box-sizing: border-box;
+	background: #0b0508;
+	color: var(--sa-cream);
+	font-family: "VT323", monospace;
+	font-size: 20px;
+	line-height: 1.25;
+	text-shadow: 0 0 4px rgba(255, 182, 39, 0.35);
+	cursor: pointer;
+}
+
+.boot-screen-logo {
+	position: absolute;
+	top: 22px;
+	right: 28px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-family: "Press Start 2P", monospace;
+	font-size: 14px;
+	color: var(--sa-amber);
+}
+
+/* Striped 90s sunset disc */
+.boot-screen-sun {
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: repeating-linear-gradient(180deg, var(--sa-amber) 0 4px, var(--sa-orange) 4px 6px, transparent 6px 7px),
+		linear-gradient(180deg, var(--sa-amber), var(--sa-red));
+	background-blend-mode: normal;
+	box-shadow: 0 0 12px rgba(255, 122, 26, 0.6);
+}
+
+.boot-screen-line {
+	white-space: pre;
+}
+
+.boot-screen-cursor {
+	color: var(--sa-amber);
+	animation: boot-blink 0.8s steps(1) infinite;
+}
+
+.boot-screen-footer {
+	position: absolute;
+	left: 28px;
+	bottom: 20px;
+	color: var(--sa-orange);
+	font-size: 16px;
+}
+
+@keyframes boot-blink {
+	50% {
+		opacity: 0;
+	}
+}

@@ -7,9 +7,9 @@ function MyPcSleeperRenderer({ appRef }) {
 			display: "flex",
 			justifyContent: "center",
 			alignItems: "center",
-			color: "#00ff41",
+			color: "#ffb627",
 			fontFamily: "'VT323', monospace",
-			textShadow: "0 0 5px rgba(0,255,65,0.25)"
+			textShadow: "0 0 5px rgba(255, 182, 39,0.25)"
 		}}>
 			<h1 style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "14px" }}>[ SLEEP MODE ]</h1>
 			<p style={{ fontSize: "16px", opacity: 0.7 }}>System is hibernating...</p>

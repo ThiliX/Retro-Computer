@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 
 const PopUpsManagerContext = createContext();
 
@@ -7,37 +7,22 @@ export const usePopUpsManager = () => {
 };
 
 export function PopUpsManagerContextProvider({ children }) {
-	let [openedPopUps, setOpenedPopUps] = useState([]);
+	const [openedPopUps, setOpenedPopUps] = useState([]);
 
-	function getPopUpFromId(id) {
-		return openedPopUps.find((popUp) => {
-			return popUp[0] === id;
-		});
-	}
+	const getPopUpFromId = useCallback((id) => openedPopUps.find((popUp) => popUp[0] === id), [openedPopUps]);
 
 	function openPopUp(id, popUp) {
 		setOpenedPopUps((previousPopUps) => {
-			const alreadyOpenedPopUp = getPopUpFromId(id);
-			if (alreadyOpenedPopUp) {
+			if (previousPopUps.some((existing) => existing[0] === id)) {
 				return previousPopUps;
 			}
-
-			openedPopUps = [...previousPopUps, [id, popUp]];
-			return openedPopUps;
+			return [...previousPopUps, [id, popUp]];
 		});
 	}
 
 	function closePopUp(id) {
-		setOpenedPopUps((previousPopUps) => {
-			const alreadyOpenedPopUp = getPopUpFromId(id);
-			if (!alreadyOpenedPopUp) {
-				return previousPopUps;
-			}
-
-			openedPopUps = previousPopUps.filter((popUp) => popUp[0] !== id);
-			return openedPopUps;
-		});
+		setOpenedPopUps((previousPopUps) => previousPopUps.filter((popUp) => popUp[0] !== id));
 	}
 
-	return <PopUpsManagerContext.Provider value={{ getPopUpFromId, openPopUp, closePopUp, openedPopUps: openedPopUps }}>{children}</PopUpsManagerContext.Provider>;
+	return <PopUpsManagerContext.Provider value={{ getPopUpFromId, openPopUp, closePopUp, openedPopUps }}>{children}</PopUpsManagerContext.Provider>;
 }

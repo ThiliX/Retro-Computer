@@ -1,10 +1,13 @@
+/* Win9x-style window with sunset bevels */
 .app-interface-container {
 	z-index: 2000;
-	border: 2px solid #00ff41;
+	border: 2px solid;
+	border-color: #ffd27a #5a1a12 #5a1a12 #ffd27a;
 	box-shadow:
-		0px 0px 20px 0px rgba(0, 255, 65, 0.2),
-		inset 0 0 30px rgba(0, 0, 0, 0.3);
-	border-radius: 2px;
+		0 0 0 1px #1a0b1e,
+		0 0 22px rgba(255, 122, 26, 0.25),
+		6px 8px 0 rgba(0, 0, 0, 0.35);
+	border-radius: 0;
 }
 
 .app-interface-top-bar-container {
@@ -13,7 +16,7 @@
 	align-items: center;
 	justify-content: space-between;
 	cursor: move;
-	border-bottom: 1px solid #00ff41;
+	border-bottom: 1px solid #5a1a12;
 }
 
 .app-interface-top-bar-left-icons-container {
@@ -21,71 +24,65 @@
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
-	gap: 5px;
-	margin-left: 5px;
+	gap: 6px;
+	margin-left: 6px;
 }
 
 .app-interface-right-icons-container {
 	margin-right: 5px;
 	display: flex;
-	gap: 4px;
+	gap: 3px;
 	align-items: center;
 }
 
-/* ═══ MINIMIZE BUTTON — CSS drawn ═══ */
-.app-interface-top-bar-min-btn {
-	width: 20px;
-	height: 20px;
-	display: flex;
-	align-items: flex-end;
-	justify-content: center;
-	background: #1a1a2e;
-	border: 1px solid #00ff41;
-	border-radius: 2px;
-	cursor: pointer;
-	padding: 0;
-	box-sizing: border-box;
-	transition: all 0.15s ease;
-}
-
-.app-interface-top-bar-min-btn::after {
-	content: '';
-	display: block;
-	width: 10px;
-	height: 2px;
-	background: #00ff41;
-	margin-bottom: 4px;
-}
-
-.app-interface-top-bar-min-btn:hover {
-	background: rgba(0, 255, 65, 0.2);
-	box-shadow: 0 0 6px rgba(0, 255, 65, 0.4);
-}
-
-/* ═══ CLOSE BUTTON — CSS drawn ═══ */
+/* Shared raised cream button */
+.app-interface-top-bar-min-btn,
 .app-interface-top-bar-close-btn {
 	width: 20px;
-	height: 20px;
+	height: 18px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: #1a1a2e;
-	border: 1px solid #ff4444;
-	border-radius: 2px;
+	background: var(--sa-cream);
+	border: 2px solid;
+	border-color: #fff6e6 #8a5a3a #8a5a3a #fff6e6;
 	cursor: pointer;
 	padding: 0;
 	box-sizing: border-box;
-	transition: all 0.15s ease;
 	position: relative;
 }
 
+.app-interface-top-bar-min-btn:active,
+.app-interface-top-bar-close-btn:active {
+	border-color: #8a5a3a #fff6e6 #fff6e6 #8a5a3a;
+}
+
+/* ═══ MINIMIZE GLYPH ═══ */
+.app-interface-top-bar-min-btn {
+	align-items: flex-end;
+}
+
+.app-interface-top-bar-min-btn::after {
+	content: "";
+	display: block;
+	width: 8px;
+	height: 2px;
+	background: #2b1233;
+	margin-bottom: 3px;
+}
+
+.app-interface-top-bar-min-btn:hover {
+	background: var(--sa-amber);
+}
+
+/* ═══ CLOSE GLYPH ═══ */
 .app-interface-top-bar-close-btn::before,
 .app-interface-top-bar-close-btn::after {
-	content: '';
+	content: "";
 	position: absolute;
-	width: 12px;
+	width: 10px;
 	height: 2px;
-	background: #ff4444;
+	background: #2b1233;
 }
 
 .app-interface-top-bar-close-btn::before {
@@ -94,26 +91,30 @@
 
 .app-interface-top-bar-close-btn::after {
 	transform: rotate(-45deg);
-	margin-bottom: 0;
 }
 
 .app-interface-top-bar-close-btn:hover {
-	background: rgba(255, 68, 68, 0.25);
-	box-shadow: 0 0 6px rgba(255, 68, 68, 0.4);
+	background: var(--sa-red);
+}
+
+.app-interface-top-bar-close-btn:hover::before,
+.app-interface-top-bar-close-btn:hover::after {
+	background: var(--sa-cream);
 }
 
 .app-interface-top-bar-title {
-	font-size: 15px;
+	font-size: 16px;
 	font-weight: bold;
-	font-family: 'VT323', monospace;
+	font-family: "VT323", monospace;
 	letter-spacing: 1px;
 	text-transform: uppercase;
+	text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.45);
 }
 
 .app-interface-top-bar-icon {
-	width: 20px;
-	height: 20px;
-	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(85deg);
+	width: 18px;
+	height: 18px;
+	filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.4));
 }
 
 /* Keep old classes for backward compat but hide them */

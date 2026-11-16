@@ -19,47 +19,62 @@ const commands = {
 
 const DIRECTORY = `C:\\Users\\${userConfig.terminalUser}>`;
 
+const COLOR_MAP = {
+	amber: "#ffb627",
+	orange: "#ff7a1a",
+	red: "#ff5a4a",
+	pink: "#ff2e88",
+	cream: "#ffe8c2",
+	green: "#33ff66",
+	cyan: "#2ec4b6",
+	blue: "#4488ff",
+	purple: "#bb66ff",
+	yellow: "#ffff00",
+	white: "#ffffff",
+};
+
+const DEFAULT_COLOR = COLOR_MAP.amber;
+
 function TerminalRenderer({ appCoreRef }) {
-
 	const [terminalLog, setTerminalLog] = useState([]);
-	const [inputColor, setInputColor] = useState("#00ff41");
+	const [inputColor, setInputColor] = useState(DEFAULT_COLOR);
 
-	const terminalInput = useRef();
+	const terminalInput = useRef("");
 	const terminalRef = useRef();
 	const terminalInputRef = useRef();
 	const terminalContainerRef = useRef();
+	const historyRef = useRef([]);
+	const historyIndexRef = useRef(0);
 
 	function clearTerminal() {
 		setTerminalLog(["[SYS] type help to see all commands available."]);
 	}
 
+	// Appends lines to the log. Null/false parts are skipped instead of rendering as blank rows.
 	function writeToTerminal(input, showDirectory, addLineBreak) {
-		setTerminalLog((prevState) => {
-			return [...prevState, showDirectory && `${DIRECTORY} ${terminalInput.current}`, input, addLineBreak && "ㅤ"];
-		});
+		const lines = [];
+		if (showDirectory) lines.push(`${DIRECTORY} ${terminalInput.current}`);
+		if (input !== null && input !== undefined && input !== false) lines.push(input);
+		if (addLineBreak) lines.push("\u00a0");
+		setTerminalLog((prevState) => [...prevState, ...lines]);
 	}
 
 	function setTerminalText(input = "") {
 		terminalInputRef.current.value = input;
 	}
 
-	function setTerminalColor(color) {
-		const colorMap = {
-			red: "#ff4444",
-			green: "#00ff41",
-			blue: "#4488ff",
-			purple: "#bb66ff",
-			pink: "#ff66aa",
-			white: "#ffffff",
-			yellow: "#ffff00",
-			cyan: "#00e5ff",
-			amber: "#ffb000",
-		};
-		if (color in colorMap) {
-			setInputColor(colorMap[color]);
+	function setTerminalColor(colorName) {
+		const available = Object.keys(COLOR_MAP).join(", ");
+		if (!colorName) {
+			writeToTerminal(`Usage: color <name>. Available: ${available}`, false, true);
+			return;
+		}
+		const key = colorName.toLowerCase();
+		if (key in COLOR_MAP) {
+			setInputColor(COLOR_MAP[key]);
 		} else {
-			writeToTerminal(`[ERR] Color '${color}' not found. Available: ${Object.keys(colorMap).join(", ")}`, false, true);
-			if (window.retroSounds) window.retroSounds.playErrorSound();
+			writeToTerminal(`[ERR] Color '${colorName}' not found. Available: ${available}`, false, true);
+			window.retroSounds?.playErrorSound();
 		}
 	}
 
@@ -81,46 +96,56 @@ function TerminalRenderer({ appCoreRef }) {
 			</div>,
 			"",
 		]);
+		terminalInputRef.current?.focus();
 	}, []);
 
 	useEffect(() => {
 		terminalContainerRef.current.scrollTop = terminalContainerRef.current.scrollHeight;
 	}, [terminalLog]);
 
-	useEffect(() => {
-		if (terminalInputRef.current) {
-			function onKeyDown(event) {
-				if (event.key !== "Enter") {
-					return;
-				}
+	// Bound to the input itself, so Enter in other windows never runs terminal commands.
+	function onInputKeyDown(event) {
+		// Keep keystrokes from reaching global listeners (e.g. the synth keyboard).
+		event.stopPropagation();
 
-				const input = terminalInputRef.current.value;
-				terminalInput.current = input;
-
-				const command = input.split(" ")[0];
-				if (command in commands) {
-					writeToTerminal(null, true, false);
-					commands[command].exec(terminalRef, input);
-				} else {
-					writeToTerminal(`[ERR] Unknown command: '${command}'. Type 'help' for available commands.`, true, true);
-					if (window.retroSounds) window.retroSounds.playErrorSound();
-				}
-
-				setTerminalText();
-			}
-
-			// Focus the terminal input when the terminal is opened
-			terminalInputRef.current.focus();
-
-			window.addEventListener("keydown", onKeyDown);
-			return () => {
-				window.removeEventListener("keydown", onKeyDown);
-			};
+		const history = historyRef.current;
+		if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+			event.preventDefault();
+			if (!history.length) return;
+			const delta = event.key === "ArrowUp" ? -1 : 1;
+			historyIndexRef.current = Math.min(Math.max(historyIndexRef.current + delta, 0), history.length);
+			setTerminalText(history[historyIndexRef.current] ?? "");
+			return;
 		}
-	}, [terminalInputRef]);
+
+		if (event.key !== "Enter") {
+			return;
+		}
+
+		const input = terminalInputRef.current.value.trim();
+		terminalInput.current = input;
+
+		if (input) {
+			history.push(input);
+			historyIndexRef.current = history.length;
+		}
+
+		const command = input.split(/\s+/)[0].toLowerCase();
+		if (!command) {
+			writeToTerminal(null, true, false);
+		} else if (command in commands) {
+			writeToTerminal(null, true, false);
+			commands[command].exec(terminalRef, input);
+		} else {
+			writeToTerminal(`[ERR] Unknown command: '${command}'. Type 'help' for available commands.`, true, true);
+			window.retroSounds?.playErrorSound();
+		}
+
+		setTerminalText();
+	}
 
 	return (
-		<div className="terminal-renderer-container" ref={terminalContainerRef}>
+		<div className="terminal-renderer-container" ref={terminalContainerRef} onClick={() => terminalInputRef.current?.focus()}>
 			{terminalLog.map((line, index) => (
 				<div style={{ color: inputColor, fontSize: "18px", lineHeight: "1.4" }} key={index}>
 					{line}
@@ -131,7 +156,15 @@ function TerminalRenderer({ appCoreRef }) {
 				<span className="fixed-text" style={{ color: inputColor }}>
 					{DIRECTORY}&nbsp;
 				</span>
-				<input className="terminal-input" ref={terminalInputRef} style={{ color: inputColor }}></input>
+				<input
+					className="terminal-input"
+					ref={terminalInputRef}
+					style={{ color: inputColor, caretColor: inputColor }}
+					onKeyDown={onInputKeyDown}
+					onKeyUp={(event) => event.stopPropagation()}
+					spellCheck={false}
+					autoComplete="off"
+				></input>
 			</div>
 		</div>
 	);

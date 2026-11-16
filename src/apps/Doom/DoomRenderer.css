@@ -2,7 +2,7 @@
 	display: flex;
 	width: 100%;
 	height: 100%;
-	background: #0a0a0a;
+	background: #140812;
 }
 
 #DOOM>.dosbox-container {
@@ -30,10 +30,10 @@
 }
 
 a:link {
-	color: #00ff41;
+	color: #ffb627;
 }
 
 .loading-doom {
 	position: absolute !important;
-	background-color: rgba(0, 255, 65, 0.15);
+	background-color: rgba(255, 182, 39, 0.15);
 }

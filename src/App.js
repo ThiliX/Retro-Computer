@@ -7,6 +7,7 @@ import Clock from "./components/Clock";
 import TaskBarAppDisplay from "./components/TaskBarAppDisplay";
 import Volume from "./components/Volume";
 import Clippy from "./components/Clippy";
+import BootScreen from "./components/BootScreen";
 
 import Terminal from "./apps/Terminal/Terminal";
 import Txt from "./apps/Txt/Txt";
@@ -25,101 +26,97 @@ const DESKTOP_WIDTH = 800;
 const DESKTOP_HEIGHT = 600;
 const TASKBAR_HEIGHT = 38;
 
+// Total footprint of monitor + stand + case, used to fit the whole PC in the viewport.
+const RIG_WIDTH = 1040;
+const RIG_HEIGHT = 1060;
+
+// "off"     → black glass, waiting for the power button
+// "booting" → BIOS POST screen
+// "on"      → desktop
+const POWER_OFF = "off";
+const POWER_BOOTING = "booting";
+const POWER_ON = "on";
+
+// Social links, in the order they stack on the desktop.
+const SOCIAL_ICONS = [
+	{ key: "github", icon: "icons/github.png", title: "github" },
+	{ key: "twitter", icon: "icons/x.png", title: "x" },
+	{ key: "instagram", icon: "icons/instagram.png", title: "instagram" },
+	{ key: "spotify", icon: "icons/spotify.png", title: "spotify" },
+	{ key: "steam", icon: "icons/steam.png", title: "steam" },
+	{ key: "linkedin", icon: "icons/linkedin.svg", title: "linkedin" },
+	{ key: "youtube", icon: "icons/youtube.svg", title: "youtube" },
+];
+
 // ─── Retro sound effects (generated via Web Audio API) ───
 let globalAudioCtx = null;
 function getAudioCtx() {
 	if (!globalAudioCtx) {
 		globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
 	}
-	if (globalAudioCtx.state === 'suspended') {
+	if (globalAudioCtx.state === "suspended") {
 		globalAudioCtx.resume();
 	}
 	return globalAudioCtx;
 }
 
+function playTone(ctx, { type, from, to, start, duration, volume }) {
+	const osc = ctx.createOscillator();
+	const gain = ctx.createGain();
+	osc.type = type;
+	osc.frequency.setValueAtTime(from, ctx.currentTime + start);
+	if (to) {
+		osc.frequency.exponentialRampToValueAtTime(to, ctx.currentTime + start + duration);
+	}
+	gain.gain.setValueAtTime(volume, ctx.currentTime + start);
+	gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + duration);
+	osc.connect(gain);
+	gain.connect(ctx.destination);
+	osc.start(ctx.currentTime + start);
+	osc.stop(ctx.currentTime + start + duration);
+}
+
 function playRetroClick() {
 	try {
-		const ctx = getAudioCtx();
-		const osc = ctx.createOscillator();
-		const gain = ctx.createGain();
-		osc.connect(gain);
-		gain.connect(ctx.destination);
-		osc.type = "sine"; // Changed from square to sine for a softer, more pleasant click
-		osc.frequency.setValueAtTime(800, ctx.currentTime);
-		osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.05);
-		gain.gain.setValueAtTime(0.15, ctx.currentTime);
-		gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-		osc.start(ctx.currentTime);
-		osc.stop(ctx.currentTime + 0.08);
-	} catch (e) { /* silently fail */ }
+		playTone(getAudioCtx(), { type: "sine", from: 800, to: 400, start: 0, duration: 0.08, volume: 0.15 });
+	} catch (e) {
+		/* silently fail */
+	}
 }
 
-function playBootSound() {
+// Heavy power switch being pushed in: a high "click" then a low "clack".
+function playPowerOnSound() {
 	try {
 		const ctx = getAudioCtx();
-		
-		// Simulate a satisfying mechanical "click-clack" of a heavy power switch being turned ON
-		// First contact (higher pitch 'click')
-		const click1Osc = ctx.createOscillator();
-		const click1Gain = ctx.createGain();
-		click1Osc.type = "square";
-		click1Osc.frequency.setValueAtTime(800, ctx.currentTime);
-		click1Osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.02);
-		click1Gain.gain.setValueAtTime(0.5, ctx.currentTime);
-		click1Gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02);
-		click1Osc.connect(click1Gain);
-		click1Gain.connect(ctx.destination);
-		click1Osc.start(ctx.currentTime);
-		click1Osc.stop(ctx.currentTime + 0.02);
-
-		// Bottoming out (lower pitch, heavier 'clack' 35ms later)
-		const click2Osc = ctx.createOscillator();
-		const click2Gain = ctx.createGain();
-		click2Osc.type = "triangle";
-		click2Osc.frequency.setValueAtTime(150, ctx.currentTime + 0.035);
-		click2Osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.08);
-		click2Gain.gain.setValueAtTime(0.6, ctx.currentTime + 0.035);
-		click2Gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-		click2Osc.connect(click2Gain);
-		click2Gain.connect(ctx.destination);
-		click2Osc.start(ctx.currentTime + 0.035);
-		click2Osc.stop(ctx.currentTime + 0.08);
-
-	} catch (e) { /* silently fail */ }
+		playTone(ctx, { type: "square", from: 800, to: 100, start: 0, duration: 0.02, volume: 0.5 });
+		playTone(ctx, { type: "triangle", from: 150, to: 30, start: 0.035, duration: 0.045, volume: 0.6 });
+	} catch (e) {
+		/* silently fail */
+	}
 }
 
+// Switch released: heavy pull, then the snap back.
 function playShutdownSound() {
 	try {
 		const ctx = getAudioCtx();
-		
-		// Simulate the switch being turned OFF (Reverse sequence: heavy pull, then snap)
-		// Initial heavy pull
-		const click1Osc = ctx.createOscillator();
-		const click1Gain = ctx.createGain();
-		click1Osc.type = "triangle";
-		click1Osc.frequency.setValueAtTime(120, ctx.currentTime);
-		click1Osc.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 0.05);
-		click1Gain.gain.setValueAtTime(0.5, ctx.currentTime);
-		click1Gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
-		click1Osc.connect(click1Gain);
-		click1Gain.connect(ctx.destination);
-		click1Osc.start(ctx.currentTime);
-		click1Osc.stop(ctx.currentTime + 0.05);
+		playTone(ctx, { type: "triangle", from: 120, to: 20, start: 0, duration: 0.05, volume: 0.5 });
+		playTone(ctx, { type: "square", from: 600, to: 80, start: 0.04, duration: 0.02, volume: 0.4 });
+	} catch (e) {
+		/* silently fail */
+	}
+}
 
-		// Switch snaps back up
-		const click2Osc = ctx.createOscillator();
-		const click2Gain = ctx.createGain();
-		click2Osc.type = "square";
-		click2Osc.frequency.setValueAtTime(600, ctx.currentTime + 0.04);
-		click2Osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.06);
-		click2Gain.gain.setValueAtTime(0.4, ctx.currentTime + 0.04);
-		click2Gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
-		click2Osc.connect(click2Gain);
-		click2Gain.connect(ctx.destination);
-		click2Osc.start(ctx.currentTime + 0.04);
-		click2Osc.stop(ctx.currentTime + 0.06);
-
-	} catch (e) { /* silently fail */ }
+// Short rising chiptune arpeggio once the desktop is up.
+function playStartupChime() {
+	try {
+		const ctx = getAudioCtx();
+		[523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+			playTone(ctx, { type: "square", from: freq, start: i * 0.11, duration: 0.22, volume: 0.07 });
+		});
+		playTone(ctx, { type: "triangle", from: 261.63, start: 0, duration: 0.7, volume: 0.12 });
+	} catch (e) {
+		/* silently fail */
+	}
 }
 
 function playErrorSound() {
@@ -136,18 +133,33 @@ function playErrorSound() {
 		gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
 		osc.start(ctx.currentTime);
 		osc.stop(ctx.currentTime + 0.25);
-	} catch (e) { /* silently fail */ }
+	} catch (e) {
+		/* silently fail */
+	}
 }
 
 // Make sounds available globally for other components
-window.retroSounds = { playRetroClick, playBootSound, playShutdownSound, playErrorSound };
+window.retroSounds = { playRetroClick, playBootSound: playPowerOnSound, playShutdownSound, playErrorSound, playStartupChime };
+
+function useFitToViewport() {
+	useEffect(() => {
+		function fit() {
+			const scale = Math.min(window.innerWidth / RIG_WIDTH, window.innerHeight / RIG_HEIGHT);
+			document.documentElement.style.setProperty("--rig-scale", String(scale));
+		}
+		fit();
+		window.addEventListener("resize", fit);
+		return () => window.removeEventListener("resize", fit);
+	}, []);
+}
 
 function App() {
 	const { openedApps } = useAppsManager();
 	const { openedPopUps } = usePopUpsManager();
 
+	useFitToViewport();
+
 	const appsDisplayParentRef = useRef(null);
-	const appsTaskBarParentRef = useRef(null);
 
 	const terminalRef = useRef(null);
 	const txtRef = useRef(null);
@@ -159,10 +171,14 @@ function App() {
 	const paintRef = useRef(null);
 	const kittRef = useRef(null);
 
+	const [powerState, setPowerState] = useState(POWER_OFF);
+	const isDesktopOn = powerState === POWER_ON;
+
+	const [isDriveActive, setIsDriveActive] = useState(false);
+
 	const [isTerminalOpened, setIsTerminalOpened] = useState(false);
 	const [isTxtOpened, setIsTxtOpened] = useState(false);
 	const [isMyPcOpened, setIsMyPcOpened] = useState(false);
-	const [isScreenTurnedOn, setIsScreenTurnedOn] = useState(false);
 	const [isSynthOpened, setIsSynthOpened] = useState(false);
 	const [isBrowserOpened, setIsBrowserOpened] = useState(false);
 	const [isIeOpened, setIsIeOpened] = useState(false);
@@ -179,257 +195,188 @@ function App() {
 	const [isPaintMinimized, setIsPaintMinimized] = useState(false);
 	const [isKittMinimized, setIsKittMinimized] = useState(false);
 
-	const appsStateMap = {
-		terminal: { ref: terminalRef, isOpened: isTerminalOpened, setIsOpened: setIsTerminalOpened, setIsMinimized: setIsTerminalMinimized },
-		txt: { ref: txtRef, isOpened: isTxtOpened, setIsOpened: setIsTxtOpened, setIsMinimized: setIsTxtMinimized },
-		mypc: { ref: myPcRef, isOpened: isMyPcOpened, setIsOpened: setIsMyPcOpened, setIsMinimized: setIsMyPcMinimized },
-		synth: { ref: synthRef, isOpened: isSynthOpened, setIsOpened: setIsSynthOpened, setIsMinimized: setIsSynthMinimized },
-		browser: { ref: browserRef, isOpened: isBrowserOpened, setIsOpened: setIsBrowserOpened, setIsMinimized: setIsBrowserMinimized },
-		ie: { ref: ieRef, isOpened: isIeOpened, setIsOpened: setIsIeOpened, setIsMinimized: setIsIeMinimized },
-		paint: { ref: paintRef, isOpened: isPaintOpened, setIsOpened: setIsPaintOpened, setIsMinimized: setIsPaintMinimized },
-		kitt: { ref: kittRef, isOpened: isKittOpened, setIsOpened: setIsKittOpened, setIsMinimized: setIsKittMinimized },
-	};
-
+	// Register open/minimize listeners once the desktop (and therefore every AppCore) is mounted.
 	useEffect(() => {
-		const registeredStateListeners = [];
-
-		for (const [key, { ref, setIsOpened, setIsMinimized }] of Object.entries(appsStateMap)) {
-			if (ref?.current) {
-				registeredStateListeners.push(
-					ref.current.onAppCoreOpenStateChanged((isOpened) => {
-						setIsOpened(isOpened);
-					})
-				);
-				registeredStateListeners.push(
-					ref.current.onAppCoreMinimizeStateChanged((isMinimized) => {
-						setIsMinimized(isMinimized);
-					})
-				);
-			}
+		if (!isDesktopOn) {
+			return;
 		}
 
-		return () => {
-			registeredStateListeners.forEach((removeListener) => removeListener());
-		};
-	}, [terminalRef, txtRef, myPcRef, synthRef, isScreenTurnedOn, browserRef, ieRef, paintRef, kittRef]);
+		const apps = [
+			[terminalRef, setIsTerminalOpened, setIsTerminalMinimized],
+			[txtRef, setIsTxtOpened, setIsTxtMinimized],
+			[myPcRef, setIsMyPcOpened, setIsMyPcMinimized],
+			[synthRef, setIsSynthOpened, setIsSynthMinimized],
+			[browserRef, setIsBrowserOpened, setIsBrowserMinimized],
+			[ieRef, setIsIeOpened, setIsIeMinimized],
+			[paintRef, setIsPaintOpened, setIsPaintMinimized],
+			[kittRef, setIsKittOpened, setIsKittMinimized],
+		];
 
+		const removers = [];
+		for (const [ref, setIsOpened, setIsMinimized] of apps) {
+			if (!ref.current) {
+				continue;
+			}
+			removers.push(ref.current.onAppCoreOpenStateChanged(setIsOpened));
+			removers.push(ref.current.onAppCoreMinimizeStateChanged(setIsMinimized));
+		}
+
+		return () => removers.forEach((remove) => remove());
+	}, [isDesktopOn]);
+
+	// Click sound for anything clicked on the desktop.
 	useEffect(() => {
-		function onClick({ x, y }) {
+		function onClick({ clientX, clientY }) {
 			if (!computerScreenRef.current) {
 				return;
 			}
 
 			const { top, left, width, height } = computerScreenRef.current.getBoundingClientRect();
-
-			if (x >= left && x <= left + width && y >= top && y <= top + height) {
+			if (clientX >= left && clientX <= left + width && clientY >= top && clientY <= top + height) {
 				playRetroClick();
 			}
 		}
 
 		document.addEventListener("click", onClick);
-
-		return () => {
-			document.removeEventListener("click", onClick);
-		};
+		return () => document.removeEventListener("click", onClick);
 	}, []);
 
-	const handleToggleScreen = () => {
+	// Floppy drive LED flickers whenever a new app is launched.
+	const previousOpenedCount = useRef(0);
+	useEffect(() => {
+		if (openedApps.length > previousOpenedCount.current) {
+			setIsDriveActive(true);
+			const id = setTimeout(() => setIsDriveActive(false), 700);
+			previousOpenedCount.current = openedApps.length;
+			return () => clearTimeout(id);
+		}
+		previousOpenedCount.current = openedApps.length;
+	}, [openedApps.length]);
+
+	const handlePowerButton = () => {
+		if (powerState === POWER_OFF) {
+			playPowerOnSound();
+			setPowerState(POWER_BOOTING);
+			return;
+		}
+
 		for (const app of openedApps) {
 			app.close();
 		}
-
-		setIsScreenTurnedOn((previousState) => {
-			if (previousState) {
-				playShutdownSound();
-			} else {
-				playBootSound();
-			}
-			return !previousState;
-		});
+		playShutdownSound();
+		setPowerState(POWER_OFF);
 	};
 
-	// Build social icons from config — use separate position from app icons
+	const handleBootFinished = () => {
+		setPowerState(POWER_ON);
+		playStartupChime();
+	};
+
 	const pos = userConfig.iconPositions || {};
 	const socialsX = pos.socialsStartX ?? 1;
 	const socialsStartY = pos.socialsStartY ?? 0;
-	const socialIcons = [];
-	if (userConfig.socials.github) {
-		socialIcons.push(
-			<IconDisplay key="github" icon="icons/github.png" title="github" x={socialsX} y={socialsStartY + socialIcons.length} href={userConfig.socials.github} />
-		);
-	}
-	if (userConfig.socials.twitter) {
-		socialIcons.push(
-			<IconDisplay key="twitter" icon="icons/x.png" title="twitter" x={socialsX} y={socialsStartY + socialIcons.length} href={userConfig.socials.twitter} />
-		);
-	}
-	if (userConfig.socials.instagram) {
-		socialIcons.push(
-			<IconDisplay key="instagram" icon="icons/instagram.png" title="instagram" x={socialsX} y={socialsStartY + socialIcons.length} href={userConfig.socials.instagram} />
-		);
-	}
-	if (userConfig.socials.spotify) {
-		socialIcons.push(
-			<IconDisplay key="spotify" icon="icons/spotify.png" title="spotify" x={socialsX} y={socialsStartY + socialIcons.length} href={userConfig.socials.spotify} />
-		);
-	}
-	if (userConfig.socials.steam) {
-		socialIcons.push(
-			<IconDisplay key="steam" icon="icons/steam.png" title="steam" x={socialsX} y={socialsStartY + socialIcons.length} href={userConfig.socials.steam} />
-		);
-	}
-	if (userConfig.socials.linkedin) {
-		socialIcons.push(
-			<IconDisplay key="linkedin" icon="icons/linkedin.svg" title="linkedin" x={socialsX} y={socialsStartY + socialIcons.length} href={userConfig.socials.linkedin} />
-		);
-	}
-	if (userConfig.socials.youtube) {
-		socialIcons.push(
-			<IconDisplay key="youtube" icon="icons/youtube.png" title="youtube" x={socialsX} y={socialsStartY + socialIcons.length} href={userConfig.socials.youtube} />
+	const socialIcons = SOCIAL_ICONS.filter(({ key }) => userConfig.socials[key]).map(({ key, icon, title }, index) => (
+		<IconDisplay key={key} icon={icon} title={title} x={socialsX} y={socialsStartY + index} href={userConfig.socials[key]} />
+	));
+
+	const sharedAppProps = {
+		parentRef: appsDisplayParentRef,
+		desktopWidth: DESKTOP_WIDTH,
+		desktopHeight: DESKTOP_HEIGHT,
+		taskbarHeight: TASKBAR_HEIGHT,
+	};
+
+	function renderScreen() {
+		if (powerState === POWER_BOOTING) {
+			return (
+				<div className="computer-screen computer-screen-boot">
+					<BootScreen onFinished={handleBootFinished} />
+				</div>
+			);
+		}
+
+		if (powerState === POWER_OFF) {
+			return (
+				<div className="computer-screen computer-screen-off">
+					<span className="screen-off-hint">▶ PRESS POWER</span>
+				</div>
+			);
+		}
+
+		return (
+			<div className="computer-screen" ref={computerScreenRef}>
+				<div className="pop-ups-container">{openedPopUps.map((popUp) => popUp[1])}</div>
+
+				<img className="computer-screen-background" src={userConfig.wallpaper} alt="" />
+
+				<div className="computer-screen-icons-container" style={{ position: "absolute", width: `${DESKTOP_WIDTH}px`, height: `${DESKTOP_HEIGHT}px` }}>
+					{/* Internet Explorer — only rendered if position is defined in config */}
+					{pos.internetExplorer && <InternetExplorer iconX={pos.internetExplorer.x} iconY={pos.internetExplorer.y} ref={ieRef} {...sharedAppProps} />}
+
+					{/* Netscape browser — loads browserUrl from config */}
+					<Browser iconX={pos.netscape?.x ?? 0} iconY={pos.netscape?.y ?? 0} ref={browserRef} {...sharedAppProps} />
+
+					<IconDisplay icon="icons/new-bin.svg" title="bin" x={pos.bin?.x ?? 14.5} y={pos.bin?.y ?? 6.5} onIconClicked={playErrorSound} />
+					<IconDisplay icon="icons/new-folder.svg" title="folder" x={pos.folder?.x ?? 14.5} y={pos.folder?.y ?? 2} onIconClicked={playErrorSound} />
+
+					{socialIcons}
+
+					<Terminal iconX={pos.terminal?.x ?? 14.5} iconY={pos.terminal?.y ?? 0} ref={terminalRef} {...sharedAppProps} />
+					<Txt iconX={pos.txt?.x ?? 3} iconY={pos.txt?.y ?? 3} ref={txtRef} {...sharedAppProps} />
+					<MyPc iconX={pos.myPc?.x ?? 14.5} iconY={pos.myPc?.y ?? 1} ref={myPcRef} {...sharedAppProps} />
+					<Synth iconX={pos.synth?.x ?? 13} iconY={pos.synth?.y ?? 1} ref={synthRef} {...sharedAppProps} />
+					<Paint iconX={pos.paint?.x ?? 13} iconY={pos.paint?.y ?? 2} ref={paintRef} {...sharedAppProps} />
+					<Kitt iconX={pos.kitt?.x ?? 13} iconY={pos.kitt?.y ?? 0} ref={kittRef} {...sharedAppProps} />
+				</div>
+				<div className="desktop-taskbar">
+					<span className="desktop-taskbar-start">
+						<span className="computer-badge-stripes" />
+						START
+					</span>
+				</div>
+				<Clock />
+				<Volume />
+				<Clippy />
+				{/* Please, if you're going to copy at least give me credits.*/}
+				<div className="copyright-footer">{userConfig.copyright}</div>
+			</div>
 		);
 	}
 
 	return (
 		<div className="main" id="computer-main">
-			{!isScreenTurnedOn && (
+			{isDesktopOn && (
 				<div className="lock-computer-crt-container">
-					<img className="glitch-screen-effect" src="icons/glitch.gif" alt="" />
+					<div className="crt-roll-bar" />
 					<div className="out-light" />
 					<div className="shadow" />
 					<div className="lock-computer-screen-container" ref={appsDisplayParentRef}>
-						{isTerminalOpened ? terminalRef?.current?.render(isTerminalMinimized) : null}
-						{isTxtOpened ? txtRef?.current?.render(isTxtMinimized) : null}
-						{isMyPcOpened ? myPcRef?.current?.render(isMyPcMinimized) : null}
-						{isSynthOpened ? synthRef?.current?.render(isSynthMinimized) : null}
-						{isBrowserOpened ? browserRef?.current?.render(isBrowserMinimized) : null}
-						{isIeOpened ? ieRef?.current?.render(isIeMinimized) : null}
-						{isPaintOpened ? paintRef?.current?.render(isPaintMinimized) : null}
-						{isKittOpened ? kittRef?.current?.render(isKittMinimized) : null}
+						{isTerminalOpened ? terminalRef.current?.render(isTerminalMinimized) : null}
+						{isTxtOpened ? txtRef.current?.render(isTxtMinimized) : null}
+						{isMyPcOpened ? myPcRef.current?.render(isMyPcMinimized) : null}
+						{isSynthOpened ? synthRef.current?.render(isSynthMinimized) : null}
+						{isBrowserOpened ? browserRef.current?.render(isBrowserMinimized) : null}
+						{isIeOpened ? ieRef.current?.render(isIeMinimized) : null}
+						{isPaintOpened ? paintRef.current?.render(isPaintMinimized) : null}
+						{isKittOpened ? kittRef.current?.render(isKittMinimized) : null}
 					</div>
-					<div className="computer-taskbar-container" ref={appsTaskBarParentRef}>
-						{openedApps.map((appRef, idx) => {
-							return <TaskBarAppDisplay key={idx} appRef={appRef} />;
-						})}
+					<div className="computer-taskbar-container">
+						{openedApps.map((appRef) => (
+							<TaskBarAppDisplay key={appRef.appearence.title} appRef={appRef} />
+						))}
 					</div>
 				</div>
 			)}
 
 			<div className="computer-crt-container">
-				<div className="computer-screen-container">
-					{!isScreenTurnedOn ? (
-						<div className="computer-screen" ref={computerScreenRef}>
-							<div className="pop-ups-container">
-								{Object.values(openedPopUps).map((popUp) => {
-									return popUp[1];
-								})}
-							</div>
-
-							<img className="computer-screen-background" src={userConfig.wallpaper} style={{ width: "100%", height: "100%", overflow: "hidden" }} alt="" />
-
-							<div
-								className="computer-screen-icons-container"
-								style={{ position: "absolute", width: `${DESKTOP_HEIGHT}px`, height: `${DESKTOP_HEIGHT}px` }}
-							>
-								{/* Internet Explorer — only rendered if position is defined in config */}
-								{pos.internetExplorer && (
-									<InternetExplorer
-										iconX={pos.internetExplorer.x}
-										iconY={pos.internetExplorer.y}
-										ref={ieRef}
-										parentRef={appsDisplayParentRef}
-										desktopWidth={DESKTOP_WIDTH}
-										desktopHeight={DESKTOP_HEIGHT}
-										taskbarHeight={TASKBAR_HEIGHT}
-									/>
-								)}
-
-								{/* Netscape browser — loads browserUrl from config */}
-								<Browser
-									iconX={pos.netscape?.x ?? 0}
-									iconY={pos.netscape?.y ?? 0}
-									ref={browserRef}
-									parentRef={appsDisplayParentRef}
-									desktopWidth={DESKTOP_WIDTH}
-									desktopHeight={DESKTOP_HEIGHT}
-									taskbarHeight={TASKBAR_HEIGHT}
-								/>
-
-								<IconDisplay icon="icons/new-bin.svg" title="bin" x={pos.bin?.x ?? 14.5} y={pos.bin?.y ?? 6.5} />
-								<IconDisplay icon="icons/new-folder.svg" title="folder" x={pos.folder?.x ?? 14.5} y={pos.folder?.y ?? 2} />
-
-								{/* Social link icons from config */}
-								{socialIcons}
-
-								<Terminal
-									iconX={pos.terminal?.x ?? 14.5}
-									iconY={pos.terminal?.y ?? 0}
-									ref={terminalRef}
-									parentRef={appsDisplayParentRef}
-									desktopWidth={DESKTOP_WIDTH}
-									desktopHeight={DESKTOP_HEIGHT}
-									taskbarHeight={TASKBAR_HEIGHT}
-								/>
-								<Txt
-									iconX={pos.txt?.x ?? 3}
-									iconY={pos.txt?.y ?? 3}
-									ref={txtRef}
-									parentRef={appsDisplayParentRef}
-									desktopWidth={DESKTOP_WIDTH}
-									desktopHeight={DESKTOP_HEIGHT}
-									taskbarHeight={TASKBAR_HEIGHT}
-								/>
-								<MyPc
-									iconX={pos.myPc?.x ?? 14.5}
-									iconY={pos.myPc?.y ?? 1}
-									ref={myPcRef}
-									parentRef={appsDisplayParentRef}
-									desktopWidth={DESKTOP_WIDTH}
-									desktopHeight={DESKTOP_HEIGHT}
-									taskbarHeight={TASKBAR_HEIGHT}
-								/>
-								<Synth
-									iconX={pos.synth?.x ?? 13}
-									iconY={pos.synth?.y ?? 1}
-									ref={synthRef}
-									parentRef={appsDisplayParentRef}
-									desktopWidth={DESKTOP_WIDTH}
-									desktopHeight={DESKTOP_HEIGHT}
-									taskbarHeight={TASKBAR_HEIGHT}
-								/>
-								<Paint
-									iconX={pos.paint?.x ?? 13}
-									iconY={pos.paint?.y ?? 2}
-									ref={paintRef}
-									parentRef={appsDisplayParentRef}
-									desktopWidth={DESKTOP_WIDTH}
-									desktopHeight={DESKTOP_HEIGHT}
-									taskbarHeight={TASKBAR_HEIGHT}
-								/>
-								<Kitt
-									iconX={pos.kitt?.x ?? 13}
-									iconY={pos.kitt?.y ?? 0}
-									ref={kittRef}
-									parentRef={appsDisplayParentRef}
-									desktopWidth={DESKTOP_WIDTH}
-									desktopHeight={DESKTOP_HEIGHT}
-									taskbarHeight={TASKBAR_HEIGHT}
-								/>
-							</div>
-							<Clock />
-							<Volume />
-							<Clippy />
-							{/* Please, if you're going to copy at least give me credits.*/}
-							<div className="copyright-footer">
-								{userConfig.copyright}
-							</div>
-						</div>
-					) : (
-						<div className="computer-screen" style={{ backgroundColor: "black" }} />
-					)}
+				<div className="computer-screen-container">{renderScreen()}</div>
+				<div className="computer-badge" aria-hidden="true">
+					<span className="computer-badge-stripes" />
+					<span className="computer-badge-text">SUNSET 586</span>
 				</div>
 				<div className="computer-button-container">
-					<div className="computer-button-light" style={isScreenTurnedOn ? { backgroundColor: "red", boxShadow: "0px 0px 25px 1px red" } : {}}></div>
-					<button className="computer-button" onClick={handleToggleScreen}></button>
+					<div className={`computer-button-light ${powerState !== POWER_OFF ? "on" : ""}`} />
+					<button className="computer-button" onClick={handlePowerButton} aria-label={powerState === POWER_OFF ? "Power on" : "Power off"} />
 				</div>
 			</div>
 
@@ -444,6 +391,7 @@ function App() {
 							</div>
 
 							<div className="computer-diskhat-button-container" style={{ height: "100px", width: "300px", position: "absolute" }}>
+								<div className={`computer-diskhat-led ${isDriveActive || powerState === POWER_BOOTING ? "active" : ""}`} />
 								<div className="computer-diskhat-button"></div>
 							</div>
 						</div>
@@ -452,7 +400,7 @@ function App() {
 
 				<div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center", paddingTop: "30px" }}>
 					<div className="computer-turn-button-container">
-						<button className="computer-turn-button"></button>
+						<button className="computer-turn-button" onClick={handlePowerButton} aria-label="Power" />
 					</div>
 
 					<div className="computer-case-fans-container">

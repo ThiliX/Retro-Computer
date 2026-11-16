@@ -72,7 +72,7 @@ const AppDisplay = React.forwardRef(
 				<div
 					draggable
 					className="app-interface-top-bar-container"
-					style={{ backgroundColor: topBarColor, width: "100%", height: "30px" }}
+					style={{ background: topBarColor, width: "100%", height: "30px" }}
 					onDragStart={onTopBarDragStart}
 					onDragEnd={onTopBarDragEnd}
 					onDrag={onTopBarDrag}

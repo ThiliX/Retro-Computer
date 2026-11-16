@@ -5,18 +5,18 @@
 	align-items: flex-start;
 	font-weight: bold;
 	font-size: 15px;
-	color: #00ff41;
+	color: #ffb627;
 	font-family: 'VT323', monospace;
-	text-shadow: 0 0 2px rgba(0, 255, 65, 0.1);
+	text-shadow: 0 0 2px rgba(255, 182, 39, 0.1);
 	line-height: 1.6;
 }
 
 .my-pc-setup-info-container {
 	font-weight: bold;
 	font-size: 15px;
-	color: #00cc33;
+	color: #ff7a1a;
 	font-family: 'VT323', monospace;
-	text-shadow: 0 0 2px rgba(0, 255, 65, 0.1);
+	text-shadow: 0 0 2px rgba(255, 182, 39, 0.1);
 	line-height: 1.6;
 }
 

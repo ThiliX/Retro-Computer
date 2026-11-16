@@ -3,7 +3,7 @@
 	flex-direction: column;
 	width: 100%;
 	height: 100%;
-	background-color: #1a1a2e;
+	background-color: #2b1233;
 }
 
 .paint-topbar-container {
@@ -19,15 +19,15 @@
 
 .paint-topbar>a {
 	font-size: 13px;
-	color: #00cc33;
+	color: #ff7a1a;
 	font-family: 'VT323', monospace;
 	cursor: pointer;
 	transition: color 0.2s;
 }
 
 .paint-topbar>a:hover {
-	color: #00ff41;
-	text-shadow: 0 0 3px rgba(0, 255, 65, 0.2);
+	color: #ffb627;
+	text-shadow: 0 0 3px rgba(255, 182, 39, 0.2);
 }
 
 .paint-topbar>a::first-letter {
@@ -37,7 +37,8 @@
 .paint-canvas-container {
 	display: flex;
 	width: 100%;
-	height: 100%;
+	flex: 1 1 auto;
+	min-height: 0;
 	column-gap: 5px;
 }
 
@@ -52,33 +53,44 @@
 	display: flex;
 	align-items: center;
 	height: 30px;
-	background-color: #1a1a2e;
-	border: 1px solid #333355;
+	background-color: #2b1233;
+	border: 1px solid #5a2a3e;
 	transition: all 0.2s ease;
 }
 
 .paint-tools-container>button:hover {
-	background-color: rgba(0, 255, 65, 0.1);
-	border: 1px solid #00ff41;
+	background-color: rgba(255, 182, 39, 0.1);
+	border: 1px solid #ffb627;
 	cursor: pointer;
 }
 
+.paint-tools-container>button.active {
+	background-color: rgba(255, 122, 26, 0.25);
+	border: 1px solid #ff7a1a;
+	box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
 .paint-tools-container>button img {
-	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(85deg);
+	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(-12deg);
 }
 
 .html-paint-canvas-container {
+	position: relative;
 	display: flex;
 	width: 100%;
-	height: 100%;
+	min-height: 0;
 }
 
+/* Fill the available area without stretching the window; the palette stays visible below */
 #paint-canvas {
-	background-color: #0a0a0a;
+	position: absolute;
+	inset: 0;
+	box-sizing: border-box;
+	background-color: #140812;
 	width: 100%;
 	height: 100%;
 	transform-origin: top left;
-	border: 1px solid #00ff41;
+	border: 1px solid #ffb627;
 }
 
 .paint-pallette-container {
@@ -89,21 +101,21 @@
 .paint-pallette-container>button {
 	width: 20px;
 	height: 20px;
-	border: 1px solid #333355;
+	border: 1px solid #5a2a3e;
 	cursor: pointer;
 	transition: all 0.15s ease;
 }
 
 .paint-pallette-container>button:hover {
-	border-color: #00ff41;
-	box-shadow: 0 0 6px rgba(0, 255, 65, 0.3);
+	border-color: #ffb627;
+	box-shadow: 0 0 6px rgba(255, 182, 39, 0.3);
 }
 
 .divisor {
 	display: flex;
 	width: 100%;
 	height: 1px;
-	background-color: #333355;
+	background-color: #5a2a3e;
 }
 
 .white-paint {
@@ -143,7 +155,7 @@
 }
 
 .green-paint {
-	background-color: #00ff41;
+	background-color: #ffb627;
 }
 
 .paint-tools-container>input {
@@ -164,13 +176,13 @@
 	height: 30px;
 	justify-content: center;
 	align-items: center;
-	border: 1px solid #00ff41;
-	background-color: #0a0a15;
+	border: 1px solid #ffb627;
+	background-color: #1a0b1e;
 }
 
 .paint-color-selected {
 	display: flex;
 	width: 20px;
 	height: 20px;
-	border: 1px solid #333355;
+	border: 1px solid #5a2a3e;
 }
