@@ -417,12 +417,6 @@
 	filter: brightness(1.2) drop-shadow(0 0 4px var(--sa-orange));
 }
 
-.pop-ups-container {
-	position: absolute;
-	width: 800px;
-	height: 600px;
-}
-
 /* ═══ COPYRIGHT FOOTER ═══ */
 .copyright-footer {
 	display: flex;

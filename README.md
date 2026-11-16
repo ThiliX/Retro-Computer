@@ -25,7 +25,6 @@ A retro-themed desktop environment built with React, simulating a fully interact
 | **me.txt** | A text viewer displaying personal bio and info |
 | **My PC** | System specs viewer with config and setup tabs |
 | **Netscape Browser** | Embedded iframe browser loading a configurable URL |
-| **Internet Explorer** | Optional secondary browser window |
 | **Paint** | A drawing canvas app |
 | **Synth-80** | Retro polyphonic synthesizer with 4 waveforms, octave control, reverb, and keyboard input |
 | **K.I.T.T.** | Knight Rider's AI — iconic red Larson scanner with KITT speaking in-character |
@@ -83,22 +82,25 @@ Retro-Computer/
 │   │   ├── Txt/             # Text file viewer (me.txt)
 │   │   ├── MyPc/            # PC specs viewer
 │   │   ├── Browser/         # Netscape browser (iframe)
-│   │   ├── InternetExplorer/# IE browser (iframe)
 │   │   ├── Paint/           # Drawing canvas
 │   │   ├── Synth/           # Retro polyphonic synthesizer
 │   │   └── Kitt/            # K.I.T.T. — Knight Rider AI scanner
+│   ├── world/               # 3D bedroom scene (three.js / react-three-fiber)
+│   ├── audio/               # Retro sound engine (Web Audio)
 │   ├── components/          # Shared UI components
 │   │   ├── AppDisplay.*     # Window chrome (title bar, buttons, drag)
 │   │   ├── TaskBarAppDisplay.* # Taskbar app entries
 │   │   ├── IconDisplay.*    # Desktop shortcut icons
+│   │   ├── BootScreen.*     # BIOS POST boot sequence
+│   │   ├── ClassicRig.js    # Flat 2D monitor + case (Classic view)
+│   │   ├── WorldHud.*       # 3D view controls (stand up, power, view toggle)
 │   │   ├── Clock.*          # System tray clock
 │   │   ├── Volume.*         # Volume toggle + YouTube player
-│   │   ├── Clippy.*         # Clippy assistant
-│   │   └── PopUp.*          # Modal popup windows
+│   │   └── Clippy.*         # Clippy assistant
 │   ├── context/             # React context providers
 │   ├── userConfig.js        # ⭐ All personal configuration
-│   ├── App.js               # Main app — CRT monitor, desktop, taskbar
-│   └── App.css              # CRT styling, monitor, stand, case
+│   ├── App.js               # Main app — power/boot state, desktop, view switching
+│   └── App.css              # Theme tokens, CRT screen, Classic rig styling
 └── package.json
 ```
 

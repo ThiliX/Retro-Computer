@@ -17,11 +17,9 @@ import MyPc from "./apps/MyPc/MyPc";
 import Synth from "./apps/Synth/Synth";
 import Paint from "./apps/Paint/Paint";
 import Browser from "./apps/Browser/Browser";
-import InternetExplorer from "./apps/InternetExplorer/InternetExplorer";
 import Kitt from "./apps/Kitt/Kitt";
 
 import { useAppsManager } from "./context/AppsManagerContext";
-import { usePopUpsManager } from "./context/PopUpsManagerContext";
 import userConfig from "./userConfig";
 import * as sound from "./audio/retroAudio";
 
@@ -83,7 +81,6 @@ function getInitialView() {
 
 function App() {
 	const { openedApps } = useAppsManager();
-	const { openedPopUps } = usePopUpsManager();
 
 	const appsDisplayParentRef = useRef(null);
 	const computerScreenRef = useRef(null);
@@ -93,7 +90,6 @@ function App() {
 	const myPcRef = useRef(null);
 	const synthRef = useRef(null);
 	const browserRef = useRef(null);
-	const ieRef = useRef(null);
 	const paintRef = useRef(null);
 	const kittRef = useRef(null);
 
@@ -112,7 +108,6 @@ function App() {
 	const [isMyPcOpened, setIsMyPcOpened] = useState(false);
 	const [isSynthOpened, setIsSynthOpened] = useState(false);
 	const [isBrowserOpened, setIsBrowserOpened] = useState(false);
-	const [isIeOpened, setIsIeOpened] = useState(false);
 	const [isPaintOpened, setIsPaintOpened] = useState(false);
 	const [isKittOpened, setIsKittOpened] = useState(false);
 
@@ -122,7 +117,6 @@ function App() {
 	const [isMyPcMinimized, setIsMyPcMinimized] = useState(false);
 	const [isSynthMinimized, setIsSynthMinimized] = useState(false);
 	const [isBrowserMinimized, setIsBrowserMinimized] = useState(false);
-	const [isIeMinimized, setIsIeMinimized] = useState(false);
 	const [isPaintMinimized, setIsPaintMinimized] = useState(false);
 	const [isKittMinimized, setIsKittMinimized] = useState(false);
 
@@ -138,7 +132,6 @@ function App() {
 			[myPcRef, setIsMyPcOpened, setIsMyPcMinimized],
 			[synthRef, setIsSynthOpened, setIsSynthMinimized],
 			[browserRef, setIsBrowserOpened, setIsBrowserMinimized],
-			[ieRef, setIsIeOpened, setIsIeMinimized],
 			[paintRef, setIsPaintOpened, setIsPaintMinimized],
 			[kittRef, setIsKittOpened, setIsKittMinimized],
 		];
@@ -300,14 +293,9 @@ function App() {
 
 		return (
 			<>
-				<div className="pop-ups-container">{openedPopUps.map((popUp) => popUp[1])}</div>
-
 				<img className="computer-screen-background" src={userConfig.wallpaper} alt="" />
 
 				<div className="computer-screen-icons-container" style={{ position: "absolute", width: `${DESKTOP_WIDTH}px`, height: `${DESKTOP_HEIGHT}px` }}>
-					{/* Internet Explorer — only rendered if position is defined in config */}
-					{pos.internetExplorer && <InternetExplorer iconX={pos.internetExplorer.x} iconY={pos.internetExplorer.y} ref={ieRef} {...sharedAppProps} />}
-
 					{/* Netscape browser — loads browserUrl from config */}
 					<Browser iconX={pos.netscape?.x ?? 0} iconY={pos.netscape?.y ?? 0} ref={browserRef} {...sharedAppProps} />
 
@@ -331,7 +319,6 @@ function App() {
 					{isMyPcOpened ? myPcRef.current?.render(isMyPcMinimized) : null}
 					{isSynthOpened ? synthRef.current?.render(isSynthMinimized) : null}
 					{isBrowserOpened ? browserRef.current?.render(isBrowserMinimized) : null}
-					{isIeOpened ? ieRef.current?.render(isIeMinimized) : null}
 					{isPaintOpened ? paintRef.current?.render(isPaintMinimized) : null}
 					{isKittOpened ? kittRef.current?.render(isKittMinimized) : null}
 				</div>
