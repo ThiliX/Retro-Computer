@@ -1,0 +1,42 @@
+.xp-message-overlay {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 30000;
+}
+
+.xp-window.xp-message {
+	position: relative;
+	display: flex;
+	width: 360px;
+	animation: xp-fade-in 0.12s ease-out;
+}
+
+.xp-message-body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 14px;
+	padding: 16px 14px 12px;
+}
+
+.xp-message-content {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	width: 100%;
+}
+
+.xp-message-content img {
+	width: 32px;
+	height: 32px;
+	flex: 0 0 auto;
+}
+
+.xp-message-content p {
+	margin: 8px 0 0;
+	font-size: 11px;
+	line-height: 15px;
+}

@@ -2,24 +2,22 @@ import { useState, useEffect } from "react";
 
 import "./Clock.css";
 
+/** System-tray clock: "3:07 PM", with the full date as a tooltip. */
 function Clock() {
-	const [currentDate, setCurrentDate] = useState(new Date());
+	const [now, setNow] = useState(new Date());
 
 	useEffect(() => {
-		const interval = setInterval(() => {
-			setCurrentDate(new Date());
-		}, 1000);
-
-		return () => {
-			clearInterval(interval);
-		};
+		const interval = setInterval(() => setNow(new Date()), 1000);
+		return () => clearInterval(interval);
 	}, []);
 
+	const time = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+	const date = now.toLocaleDateString([], { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+
 	return (
-		<div className="date-time-container">
-			<span style={{ fontSize: "11px", color: "black", fontWeight: "bold" }}>{`${currentDate.toLocaleTimeString()}`}</span>
-			<span style={{ fontSize: "11px", color: "black", fontWeight: "bold" }}>{`${currentDate.toLocaleDateString()}`}</span>
-		</div>
+		<span className="xp-tray-clock" title={date}>
+			{time}
+		</span>
 	);
 }
 

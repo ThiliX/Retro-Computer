@@ -10,24 +10,23 @@ const MyPc = React.forwardRef(({ iconX, iconY, parentRef, ...others }, ref) => {
 	return (
 		<AppCore
 			AppRenderer={{
-				config: MyPcConfigRenderer,
-				setup: MyPcSetupRenderer,
-				sleeper: MyPcSleeperRenderer,
+				General: MyPcConfigRenderer,
+				Hardware: MyPcSetupRenderer,
+				Power: MyPcSleeperRenderer,
 			}}
 			iconX={iconX}
 			iconY={iconY}
-			title="myPc"
-			icon="icons/new-pc.svg"
-			width={600}
-			height={450}
-			backgroundColor="#2b1233"
-			topBarColor="var(--sa-titlebar)"
-			titleColor="var(--sa-cream)"
+			title="System Properties"
+			iconTitle="My Computer"
+			icon="icons/xp/computer.svg"
+			width={420}
+			height={470}
+			backgroundColor="#ece9d8"
 			ref={ref}
 			parentRef={parentRef}
 			overflowY="hidden"
-			options={["config", "setup", "sleeper"]}
-			initialOption="config"
+			options={["General", "Hardware", "Power"]}
+			initialOption="General"
 			{...others}
 		/>
 	);

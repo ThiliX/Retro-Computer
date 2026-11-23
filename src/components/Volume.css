@@ -1,35 +1,27 @@
-.volume-icon-container {
+.xp-tray-icon {
 	display: flex;
-	height: 25px;
-	position: absolute;
-	justify-content: end;
 	align-items: center;
-	bottom: 7px;
-	right: 120px;
-	z-index: 31000;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	padding: 0;
+	border: none;
+	background: none;
+	cursor: default;
 }
 
-.volume-icon-container img {
-	width: 26px;
-	height: 26px;
-	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(-12deg);
-	transition: all 0.2s ease;
+.xp-tray-icon img {
+	width: 16px;
+	height: 16px;
 }
 
-.volume-icon-container img:hover {
-	cursor: pointer;
-	filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(-12deg) drop-shadow(0 0 6px #ffb627);
+.xp-tray-icon:hover {
+	filter: brightness(1.2);
 }
 
-.easter-egg {
-	height: 95px;
-	width: 10px;
-	display: flex;
+.xp-music-player {
 	position: absolute;
-	bottom: 30px;
-	left: 730px;
-}
-
-.easter-egg img {
-	filter: sepia(0.6) saturate(1.8) hue-rotate(-20deg) brightness(0.9);
+	width: 0;
+	height: 0;
+	overflow: hidden;
 }

@@ -14,10 +14,11 @@ const SOCIAL_ICONS = {
 function MobileDisclaimer() {
 	return (
 		<div className="mobile-disclaimer">
+			<img className="mobile-disclaimer-logo" src="icons/xp/logo.svg" alt="" />
 			<span>
-				[ ERROR ] This system requires a desktop display.
+				This desktop needs a bigger screen.
 				<br />
-				Please access from a computer terminal.
+				Please visit from a computer. In the meantime, say hi:
 			</span>
 			<div className="mobile-disclaimer-icons" style={{ display: "flex", justifyContent: "center", columnGap: "10px", marginTop: "20px" }}>
 				{Object.entries(SOCIAL_ICONS)

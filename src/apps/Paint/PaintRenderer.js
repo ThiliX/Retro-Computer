@@ -13,17 +13,36 @@ const CANVAS_HEIGHT = 400;
 const CANVAS_COLUMNS = Math.floor(CANVAS_WIDTH / CANVAS_RESOLUTION);
 const CANVAS_ROWS = Math.floor(CANVAS_HEIGHT / CANVAS_RESOLUTION);
 
+// The classic 28-colour paint box, in two rows.
 const PALETTE = [
-	["white", [255, 255, 255]],
 	["black", [0, 0, 0]],
-	["gray", [180, 180, 180]],
-	["brown", [150, 75, 0]],
-	["red", [232, 53, 43]],
-	["pink", [255, 46, 136]],
-	["orange", [255, 122, 26]],
-	["yellow", [255, 182, 39]],
+	["gray", [128, 128, 128]],
+	["maroon", [128, 0, 0]],
+	["olive", [128, 128, 0]],
+	["green", [0, 128, 0]],
+	["teal", [0, 128, 128]],
+	["navy", [0, 0, 128]],
+	["purple", [128, 0, 128]],
+	["khaki", [128, 128, 64]],
+	["darkSlate", [0, 64, 64]],
+	["azure", [0, 128, 255]],
+	["indigo", [0, 64, 128]],
+	["violet", [64, 0, 255]],
+	["brown", [128, 64, 0]],
+	["white", [255, 255, 255]],
+	["silver", [192, 192, 192]],
+	["red", [255, 0, 0]],
+	["yellow", [255, 255, 0]],
+	["lime", [0, 255, 0]],
+	["cyan", [0, 255, 255]],
 	["blue", [0, 0, 255]],
-	["green", [46, 196, 182]],
+	["magenta", [255, 0, 255]],
+	["sand", [255, 255, 128]],
+	["spring", [0, 255, 128]],
+	["sky", [128, 255, 255]],
+	["periwinkle", [128, 128, 255]],
+	["rose", [255, 0, 128]],
+	["orange", [255, 128, 64]],
 ];
 
 const TOOL_BUTTONS = [
@@ -38,14 +57,14 @@ function rgbToHex(r, g, b) {
 }
 
 function PaintRenderer({ appCoreRef }) {
-	const [currentSelectedTool, setCurrentSelectedTool] = useState("none");
+	const [currentSelectedTool, setCurrentSelectedTool] = useState("pencil");
 	const [selectedPixelColor, setSelectedPixelColor] = useState("#000000");
 
 	const canvasRef = useRef(null);
 	const contextRef = useRef(null);
 	const paintRendererRef = useRef(null);
 	const selectedColorRef = useRef(selectedPixelColor);
-	const currentToolRef = useRef("none");
+	const currentToolRef = useRef("pencil");
 
 	// Tools are created once so their internal state (e.g. "is drawing") survives re-renders.
 	const toolsRef = useRef(null);
@@ -160,15 +179,13 @@ function PaintRenderer({ appCoreRef }) {
 
 	return (
 		<div className="paint-container">
-			<div className="paint-topbar-container">
-				<div className="paint-topbar">
-					<a>File</a>
-					<a>Edit</a>
-					<a>View</a>
-					<a>Image</a>
-					<a>Colors</a>
-					<a>Help</a>
-				</div>
+			<div className="xp-menubar">
+				<span>File</span>
+				<span>Edit</span>
+				<span>View</span>
+				<span>Image</span>
+				<span>Colors</span>
+				<span>Help</span>
 			</div>
 			<div className="paint-canvas-container">
 				<div className="paint-tools-container">
@@ -187,19 +204,17 @@ function PaintRenderer({ appCoreRef }) {
 					<canvas id="paint-canvas" ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT}></canvas>
 				</div>
 			</div>
-			<div className="divisor-container">
-				<div className="divisor"></div>
-			</div>
 			<div className="paint-color-container">
-				<div className="paint-color-selected-container">
-					<button className="paint-color-selected" style={{ backgroundColor: selectedPixelColor }}></button>
+				<div className="paint-color-selected-container" title="Current colour">
+					<span className="paint-color-selected" style={{ backgroundColor: selectedPixelColor }}></span>
 				</div>
 				<div className="paint-pallette-container">
 					{PALETTE.map(([name, [r, g, b]]) => (
-						<button key={name} className={`${name}-paint`} style={{ backgroundColor: rgbToHex(r, g, b) }} onClick={() => setSelectedColor(r, g, b)} title={name}></button>
+						<button key={name} style={{ backgroundColor: rgbToHex(r, g, b) }} onClick={() => setSelectedColor(r, g, b)} title={name}></button>
 					))}
 				</div>
 			</div>
+			<div className="paint-status">For Help, click Help Topics on the Help Menu.</div>
 		</div>
 	);
 }

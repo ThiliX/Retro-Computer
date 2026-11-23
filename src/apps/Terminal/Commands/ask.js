@@ -1,3 +1,4 @@
+const { playError } = require("../../../audio/xpAudio");
 const userConfig = require("../../../userConfig").default;
 
 const label = "type ask and the number. Ex: ask 1";
@@ -20,7 +21,7 @@ module.exports = {
 				terminalRef.current.writeToTerminal(`> ${questions[index - 1].answer}`, false, true);
 			} else {
 				terminalRef.current.writeToTerminal("[ERR] This question number doesn't exist.", false, true);
-				if (window.retroSounds) window.retroSounds.playErrorSound();
+				playError();
 			}
 		}
 	},

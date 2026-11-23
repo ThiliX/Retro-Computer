@@ -8,6 +8,7 @@ import cls from "./Commands/cls";
 import color from "./Commands/color";
 import exit from "./Commands/exit";
 import userConfig from "../../userConfig";
+import { playError } from "../../audio/xpAudio";
 
 const commands = {
 	[help.name]: help,
@@ -17,9 +18,10 @@ const commands = {
 	[exit.name]: exit,
 };
 
-const DIRECTORY = `C:\\Users\\${userConfig.terminalUser}>`;
+const DIRECTORY = `C:\\Documents and Settings\\${userConfig.terminalUser}>`;
 
 const COLOR_MAP = {
+	gray: "#c0c0c0",
 	amber: "#ffb627",
 	orange: "#ff7a1a",
 	red: "#ff5a4a",
@@ -33,7 +35,7 @@ const COLOR_MAP = {
 	white: "#ffffff",
 };
 
-const DEFAULT_COLOR = COLOR_MAP.amber;
+const DEFAULT_COLOR = COLOR_MAP.gray;
 
 function TerminalRenderer({ appCoreRef }) {
 	const [terminalLog, setTerminalLog] = useState([]);
@@ -47,7 +49,7 @@ function TerminalRenderer({ appCoreRef }) {
 	const historyIndexRef = useRef(0);
 
 	function clearTerminal() {
-		setTerminalLog(["[SYS] type help to see all commands available."]);
+		setTerminalLog([]);
 	}
 
 	// Appends lines to the log. Null/false parts are skipped instead of rendering as blank rows.
@@ -74,7 +76,7 @@ function TerminalRenderer({ appCoreRef }) {
 			setInputColor(COLOR_MAP[key]);
 		} else {
 			writeToTerminal(`[ERR] Color '${colorName}' not found. Available: ${available}`, false, true);
-			window.retroSounds?.playErrorSound();
+			playError();
 		}
 	}
 
@@ -90,11 +92,11 @@ function TerminalRenderer({ appCoreRef }) {
 
 	useEffect(() => {
 		setTerminalLog([
-			<div key="welcome" className="terminal-welcome-box">
-				<div className="terminal-welcome-line">{userConfig.name}'s RetroPC Terminal</div>
-				<div className="terminal-welcome-line">Type 'help' for available commands</div>
-			</div>,
-			"",
+			`${userConfig.osOwner} ${userConfig.osName} [Version 5.1.${new Date().getFullYear()}]`,
+			`(C) Copyright 2001-${new Date().getFullYear()} ${userConfig.name}.`,
+			" ",
+			"Type 'help' for available commands.",
+			" ",
 		]);
 		terminalInputRef.current?.focus();
 	}, []);
@@ -138,7 +140,7 @@ function TerminalRenderer({ appCoreRef }) {
 			commands[command].exec(terminalRef, input);
 		} else {
 			writeToTerminal(`[ERR] Unknown command: '${command}'. Type 'help' for available commands.`, true, true);
-			window.retroSounds?.playErrorSound();
+			playError();
 		}
 
 		setTerminalText();
@@ -147,14 +149,14 @@ function TerminalRenderer({ appCoreRef }) {
 	return (
 		<div className="terminal-renderer-container" ref={terminalContainerRef} onClick={() => terminalInputRef.current?.focus()}>
 			{terminalLog.map((line, index) => (
-				<div style={{ color: inputColor, fontSize: "18px", lineHeight: "1.4" }} key={index}>
+				<div className="terminal-line" style={{ color: inputColor }} key={index}>
 					{line}
 				</div>
 			))}
 
 			<div className="input-container">
 				<span className="fixed-text" style={{ color: inputColor }}>
-					{DIRECTORY}&nbsp;
+					{DIRECTORY}
 				</span>
 				<input
 					className="terminal-input"

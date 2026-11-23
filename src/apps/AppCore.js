@@ -4,14 +4,7 @@ import IconsDisplay from "../components/IconDisplay";
 import AppDisplay from "../components/AppDisplay";
 
 import { useAppsManager } from "../context/AppsManagerContext";
-
-function a(n, mn, mx) {
-	return Math.min(Math.max(0, (n - mn) / (mx - mn)), 1);
-}
-
-function p(a, mn, mx) {
-	return mn + a * (mx - mn);
-}
+import { playMinimize, playRestore } from "../audio/xpAudio";
 
 const AppCore = React.forwardRef(
 	(
@@ -19,13 +12,12 @@ const AppCore = React.forwardRef(
 			AppRenderer,
 			iconX,
 			iconY,
+			iconTitle,
 			title,
 			icon,
 			width,
 			height,
 			backgroundColor,
-			topBarColor,
-			titleColor,
 			parentRef,
 			overflowY,
 			options,
@@ -36,7 +28,10 @@ const AppCore = React.forwardRef(
 		},
 		ref
 	) => {
-		const { openApp, closeApp, focusApp, isFocused } = useAppsManager();
+		const { openApp, closeApp, focusApp, isFocused, openedApps } = useAppsManager();
+		const openedAppsRef = useRef(openedApps);
+		openedAppsRef.current = openedApps;
+		const openedCount = () => openedAppsRef.current.length;
 
 		const [isOpened, setIsOpened] = useState(false);
 
@@ -115,20 +110,15 @@ const AppCore = React.forwardRef(
 			focusApp(appDisplayRef);
 		}
 
-		function getDragTargetPosition(screenX, screenY) {
-			let { x: appX, y: appY, left: appLeft, top: appTop } = appDisplayRef.current.getBoundingClientRect();
-			let { left: parentLeft, right: parentRight, top: parentTop, bottom: parentBottom } = parentRef.current.getBoundingClientRect();
-
-			const targetX = p(a(screenX, parentLeft, parentRight), parentLeft, parentLeft + desktopWidth) - parentLeft;
-			const targetY = p(a(screenY, parentTop, parentBottom), parentTop, parentTop + (desktopHeight - taskbarHeight)) - parentTop;
+		// Window position under the pointer, in windows-layer pixels.
+		function getDragTargetPosition(pageX, pageY) {
+			const { left: parentLeft, top: parentTop } = parentRef.current.getBoundingClientRect();
+			const targetX = pageX - parentLeft;
+			const targetY = pageY - parentTop;
 
 			return {
 				targetX,
 				targetY,
-				appX,
-				appY,
-				appLeft,
-				appTop,
 				pinX: targetX - appDisplayRef.current.offsetLeft,
 				pinY: targetY - appDisplayRef.current.offsetTop,
 			};
@@ -171,9 +161,10 @@ const AppCore = React.forwardRef(
 			targetX -= pinXOffset;
 			targetY -= pinYOffset;
 
-			if (targetX < 0 || targetY < 0 || targetX > desktopWidth - 10 || targetY > desktopHeight - taskbarHeight - 10) {
-				return;
-			}
+			// Keep the title bar reachable: it may hang off the sides, never above the top or below the taskbar.
+			const { width: layerWidth, height: layerHeight } = parentRef.current.getBoundingClientRect();
+			targetX = Math.min(Math.max(targetX, 60 - width), layerWidth - 60);
+			targetY = Math.min(Math.max(targetY, 0), layerHeight - 30);
 
 			currentX.current = targetX;
 			currentY.current = targetY;
@@ -215,8 +206,13 @@ const AppCore = React.forwardRef(
 				open() {
 					// Centre the window only when it is not already on screen.
 					if (!appDisplayRef.current) {
-						currentX.current = (desktopWidth - width) / 2;
-						currentY.current = (desktopHeight - height) / 2;
+						const layer = parentRef.current?.getBoundingClientRect();
+						const layerWidth = layer?.width || desktopWidth;
+						const layerHeight = layer?.height || desktopHeight - taskbarHeight;
+						// cascade a little so several windows don't stack exactly
+						const cascade = (openedCount() % 5) * 24;
+						currentX.current = Math.max(0, (layerWidth - width) / 2 - 48 + cascade);
+						currentY.current = Math.max(0, (layerHeight - height) / 2 - 48 + cascade);
 					}
 					focusApp(appDisplayRef);
 					openApp(ref.current);
@@ -255,6 +251,8 @@ const AppCore = React.forwardRef(
 					// Toggle minimize state
 					isMinimizedRef.current = !isMinimizedRef.current;
 					callOnAppCoreMinimizeStateChangedListeners(isMinimizedRef.current);
+					if (isMinimizedRef.current) playMinimize();
+					else playRestore();
 
 					if (!isMinimizedRef.current) {
 						// Restoring — bring to focus
@@ -305,9 +303,7 @@ const AppCore = React.forwardRef(
 							height={height}
 							x={currentX?.current || 0}
 							y={currentY?.current || 0}
-							titleColor={titleColor}
 							backgroundColor={backgroundColor}
-							topBarColor={topBarColor}
 							onClick={onAppClick}
 							onMinimizeButtonClick={() => {
 								ref?.current?.minimize();
@@ -335,7 +331,7 @@ const AppCore = React.forwardRef(
 		return (
 			<IconsDisplay
 				icon={icon}
-				title={title}
+				title={iconTitle || title}
 				x={iconX}
 				y={iconY}
 				onIconClicked={() => {

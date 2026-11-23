@@ -1,131 +1,62 @@
 /* ═══════════════════════════════════════════════════════════
-   SUNSET ARCADE — 90s beige PC, amber CRT, red/orange dusk
+   LUNA — early-2000s blue desktop theme
    ═══════════════════════════════════════════════════════════ */
 :root {
-	/* Set from JS (useFitToViewport) so the whole rig fits any window */
-	--rig-scale: 0.8;
+	--xp-font: Tahoma, "Segoe UI", Verdana, Geneva, sans-serif;
+	--xp-title-font: "Trebuchet MS", "Segoe UI", Tahoma, sans-serif;
+	--xp-mono: "Lucida Console", Consolas, "Courier New", monospace;
 
-	/* Core palette */
+	--xp-face: #ece9d8;
+	--xp-blue: #0a246a;
+	--xp-select: #316ac5;
+	--xp-frame: #0831d9;
+	--xp-frame-inactive: #7a96df;
+	--xp-titlebar: linear-gradient(180deg, #0997ff 0%, #0053ee 8%, #0050ee 40%, #0066ff 88%, #0066ff 93%, #005bff 95%, #003dd7 96%, #003dd7 100%);
+	--xp-titlebar-inactive: linear-gradient(180deg, #a9c0f3 0%, #7a96df 10%, #7a96df 85%, #6582d4 100%);
+
+	/* Palette still used inside the Synth-80 and K.I.T.T. skins */
 	--sa-night: #1a0b1e;
 	--sa-night-deep: #0e0610;
 	--sa-panel: #2b1233;
 	--sa-panel-light: #3d1a40;
 	--sa-border: #5a2a3e;
-	--sa-oxblood: #8c1c13;
 	--sa-red: #e8352b;
 	--sa-orange: #ff7a1a;
 	--sa-amber: #ffb627;
 	--sa-cream: #ffe8c2;
 	--sa-magenta: #ff2e88;
 	--sa-teal: #2ec4b6;
-
-	/* 90s beige plastic */
-	--sa-case: #d8cbb0;
-	--sa-case-light: #ece3cf;
-	--sa-case-shadow: #a89a7e;
-	--sa-case-dark: #8a7d63;
-
-	--sa-titlebar: linear-gradient(90deg, #8c1c13 0%, #e8352b 55%, #ff7a1a 100%);
-
-	/* Legacy names still used by some app stylesheets */
-	--retro-glow: var(--sa-amber);
-	--retro-orange: var(--sa-orange);
-	--retro-amber: var(--sa-amber);
-	--retro-cyan: var(--sa-teal);
-	--retro-dark: var(--sa-night-deep);
-	--retro-panel: var(--sa-panel);
-	--retro-panel-light: var(--sa-panel-light);
-	--retro-panel-border: var(--sa-amber);
-	--retro-text: var(--sa-amber);
-	--retro-crt-glow: rgba(255, 122, 26, 0.15);
-	--retro-scanline: rgba(0, 0, 0, 0.15);
 }
 
-.main {
-	width: 100vw;
-	height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	scale: var(--rig-scale);
-}
-
-/* ═══ CRT MONITOR BODY — beige plastic ═══ */
-.computer-crt-container {
-	position: relative;
-	width: 1000px;
-	height: 770px;
-	min-height: 770px;
-	background: linear-gradient(170deg, var(--sa-case-light) 0%, var(--sa-case) 40%, #c7b99c 100%);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	border-radius: 18px;
-	border: 2px solid var(--sa-case-shadow);
-	box-shadow:
-		inset 0 3px 0 rgba(255, 255, 255, 0.55),
-		inset 0 -8px 0 var(--sa-case-shadow),
-		inset 6px 0 0 rgba(255, 255, 255, 0.18),
-		0 0 80px rgba(255, 122, 26, 0.12),
-		0 24px 60px rgba(0, 0, 0, 0.65);
-}
-
-/* ═══ CRT SCREEN (bezel, classic view) ═══ */
-.computer-screen {
-	width: 800px;
-	height: 600px;
-	display: flex;
-	border-radius: 14px;
-	border: 20px solid #1c1416;
-	box-shadow:
-		0 0 0 5px #b3a585,
-		0 0 0 7px var(--sa-case-light),
-		0 0 120px rgba(255, 122, 26, 0.18);
-	position: relative;
+/* ═══ DESKTOP ═══ */
+.xp-desktop-host,
+.xp-desktop {
+	position: fixed;
+	inset: 0;
 	overflow: hidden;
-	background: #0b0508;
 }
 
-/* ═══ SCREEN SURFACE — the 800×600 picture shown in both views ═══ */
-.screen-surface {
-	position: relative;
-	width: 800px;
-	height: 600px;
-	overflow: hidden;
-	background: #0b0508;
-	border-radius: 6px;
+.xp-desktop {
+	transition: filter 1.4s ease;
 }
 
-/* CRT scanlines */
-.screen-surface::before {
-	content: "";
+/* behind the Turn Off / Log Off dialog the desktop slowly drains to grey */
+.xp-desktop.greyed {
+	filter: grayscale(1) brightness(0.9);
+}
+
+.xp-wallpaper {
 	position: absolute;
 	inset: 0;
-	background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.1) 2px, rgba(0, 0, 0, 0.1) 4px);
-	pointer-events: none;
-	z-index: 30000;
-}
-
-/* CRT vignette + glass sheen */
-.screen-surface::after {
-	content: "";
-	position: absolute;
-	inset: 0;
-	box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.55), inset 0 0 60px rgba(255, 122, 26, 0.06);
-	background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 45%);
-	pointer-events: none;
-	z-index: 30001;
-}
-
-.screen-off {
 	width: 100%;
 	height: 100%;
-	display: flex;
-	align-items: flex-end;
-	justify-content: center;
-	background: radial-gradient(ellipse at center, #1a1213 0%, #0a0607 70%);
+	object-fit: cover;
+	pointer-events: none;
+}
+
+.xp-desktop-icons {
+	position: absolute;
+	inset: 0 0 30px 0;
 }
 
 /* Open app windows; the layer ignores clicks so desktop icons underneath stay clickable */
@@ -133,346 +64,189 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 800px;
-	height: 562px;
+	right: 0;
 	overflow: hidden;
 	pointer-events: none;
 	z-index: 5000;
 }
 
-.windows-layer .app-interface-container {
+.windows-layer > * {
 	pointer-events: auto;
 }
 
-/* ═══ SCREEN BACKGROUND ═══ */
-.computer-screen-background {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	overflow: hidden;
-	filter: saturate(1.05) contrast(1.02);
-}
-
-/* ═══ MONITOR BADGE ═══ */
-.computer-badge {
-	position: absolute;
-	left: 100px;
-	bottom: 30px;
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	padding: 4px 10px;
-	border-radius: 3px;
-	background: linear-gradient(180deg, #c9bb9f, #b8aa8c);
-	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
-}
-
-.computer-badge-stripes {
-	width: 26px;
-	height: 14px;
-	background: linear-gradient(180deg, var(--sa-amber) 0 25%, var(--sa-orange) 25% 50%, var(--sa-red) 50% 75%, var(--sa-magenta) 75% 100%);
-	border-radius: 2px;
-}
-
-.computer-badge-text {
-	font-family: "Press Start 2P", monospace;
-	font-size: 10px;
-	color: #5e523d;
-	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
-	letter-spacing: 1px;
-}
-
-/* ═══ POWER BUTTON AREA ═══ */
-.computer-button-container {
-	display: flex;
-	justify-content: right;
-	align-items: center;
-	position: relative;
-	height: 50px;
-	width: 100%;
-	right: 75px;
-	top: 35px;
-	gap: 12px;
-}
-
-.computer-button-light {
-	width: 12px;
-	height: 12px;
-	background-color: #4a2a1c;
-	border-radius: 50%;
-	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
-	transition: all 0.3s ease;
-}
-
-.computer-button-light.on {
-	background-color: var(--sa-amber);
-	box-shadow: 0 0 14px 3px rgba(255, 182, 39, 0.8);
-}
-
-.computer-button {
-	width: 80px;
-	height: 34px;
-	background: linear-gradient(180deg, var(--sa-case-light), var(--sa-case-shadow));
-	border-radius: 4px;
-	border: 1px solid var(--sa-case-dark);
-	box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5), 0 2px 0 var(--sa-case-dark);
-	transition: all 0.1s ease;
-}
-
-.computer-button:hover {
-	cursor: pointer;
-	filter: brightness(1.04);
-}
-
-.computer-button:active {
-	transform: translateY(2px);
-	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
-}
-
-/* Slow rolling refresh band */
-.crt-roll-bar {
-	position: absolute;
-	inset: 0;
-	z-index: 29999;
-	overflow: hidden;
-	pointer-events: none;
-}
-
-.crt-roll-bar::before {
-	content: "";
-	position: absolute;
-	left: 0;
-	right: 0;
-	height: 90px;
-	background: linear-gradient(180deg, transparent, rgba(255, 232, 194, 0.04), transparent);
-	animation: crt-roll 7s linear infinite;
-}
-
-@keyframes crt-roll {
-	from {
-		transform: translateY(-100px);
-	}
-	to {
-		transform: translateY(620px);
-	}
-}
-
-.screen-surface-dark .crt-roll-bar {
-	display: none;
-}
-
-/* ═══ MONITOR STAND ═══ */
-.computer-stand {
-	display: flex;
-	height: 50px;
-	min-height: 50px;
-	width: 500px;
-	border-radius: 150px 150px 0 0;
-	background: linear-gradient(180deg, #c7b99c, var(--sa-case-shadow));
-	box-shadow: inset 0px 8px 6px -2px rgba(0, 0, 0, 0.25);
-	border-left: 1px solid var(--sa-case-dark);
-	border-right: 1px solid var(--sa-case-dark);
-}
-
-/* ═══ COMPUTER CASE ═══ */
-.computer-case {
-	display: flex;
-	height: 200px;
-	min-height: 200px;
-	width: 1000px;
-	background: linear-gradient(175deg, var(--sa-case-light) 0%, var(--sa-case) 45%, #c4b698 100%);
-	margin-top: 5px;
-	border-radius: 10px;
-	border: 2px solid var(--sa-case-shadow);
-	box-shadow:
-		inset 0 3px 0 rgba(255, 255, 255, 0.5),
-		inset 0 -8px 0 var(--sa-case-shadow),
-		0 14px 30px rgba(0, 0, 0, 0.5);
-}
-
-/* ═══ FLOPPY DISK DRIVE ═══ */
-.computer-diskhat {
-	display: flex;
-	height: 100px;
-	width: 300px;
-	background: linear-gradient(180deg, #cbbda1, #bcae90);
-	border-radius: 4px;
-	margin: 40px;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	border: 1px solid var(--sa-case-dark);
-}
-
-.computer-diskhat-input-container {
-	height: 100px;
-	width: 300px;
-	position: absolute;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border-radius: 4px;
-	border: 1px solid var(--sa-case-shadow);
-	box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35);
-}
-
-.computer-diskhat-input {
-	display: flex;
-	height: 18px;
-	width: 240px;
-	background-color: #2a2220;
-	border-radius: 3px;
-	justify-content: center;
-	align-items: center;
-	box-shadow: inset 0px 4px 0px 0px #140e0d;
-	border: 1px solid var(--sa-case-dark);
-}
-
-.computer-diskhat-input-2 {
-	display: flex;
-	height: 35px;
-	width: 70px;
-	background-color: #2a2220;
-	border-radius: 3px;
-	box-shadow: inset 0px 4px 0px 0px #140e0d;
-}
-
-.computer-diskhat-led {
-	position: absolute;
-	left: 30px;
-	top: 82px;
-	width: 14px;
-	height: 5px;
-	border-radius: 1px;
-	background: #4a3a1c;
-}
-
-.computer-diskhat-led.active {
-	background: var(--sa-amber);
-	box-shadow: 0 0 8px var(--sa-amber);
-	animation: drive-flicker 0.12s steps(2) infinite;
-}
-
-@keyframes drive-flicker {
-	50% {
-		opacity: 0.45;
-	}
-}
-
-.computer-diskhat-button {
-	display: flex;
-	height: 8px;
-	width: 35px;
-	background: linear-gradient(180deg, var(--sa-case-light), var(--sa-case-shadow));
-	border: 1px solid var(--sa-case-dark);
-	border-radius: 2px;
-	position: absolute;
-	left: 250px;
-	top: 80px;
-	transition: all 0.2s ease;
-}
-
-.computer-diskhat-button:hover {
-	filter: brightness(1.05);
-}
-
-/* ═══ CASE POWER BUTTON ═══ */
-.computer-turn-button-container {
-	display: flex;
-	padding-left: 140px;
-}
-
-.computer-turn-button {
-	width: 50px;
-	height: 50px;
-	background: radial-gradient(circle at 40% 35%, var(--sa-case-light), var(--sa-case-shadow));
-	border: 1px solid var(--sa-case-dark);
-	border-radius: 50%;
-	box-shadow: inset 0 0 0 4px rgba(0, 0, 0, 0.06), 0 2px 0 var(--sa-case-dark);
-	cursor: pointer;
-	transition: all 0.1s ease;
-}
-
-.computer-turn-button:active {
-	transform: translateY(2px);
-	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.computer-case-fans-container {
-	display: flex;
-	padding-right: 45px;
-}
-
-.computer-case-fans-container img {
-	filter: sepia(0.5) brightness(0.75) contrast(1.1);
-	opacity: 0.8;
-}
-
-/* ═══ DESKTOP ICON HOVER ═══ */
-.computer-screen-icons-container img:hover {
-	cursor: pointer;
-	filter: brightness(1.2) drop-shadow(0 0 4px var(--sa-orange));
-}
-
-/* ═══ COPYRIGHT FOOTER ═══ */
-.copyright-footer {
-	display: flex;
-	position: absolute;
-	margin-top: 542px;
-	margin-left: 10px;
-	font-size: 14px;
-	font-weight: bold;
-	color: var(--sa-cream);
-	text-shadow: 0 0 4px rgba(255, 122, 26, 0.6);
-	font-family: "VT323", monospace;
-	letter-spacing: 1px;
-	z-index: 31000;
-}
-
-/* ═══ DESKTOP TASKBAR STRIP ═══ */
-.desktop-taskbar {
+/* ═══ TASKBAR ═══ */
+.xp-taskbar {
 	position: absolute;
 	left: 0;
 	right: 0;
 	bottom: 0;
-	height: 38px;
 	display: flex;
 	align-items: center;
-	padding-left: 6px;
-	box-sizing: border-box;
-	background: linear-gradient(180deg, #3d1a40 0%, #2b1233 100%);
-	border-top: 2px solid #ff7a1a;
-	box-shadow: 0 -4px 14px rgba(255, 122, 26, 0.18);
-	z-index: 6000;
+	background: linear-gradient(180deg, #1f2f86 0%, #3165c4 3%, #3682e5 6%, #4490e6 10%, #3883e5 12%, #2b71e0 15%, #2663da 18%, #235bd6 20%, #2258d5 23%, #2157d6 38%, #245ddb 54%, #2562df 86%, #245fdc 89%, #2158d4 92%, #1d4ec0 95%, #1941a5 98%);
+	z-index: 12000;
+	font-family: var(--xp-font);
+	user-select: none;
 }
 
-/* The START button sits under the taskbar items, which begin right after it */
-.desktop-taskbar-start {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	height: 26px;
-	padding: 0 10px;
-	font-family: "Press Start 2P", monospace;
-	font-size: 10px;
-	color: #2b1233;
-	background: var(--sa-cream);
-	border: 2px solid;
-	border-color: #fff6e6 #8a5a3a #8a5a3a #fff6e6;
-	letter-spacing: 1px;
-}
-
-.desktop-taskbar-apps {
+.xp-start-button {
 	display: flex;
 	align-items: center;
 	gap: 5px;
-	margin-left: 6px;
+	height: 100%;
+	padding: 0 22px 0 9px;
+	border: none;
+	border-radius: 0 10px 10px 0;
+	background: radial-gradient(circle at 50% 0%, #79c96a 0%, #3c9b2a 40%, #2f8a1e 70%, #3a9c2c 100%);
+	box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), inset -2px 0 3px rgba(0, 0, 0, 0.25), 2px 0 3px rgba(0, 0, 0, 0.3);
+	color: #fff;
+	font-family: var(--xp-title-font);
+	font-size: 19px;
+	font-weight: bold;
+	font-style: italic;
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+	cursor: default;
 }
 
-.desktop-taskbar-start .computer-badge-stripes {
-	width: 14px;
-	height: 12px;
+.xp-start-button:hover {
+	filter: brightness(1.1);
+}
+
+.xp-start-button.pressed {
+	filter: brightness(0.85);
+}
+
+.xp-start-button img {
+	width: 22px;
+	height: 22px;
+	filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.45));
+}
+
+.xp-taskbar-apps {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 3px;
+	min-width: 0;
+	padding: 0 8px;
+	overflow: hidden;
+}
+
+.xp-tray {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	height: 100%;
+	padding: 0 8px 0 12px;
+	background: linear-gradient(180deg, #0c59b9 1%, #139ee9 6%, #18b5f2 10%, #139beb 14%, #1290e8 19%, #0d8dea 63%, #0d9ff1 81%, #0f9eed 88%, #119be9 91%, #1392e2 94%, #137ed7 97%, #095bc9 100%);
+	border-left: 1px solid #1042af;
+	box-shadow: inset 1px 0 1px #18bbff;
+}
+
+/* ═══ SHARED CONTROLS ═══ */
+.xp-button {
+	min-width: 75px;
+	height: 23px;
+	padding: 0 10px;
+	border: 1px solid #003c74;
+	border-radius: 3px;
+	background: linear-gradient(180deg, #ffffff 0%, #ecebe6 86%, #d6d0c5 100%);
+	color: #000;
+	font-family: var(--xp-font);
+	font-size: 11px;
+	cursor: default;
+}
+
+.xp-button:hover {
+	box-shadow: inset 0 -1px 0 1px #fdc860, inset 0 1px 0 1px #ffe7a2;
+}
+
+.xp-button:focus-visible {
+	outline: 1px dotted #000;
+	outline-offset: -4px;
+	box-shadow: inset 0 -1px 0 1px #9cb6f0, inset 0 1px 0 1px #cee7ff;
+}
+
+.xp-button:active {
+	background: linear-gradient(180deg, #cdcac3 0%, #e3e3db 8%, #e5e5de 94%, #f2f2f1 100%);
+}
+
+/* Menu bar used by Notepad, Internet and Paint */
+.xp-menubar {
+	display: flex;
+	gap: 2px;
+	padding: 1px 2px;
+	background: var(--xp-face);
+	border-bottom: 1px solid #fff;
+	box-shadow: 0 1px 0 #d0ccb8;
+	font-family: var(--xp-font);
+	font-size: 11px;
+}
+
+.xp-menubar span {
+	padding: 2px 6px;
+	cursor: default;
+}
+
+.xp-menubar span:hover {
+	background: var(--xp-select);
+	color: #fff;
+}
+
+/* Stand-by and power-off screens */
+.xp-standby {
+	position: fixed;
+	inset: 0;
+	border: none;
+	background: #000;
+	color: #333;
+	font-family: var(--xp-font);
+	font-size: 12px;
+	cursor: pointer;
+	z-index: 50000;
+}
+
+.xp-standby span {
+	animation: xp-standby-pulse 3s ease-in-out infinite;
+}
+
+@keyframes xp-standby-pulse {
+	50% {
+		color: #777;
+	}
+}
+
+.xp-off {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 18px;
+	background: #000;
+	color: #ff9a3a;
+	font-family: var(--xp-font);
+	font-size: 15px;
+}
+
+.xp-off-power {
+	width: 64px;
+	height: 64px;
+	padding: 0;
+	border: none;
+	border-radius: 14px;
+	background: none;
+	cursor: pointer;
+	animation: xp-power-glow 2.4s ease-in-out infinite;
+}
+
+.xp-off-power img {
+	width: 64px;
+	height: 64px;
+}
+
+@keyframes xp-power-glow {
+	50% {
+		filter: drop-shadow(0 0 12px rgba(255, 120, 40, 0.8));
+	}
 }

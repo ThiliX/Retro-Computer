@@ -1,26 +1,29 @@
 import "./TxtRenderer.css";
 import userConfig from "../../userConfig";
 
-function TxtRenderer({ appCoreRef }) {
+/** Notepad showing the "about me" text. */
+function TxtRenderer() {
+	const { intro, paragraph1, paragraph2, paragraph3 } = userConfig.aboutMe;
+
 	return (
-		<div className="app-txt-renderer-container">
-			{userConfig.aboutMe.intro}
-			<div>
-				<br />
+		<div className="notepad">
+			<div className="xp-menubar">
+				<span>File</span>
+				<span>Edit</span>
+				<span>Format</span>
+				<span>View</span>
+				<span>Help</span>
 			</div>
-			<span>
-				{userConfig.aboutMe.paragraph1}
-			</span>
-			<div className="app-txt-renderer-selfie">
-				<span>
-					{userConfig.aboutMe.paragraph2}
-				</span>
-			</div>
-			<div>
-				<br />
-			</div>
-			<div>
-				{userConfig.aboutMe.paragraph3}
+			<div className="notepad-page" tabIndex={0}>
+				<p>{intro}</p>
+				<p>{paragraph1}</p>
+				<p>{paragraph2}</p>
+				<p>{paragraph3}</p>
+				<p>
+					-- {userConfig.name}
+					<br />
+					{userConfig.tagline}
+				</p>
 			</div>
 		</div>
 	);

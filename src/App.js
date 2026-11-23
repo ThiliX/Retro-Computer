@@ -1,15 +1,17 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import "./App.css";
 
-import IconDisplay from "./components/IconDisplay";
+import IconDisplay, { ICON_CELL_HEIGHT } from "./components/IconDisplay";
 import Clock from "./components/Clock";
 import TaskBarAppDisplay from "./components/TaskBarAppDisplay";
 import Volume from "./components/Volume";
-import Clippy from "./components/Clippy";
 import BootScreen from "./components/BootScreen";
-import ClassicRig from "./components/ClassicRig";
-import WorldHud from "./components/WorldHud";
+import WelcomeScreen from "./components/WelcomeScreen";
+import StartMenu from "./components/StartMenu";
+import PowerDialog from "./components/PowerDialog";
+import MessageBox from "./components/MessageBox";
+import Balloon from "./components/Balloon";
 
 import Terminal from "./apps/Terminal/Terminal";
 import Txt from "./apps/Txt/Txt";
@@ -20,70 +22,51 @@ import Browser from "./apps/Browser/Browser";
 import Kitt from "./apps/Kitt/Kitt";
 
 import { useAppsManager } from "./context/AppsManagerContext";
+import { DesktopSelectionContext } from "./context/DesktopSelectionContext";
 import userConfig from "./userConfig";
-import * as sound from "./audio/retroAudio";
+import * as sound from "./audio/xpAudio";
 
-// three.js is only downloaded when the 3D room is actually shown.
-const Room3D = lazy(() => import("./world/Room3D"));
+const TASKBAR_HEIGHT = 30;
+const DEFAULT_WALLPAPER = "icons/xp/hills.svg";
 
-const DESKTOP_WIDTH = 800;
-const DESKTOP_HEIGHT = 600;
-const TASKBAR_HEIGHT = 38;
+// boot → login → welcome → desktop; then loggingOff / shuttingDown → login / off.
+const PHASE_OFF = "off";
+const PHASE_BOOT = "boot";
+const PHASE_LOGIN = "login";
+const PHASE_WELCOME = "welcome";
+const PHASE_DESKTOP = "desktop";
+const PHASE_LOGGING_OFF = "loggingOff";
+const PHASE_SHUTTING_DOWN = "shuttingDown";
+const PHASE_STANDBY = "standby";
 
-// "off"     → black glass, waiting for the power button
-// "booting" → BIOS POST screen
-// "on"      → desktop
-const POWER_OFF = "off";
-const POWER_BOOTING = "booting";
-const POWER_ON = "on";
+// Social shortcuts on the desktop and in the Start menu.
+const SOCIAL_LINKS = [
+	{ key: "github", icon: "icons/github.svg", title: "GitHub" },
+	{ key: "linkedin", icon: "icons/linkedin.svg", title: "LinkedIn" },
+	{ key: "twitter", icon: "icons/x.png", title: "X" },
+	{ key: "instagram", icon: "icons/instagram.png", title: "Instagram" },
+	{ key: "steam", icon: "icons/steam.png", title: "Steam" },
+	{ key: "spotify", icon: "icons/spotify.png", title: "Spotify" },
+	{ key: "youtube", icon: "icons/youtube.svg", title: "YouTube" },
+].filter(({ key }) => userConfig.socials[key]);
 
-const VIEW_3D = "3d";
-const VIEW_CLASSIC = "classic";
-const VIEW_STORAGE_KEY = "retro-pc-view";
-
-// Social links, in the order they stack on the desktop.
-const SOCIAL_ICONS = [
-	{ key: "github", icon: "icons/github.png", title: "github" },
-	{ key: "twitter", icon: "icons/x.png", title: "x" },
-	{ key: "instagram", icon: "icons/instagram.png", title: "instagram" },
-	{ key: "spotify", icon: "icons/spotify.png", title: "spotify" },
-	{ key: "steam", icon: "icons/steam.png", title: "steam" },
-	{ key: "linkedin", icon: "icons/linkedin.svg", title: "linkedin" },
-	{ key: "youtube", icon: "icons/youtube.svg", title: "youtube" },
-];
-
-// Keep the old global API that apps (terminal, etc.) call.
-window.retroSounds = {
-	playRetroClick: sound.playClick,
-	playBootSound: () => sound.playPowerSwitch(true),
-	playShutdownSound: () => sound.playPowerSwitch(false),
-	playErrorSound: sound.playError,
-	playStartupChime: sound.playStartupChime,
-};
-
-function supportsWebGL() {
-	try {
-		const canvas = document.createElement("canvas");
-		return !!(window.WebGLRenderingContext && (canvas.getContext("webgl2") || canvas.getContext("webgl")));
-	} catch (e) {
-		return false;
-	}
-}
-
-function getInitialView() {
-	if (!supportsWebGL()) return VIEW_CLASSIC;
-	try {
-		return window.localStorage.getItem(VIEW_STORAGE_KEY) === VIEW_CLASSIC ? VIEW_CLASSIC : VIEW_3D;
-	} catch (e) {
-		return VIEW_3D;
-	}
+function useViewportSize() {
+	const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+	useEffect(() => {
+		const onResize = () => setSize({ width: window.innerWidth, height: window.innerHeight });
+		window.addEventListener("resize", onResize);
+		return () => window.removeEventListener("resize", onResize);
+	}, []);
+	return size;
 }
 
 function App() {
-	const { openedApps } = useAppsManager();
+	const { openedApps, unfocusApp } = useAppsManager();
+	const viewport = useViewportSize();
 
 	const appsDisplayParentRef = useRef(null);
-	const computerScreenRef = useRef(null);
+	const timeoutsRef = useRef([]);
+	const hasStartedUpRef = useRef(false);
 
 	const terminalRef = useRef(null);
 	const txtRef = useRef(null);
@@ -93,317 +76,320 @@ function App() {
 	const paintRef = useRef(null);
 	const kittRef = useRef(null);
 
-	const [powerState, setPowerState] = useState(POWER_OFF);
-	const isDesktopOn = powerState === POWER_ON;
+	const [phase, setPhase] = useState(PHASE_BOOT);
+	const isDesktop = phase === PHASE_DESKTOP;
 
-	const [viewMode, setViewMode] = useState(getInitialView);
-	const [isZoomed, setIsZoomed] = useState(false);
-	const canUseKeyboardOnScreen = viewMode === VIEW_CLASSIC || isZoomed;
+	const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
+	const [powerDialog, setPowerDialog] = useState(null); // "turnOff" | "logOff" | null
+	const [messageBox, setMessageBox] = useState(null);
+	const [selectedIcon, setSelectedIcon] = useState(null);
 
-	const [isDriveActive, setIsDriveActive] = useState(false);
-	const bootTimeoutsRef = useRef([]);
+	const [openState, setOpenState] = useState({});
+	const [minimizedState, setMinimizedState] = useState({});
 
-	const [isTerminalOpened, setIsTerminalOpened] = useState(false);
-	const [isTxtOpened, setIsTxtOpened] = useState(false);
-	const [isMyPcOpened, setIsMyPcOpened] = useState(false);
-	const [isSynthOpened, setIsSynthOpened] = useState(false);
-	const [isBrowserOpened, setIsBrowserOpened] = useState(false);
-	const [isPaintOpened, setIsPaintOpened] = useState(false);
-	const [isKittOpened, setIsKittOpened] = useState(false);
+	const apps = useMemo(
+		() => [
+			{ key: "myPc", ref: myPcRef },
+			{ key: "txt", ref: txtRef },
+			{ key: "terminal", ref: terminalRef },
+			{ key: "browser", ref: browserRef },
+			{ key: "paint", ref: paintRef },
+			{ key: "synth", ref: synthRef },
+			{ key: "kitt", ref: kittRef },
+		],
+		[]
+	);
 
-	// Minimize states for each app
-	const [isTerminalMinimized, setIsTerminalMinimized] = useState(false);
-	const [isTxtMinimized, setIsTxtMinimized] = useState(false);
-	const [isMyPcMinimized, setIsMyPcMinimized] = useState(false);
-	const [isSynthMinimized, setIsSynthMinimized] = useState(false);
-	const [isBrowserMinimized, setIsBrowserMinimized] = useState(false);
-	const [isPaintMinimized, setIsPaintMinimized] = useState(false);
-	const [isKittMinimized, setIsKittMinimized] = useState(false);
-
-	// Register open/minimize listeners once the desktop (and therefore every AppCore) is mounted.
+	// Track open/minimized state of every window once the desktop is mounted.
 	useEffect(() => {
-		if (!isDesktopOn) {
-			return;
-		}
-
-		const apps = [
-			[terminalRef, setIsTerminalOpened, setIsTerminalMinimized],
-			[txtRef, setIsTxtOpened, setIsTxtMinimized],
-			[myPcRef, setIsMyPcOpened, setIsMyPcMinimized],
-			[synthRef, setIsSynthOpened, setIsSynthMinimized],
-			[browserRef, setIsBrowserOpened, setIsBrowserMinimized],
-			[paintRef, setIsPaintOpened, setIsPaintMinimized],
-			[kittRef, setIsKittOpened, setIsKittMinimized],
-		];
-
+		if (!isDesktop) return;
 		const removers = [];
-		for (const [ref, setIsOpened, setIsMinimized] of apps) {
-			if (!ref.current) {
-				continue;
-			}
-			removers.push(ref.current.onAppCoreOpenStateChanged(setIsOpened));
-			removers.push(ref.current.onAppCoreMinimizeStateChanged(setIsMinimized));
+		for (const { key, ref } of apps) {
+			if (!ref.current) continue;
+			removers.push(ref.current.onAppCoreOpenStateChanged((isOpen) => setOpenState((s) => ({ ...s, [key]: isOpen }))));
+			removers.push(ref.current.onAppCoreMinimizeStateChanged((isMin) => setMinimizedState((s) => ({ ...s, [key]: isMin }))));
 		}
-
 		return () => removers.forEach((remove) => remove());
-	}, [isDesktopOn, viewMode]);
+	}, [isDesktop, apps]);
 
-	// Mouse click sound for anything clicked on the screen.
-	useEffect(() => {
-		function onClick({ target }) {
-			if (computerScreenRef.current?.contains(target)) {
-				sound.playClick();
-			}
-		}
-
-		document.addEventListener("click", onClick);
-		return () => document.removeEventListener("click", onClick);
-	}, []);
-
-	// Keyboard clacks while the visitor is typing at the computer.
-	useEffect(() => {
-		if (!isDesktopOn || !canUseKeyboardOnScreen) {
-			return;
-		}
-
-		function onKeyDown(event) {
-			if (event.repeat || event.ctrlKey || event.metaKey) return;
-			if (event.key.length === 1 || ["Enter", "Backspace", "Tab", "Delete"].includes(event.key)) {
-				sound.playKey();
-			}
-		}
-
-		// Capture phase so apps that stop propagation still sound like a keyboard.
-		window.addEventListener("keydown", onKeyDown, true);
-		return () => window.removeEventListener("keydown", onKeyDown, true);
-	}, [isDesktopOn, canUseKeyboardOnScreen]);
-
-	// Floppy LED + hard disk chatter whenever a new app is launched.
-	const previousOpenedCount = useRef(0);
-	useEffect(() => {
-		if (openedApps.length > previousOpenedCount.current) {
-			setIsDriveActive(true);
-			sound.playHddChatter(0.45);
-			const id = setTimeout(() => setIsDriveActive(false), 700);
-			previousOpenedCount.current = openedApps.length;
-			return () => clearTimeout(id);
-		}
-		previousOpenedCount.current = openedApps.length;
-	}, [openedApps.length]);
-
-	// PC fan hum while powered.
-	useEffect(() => {
-		sound.setAmbience(powerState !== POWER_OFF);
-	}, [powerState]);
-
-	// Across the room the PC sounds muffled; at the desk it is crisp.
-	useEffect(() => {
-		sound.setListenerNear(viewMode === VIEW_CLASSIC || isZoomed);
-	}, [viewMode, isZoomed]);
-
-	function clearBootSounds() {
-		bootTimeoutsRef.current.forEach(clearTimeout);
-		bootTimeoutsRef.current = [];
+	function later(fn, ms) {
+		timeoutsRef.current.push(setTimeout(fn, ms));
 	}
 
-	// The emulated 90s machine's POST: beep, floppy seek, hard disk.
-	function startEmulatedBoot() {
-		clearBootSounds();
-		bootTimeoutsRef.current = [setTimeout(sound.playPostBeep, 1400), setTimeout(() => sound.playFloppySeek(0.7), 1900), setTimeout(() => sound.playHddChatter(0.9), 2600)];
-		setPowerState(POWER_BOOTING);
+	useEffect(() => () => timeoutsRef.current.forEach(clearTimeout), []);
+
+	function closeAllApps() {
+		for (const app of openedApps) app.close();
+		setOpenState({});
+		setMinimizedState({});
 	}
 
-	function powerOn() {
-		if (viewMode === VIEW_3D) {
-			// Modern gaming PC: soft button, fans spin up, then RetroBox boots the 90s machine.
-			sound.playModernPowerOn();
+	const handleBootFinished = useCallback(() => setPhase(PHASE_LOGIN), []);
+
+	function handleLogin() {
+		setPhase(PHASE_WELCOME);
+		// The first log-on after boot plays the full startup sound; later ones the short chime.
+		if (!hasStartedUpRef.current) {
+			hasStartedUpRef.current = true;
+			sound.playStartup();
 		} else {
-			sound.playPowerSwitch(true);
-			sound.playCrtPowerOn();
+			sound.playLogon();
 		}
-		startEmulatedBoot();
+		later(() => setPhase(PHASE_DESKTOP), 1600);
 	}
 
-	// RetroBox "Reset": restart only the emulated machine, not the host PC.
-	function handleReset() {
-		for (const app of openedApps) {
-			app.close();
+	function logOff() {
+		setPowerDialog(null);
+		closeAllApps();
+		sound.playLogoff();
+		setPhase(PHASE_LOGGING_OFF);
+		later(() => setPhase(PHASE_LOGIN), 1800);
+	}
+
+	function shutDown(thenRestart) {
+		setPowerDialog(null);
+		closeAllApps();
+		sound.playShutdown();
+		setPhase(PHASE_SHUTTING_DOWN);
+		later(() => {
+			hasStartedUpRef.current = false;
+			setPhase(thenRestart ? PHASE_BOOT : PHASE_OFF);
+		}, 2600);
+	}
+
+	function handlePowerChoice(choice) {
+		if (choice === "turnOff") shutDown(false);
+		else if (choice === "restart") shutDown(true);
+		else if (choice === "standby") {
+			setPowerDialog(null);
+			setPhase(PHASE_STANDBY);
+		} else if (choice === "logOff") logOff();
+		else if (choice === "switchUser") {
+			setPowerDialog(null);
+			sound.playLogoff();
+			setPhase(PHASE_LOGIN); // windows stay open, like fast user switching
 		}
+	}
+
+	function openApp(ref) {
 		sound.playClick();
-		startEmulatedBoot();
+		ref.current?.open();
 	}
 
-	function handleInsertDisk() {
-		sound.playFloppySeek(1.1);
-		setIsDriveActive(true);
-		setTimeout(() => setIsDriveActive(false), 1100);
+	function showMessage(box) {
+		if (box.kind === "error") sound.playError();
+		else sound.playNotify();
+		setMessageBox(box);
 	}
 
-	function powerOff() {
-		for (const app of openedApps) {
-			app.close();
-		}
-		clearBootSounds();
-		if (viewMode === VIEW_3D) {
-			sound.playModernPowerOff();
-		} else {
-			sound.playPowerSwitch(false);
-			sound.playCrtPowerOff();
-		}
-		setPowerState(POWER_OFF);
+	function emptyRecycleBin() {
+		sound.playRecycle();
+		setMessageBox({
+			title: "Recycle Bin",
+			kind: "info",
+			message: "The Recycle Bin is now empty. Every unfinished side project has been permanently deleted. (Just kidding, they live on GitHub.)",
+		});
 	}
 
-	function handlePowerButton() {
-		if (powerState === POWER_OFF) {
-			powerOn();
-		} else {
-			powerOff();
-		}
+	function openMyDocuments() {
+		showMessage({
+			title: "My Documents",
+			kind: "error",
+			message: "My Documents is not accessible. Access is denied. Try GitHub for the source code instead.",
+		});
 	}
 
-	function handleBootFinished() {
-		clearBootSounds();
-		setPowerState(POWER_ON);
-		sound.playStartupChime();
+	function showHelp() {
+		showMessage({
+			title: "Help and Support",
+			kind: "info",
+			message: `Welcome to ${userConfig.osOwner} ${userConfig.osName}! Double-click icons to open them, drag windows by their title bar and use the taskbar to switch between them. Try "help" in the Command Prompt.`,
+		});
 	}
-
-	// Sitting down at the computer also switches it on, like reaching for the button.
-	function handleSitDown() {
-		setIsZoomed(true);
-		if (powerState === POWER_OFF) {
-			powerOn();
-		}
-	}
-
-	function handleStandUp() {
-		setIsZoomed(false);
-		if (document.activeElement instanceof HTMLElement) {
-			document.activeElement.blur();
-		}
-	}
-
-	function handleToggleView() {
-		switchView(viewMode === VIEW_3D ? VIEW_CLASSIC : VIEW_3D);
-	}
-
-	function switchView(next) {
-		try {
-			window.localStorage.setItem(VIEW_STORAGE_KEY, next);
-		} catch (e) {
-			/* private mode — the toggle still works for this visit */
-		}
-		setIsZoomed(false);
-		setViewMode(next);
-	}
-
-	const pos = userConfig.iconPositions || {};
-	const socialsX = pos.socialsStartX ?? 1;
-	const socialsStartY = pos.socialsStartY ?? 0;
-	const socialIcons = SOCIAL_ICONS.filter(({ key }) => userConfig.socials[key]).map(({ key, icon, title }, index) => (
-		<IconDisplay key={key} icon={icon} title={title} x={socialsX} y={socialsStartY + index} href={userConfig.socials[key]} />
-	));
 
 	const sharedAppProps = {
 		parentRef: appsDisplayParentRef,
-		desktopWidth: DESKTOP_WIDTH,
-		desktopHeight: DESKTOP_HEIGHT,
+		desktopWidth: viewport.width,
+		desktopHeight: viewport.height,
 		taskbarHeight: TASKBAR_HEIGHT,
 	};
 
-	function renderScreenContent() {
-		if (powerState === POWER_BOOTING) {
-			return <BootScreen onFinished={handleBootFinished} />;
-		}
+	// Desktop icons flow top-to-bottom, then into the next column, like XP's auto-arrange.
+	const rows = Math.max(1, Math.floor((viewport.height - TASKBAR_HEIGHT - 12) / ICON_CELL_HEIGHT));
+	const cell = (index) => ({ x: Math.floor(index / rows), y: index % rows });
+	let slot = 0;
+	const next = () => cell(slot++);
 
-		if (powerState === POWER_OFF) {
-			return (
-				<div className="screen-off">
-					<span className="screen-off-hint">▶ PRESS POWER</span>
-				</div>
-			);
-		}
+	const appIcon = (Component, ref) => {
+		const { x, y } = next();
+		return <Component iconX={x} iconY={y} ref={ref} {...sharedAppProps} />;
+	};
+
+	function renderDesktop() {
+		const myPcIcon = appIcon(MyPc, myPcRef);
+		const docs = next();
+		const bin = next();
+		const browserIcon = appIcon(Browser, browserRef);
+		const txtIcon = appIcon(Txt, txtRef);
+		const terminalIcon = appIcon(Terminal, terminalRef);
+		const paintIcon = appIcon(Paint, paintRef);
+		const synthIcon = appIcon(Synth, synthRef);
+		const kittIcon = appIcon(Kitt, kittRef);
+		const socialIcons = SOCIAL_LINKS.map(({ key, icon, title }) => {
+			const { x, y } = next();
+			return <IconDisplay key={key} icon={icon} title={title} x={x} y={y} href={userConfig.socials[key]} isShortcut />;
+		});
 
 		return (
-			<>
-				<img className="computer-screen-background" src={userConfig.wallpaper} alt="" />
+			<div
+				className={`xp-desktop ${powerDialog ? "greyed" : ""}`}
+				onMouseDown={(event) => {
+					// only clicks on the bare desktop clear the selection; windows bubble up here too
+					if (event.target.closest(".xp-window, .xp-taskbar, .xp-message-overlay")) return;
+					setSelectedIcon(null);
+					unfocusApp();
+				}}
+			>
+				<img
+					className="xp-wallpaper"
+					src={userConfig.wallpaper}
+					alt=""
+					draggable={false}
+					// fall back to the built-in hills if the configured file is missing
+					onError={(event) => {
+						if (!event.currentTarget.src.endsWith(DEFAULT_WALLPAPER)) event.currentTarget.src = DEFAULT_WALLPAPER;
+					}}
+				/>
 
-				<div className="computer-screen-icons-container" style={{ position: "absolute", width: `${DESKTOP_WIDTH}px`, height: `${DESKTOP_HEIGHT}px` }}>
-					{/* Netscape browser — loads browserUrl from config */}
-					<Browser iconX={pos.netscape?.x ?? 0} iconY={pos.netscape?.y ?? 0} ref={browserRef} {...sharedAppProps} />
-
-					<IconDisplay icon="icons/new-bin.svg" title="bin" x={pos.bin?.x ?? 14.5} y={pos.bin?.y ?? 6.5} onIconClicked={sound.playError} />
-					<IconDisplay icon="icons/new-folder.svg" title="folder" x={pos.folder?.x ?? 14.5} y={pos.folder?.y ?? 2} onIconClicked={sound.playError} />
-
+				<div className="xp-desktop-icons">
+					{myPcIcon}
+					<IconDisplay icon="icons/xp/documents.svg" title="My Documents" x={docs.x} y={docs.y} onIconClicked={openMyDocuments} />
+					<IconDisplay icon="icons/xp/recycle-bin.svg" title="Recycle Bin" x={bin.x} y={bin.y} onIconClicked={emptyRecycleBin} />
+					{browserIcon}
+					{txtIcon}
+					{terminalIcon}
+					{paintIcon}
+					{synthIcon}
+					{kittIcon}
 					{socialIcons}
-
-					<Terminal iconX={pos.terminal?.x ?? 14.5} iconY={pos.terminal?.y ?? 0} ref={terminalRef} {...sharedAppProps} />
-					<Txt iconX={pos.txt?.x ?? 3} iconY={pos.txt?.y ?? 3} ref={txtRef} {...sharedAppProps} />
-					<MyPc iconX={pos.myPc?.x ?? 14.5} iconY={pos.myPc?.y ?? 1} ref={myPcRef} {...sharedAppProps} />
-					<Synth iconX={pos.synth?.x ?? 13} iconY={pos.synth?.y ?? 1} ref={synthRef} {...sharedAppProps} />
-					<Paint iconX={pos.paint?.x ?? 13} iconY={pos.paint?.y ?? 2} ref={paintRef} {...sharedAppProps} />
-					<Kitt iconX={pos.kitt?.x ?? 13} iconY={pos.kitt?.y ?? 0} ref={kittRef} {...sharedAppProps} />
 				</div>
 
 				{/* Open windows live in their own layer above the icons */}
-				<div className="windows-layer" ref={appsDisplayParentRef}>
-					{isTerminalOpened ? terminalRef.current?.render(isTerminalMinimized) : null}
-					{isTxtOpened ? txtRef.current?.render(isTxtMinimized) : null}
-					{isMyPcOpened ? myPcRef.current?.render(isMyPcMinimized) : null}
-					{isSynthOpened ? synthRef.current?.render(isSynthMinimized) : null}
-					{isBrowserOpened ? browserRef.current?.render(isBrowserMinimized) : null}
-					{isPaintOpened ? paintRef.current?.render(isPaintMinimized) : null}
-					{isKittOpened ? kittRef.current?.render(isKittMinimized) : null}
+				<div className="windows-layer" ref={appsDisplayParentRef} style={{ bottom: TASKBAR_HEIGHT }}>
+					{apps.map(({ key, ref }) => (openState[key] ? <React.Fragment key={key}>{ref.current?.render(minimizedState[key])}</React.Fragment> : null))}
+					{messageBox && <MessageBox {...messageBox} onClose={() => setMessageBox(null)} />}
 				</div>
 
-				<div className="desktop-taskbar">
-					<span className="desktop-taskbar-start">
-						<span className="computer-badge-stripes" />
-						START
-					</span>
-					<div className="desktop-taskbar-apps">
-						{openedApps.map((appRef) => (
-							<TaskBarAppDisplay key={appRef.appearence.title} appRef={appRef} />
-						))}
-					</div>
-				</div>
-				<Clock />
-				<Volume />
-				<Clippy />
-				{/* Please, if you're going to copy at least give me credits.*/}
-				<div className="copyright-footer">{userConfig.copyright}</div>
-			</>
+				{renderTaskbar()}
+			</div>
 		);
 	}
 
-	// The 800×600 screen surface. The same element is shown inside the 2D rig or on the 3D CRT.
-	const screen = (
-		<div className={`screen-surface ${isDesktopOn ? "" : "screen-surface-dark"}`} ref={computerScreenRef}>
-			{renderScreenContent()}
-			<div className="crt-roll-bar" />
-		</div>
-	);
+	function renderTaskbar() {
+		const item = (label, icon, action, extra = {}) => ({ label, icon, action, ...extra });
+		const programs = [
+			item("Internet", "icons/xp/internet.svg", () => openApp(browserRef), { subtitle: "Web Browser", bold: true }),
+			item("Command Prompt", "icons/xp/cmd.svg", () => openApp(terminalRef), { subtitle: "Type 'help' to start", bold: true }),
+		];
+		const recent = [
+			item("About Me - Notepad", "icons/xp/notepad.svg", () => openApp(txtRef)),
+			item("Paint", "icons/xp/paint.svg", () => openApp(paintRef)),
+			item("Synth-80", "icons/xp/synth.svg", () => openApp(synthRef)),
+			item("K.I.T.T.", "icons/xp/kitt.svg", () => openApp(kittRef)),
+		];
+		const allPrograms = [
+			item("Command Prompt", "icons/xp/cmd.svg", () => openApp(terminalRef)),
+			item("Internet", "icons/xp/internet.svg", () => openApp(browserRef)),
+			item("K.I.T.T.", "icons/xp/kitt.svg", () => openApp(kittRef)),
+			item("Notepad", "icons/xp/notepad.svg", () => openApp(txtRef)),
+			item("Paint", "icons/xp/paint.svg", () => openApp(paintRef)),
+			item("Synth-80", "icons/xp/synth.svg", () => openApp(synthRef)),
+			item("System Properties", "icons/xp/computer.svg", () => openApp(myPcRef)),
+		];
+		const places = [item("My Documents", "icons/xp/documents.svg", openMyDocuments), item("My Computer", "icons/xp/computer.svg", () => openApp(myPcRef))];
+		const links = SOCIAL_LINKS.map(({ key, icon, title }) => ({ label: title, icon, href: userConfig.socials[key] }));
+		const system = [item("Help and Support", "icons/xp/help.svg", showHelp), item("Run...", "icons/xp/run.svg", () => openApp(terminalRef))];
+
+		return (
+			<div className="xp-taskbar" style={{ height: TASKBAR_HEIGHT }} onMouseDown={(e) => e.stopPropagation()}>
+				<button className={`xp-start-button ${isStartMenuOpen ? "pressed" : ""}`} onClick={() => setIsStartMenuOpen((open) => !open)}>
+					<img src="icons/xp/logo.svg" alt="" />
+					<span>start</span>
+				</button>
+
+				<div className="xp-taskbar-apps">
+					{openedApps.map((appRef) => {
+						const key = apps.find(({ ref }) => ref.current === appRef)?.key;
+						return <TaskBarAppDisplay key={appRef.appearence.title} appRef={appRef} isMinimized={!!minimizedState[key]} />;
+					})}
+				</div>
+
+				<div className="xp-tray">
+					<Volume />
+					<Clock />
+				</div>
+
+				{isStartMenuOpen && (
+					<StartMenu
+						pinned={programs}
+						recent={recent}
+						allPrograms={allPrograms}
+						places={places}
+						links={links}
+						system={system}
+						onLogOff={() => setPowerDialog("logOff")}
+						onTurnOff={() => setPowerDialog("turnOff")}
+						onClose={closeStartMenu}
+					/>
+				)}
+
+				<Balloon />
+			</div>
+		);
+	}
+
+	const closeStartMenu = useCallback(() => setIsStartMenuOpen(false), []);
+
+	function renderScreen() {
+		switch (phase) {
+			case PHASE_BOOT:
+				return <BootScreen onFinished={handleBootFinished} />;
+			case PHASE_LOGIN:
+			case PHASE_WELCOME:
+			case PHASE_LOGGING_OFF:
+			case PHASE_SHUTTING_DOWN:
+				return <WelcomeScreen mode={phase} onLogin={handleLogin} onTurnOff={() => shutDown(false)} />;
+			case PHASE_STANDBY:
+				return (
+					<button className="xp-standby" onClick={() => setPhase(PHASE_DESKTOP)} autoFocus>
+						<span>Click anywhere to wake up</span>
+					</button>
+				);
+			case PHASE_OFF:
+				return (
+					<div className="xp-off">
+						<button className="xp-off-power" onClick={() => setPhase(PHASE_BOOT)} aria-label="Turn on">
+							<img src="icons/xp/shutdown.svg" alt="" />
+						</button>
+						<span>It's now safe to turn on your computer.</span>
+					</div>
+				);
+			default:
+				return null;
+		}
+	}
 
 	return (
-		<>
-			{viewMode === VIEW_3D ? (
-				<Suspense fallback={<div className="world-loading">LOADING ROOM…</div>}>
-					<Room3D
-						screen={screen}
-						powerState={powerState}
-						isZoomed={isZoomed}
-						isDriveActive={isDriveActive || powerState === POWER_BOOTING}
-						onSitDown={handleSitDown}
-						onStandUp={handleStandUp}
-						onOpenClassic={() => switchView(VIEW_CLASSIC)}
-						onReset={handleReset}
-						onInsertDisk={handleInsertDisk}
-					/>
-				</Suspense>
-			) : (
-				<ClassicRig screen={screen} isPoweredOn={powerState !== POWER_OFF} isDriveActive={isDriveActive || powerState === POWER_BOOTING} onPowerButton={handlePowerButton} />
+		<DesktopSelectionContext.Provider value={{ selectedIcon, selectIcon: setSelectedIcon }}>
+			{/* The desktop stays mounted in stand-by and while switching users, so open windows survive. */}
+			{(isDesktop || phase === PHASE_STANDBY || (phase === PHASE_LOGIN && openedApps.length > 0)) && (
+				<div className="xp-desktop-host" style={{ visibility: isDesktop ? "visible" : "hidden" }}>
+					{renderDesktop()}
+				</div>
 			)}
-			<WorldHud viewMode={viewMode} isZoomed={isZoomed} isPoweredOn={powerState !== POWER_OFF} onToggleView={handleToggleView} onStandUp={handleStandUp} onPowerButton={handlePowerButton} />
-		</>
+			{powerDialog && isDesktop && <PowerDialog kind={powerDialog} onChoose={handlePowerChoice} onCancel={() => setPowerDialog(null)} />}
+			{renderScreen()}
+		</DesktopSelectionContext.Provider>
 	);
 }
 

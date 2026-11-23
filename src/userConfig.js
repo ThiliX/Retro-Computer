@@ -15,12 +15,17 @@ const userConfig = {
 	pronouns: "He/Him",                  // Your pronouns
 	age: "24",                           // Your age
 	location: "Earth",                   // Where you're from
-	copyright: "Thilix©",             // Footer copyright text
+	copyright: "Thilix©",             // Brand mark on the boot screen
 	terminalUser: "User",                // Terminal prompt username (C:\Users\____)
 
+	// ─── OPERATING SYSTEM NAME (boot, welcome, System Properties) ─
+	osOwner: "ThiliX",                   // small text above the name
+	osName: "Portfolio",                 // big name, shown as "<osName> xp"
+	osEdition: "Developer Edition",      // line under the name
+
 	// ─── PAGE TITLE & META ────────────────────────────────────
-	pageTitle: "ThiliX's Retro PC",                // Browser tab title
-	pageDescription: "ThiliX's retro personal computer on the web.",
+	pageTitle: "ThiliX's Portfolio XP",                // Browser tab title
+	pageDescription: "ThiliX's portfolio, running as an early-2000s desktop in the browser.",
 
 	// ─── SOCIAL LINKS (set to "" to hide an icon) ─────────────
 	socials: {
@@ -82,13 +87,11 @@ const userConfig = {
 		{ question: "A fun fact about you?", answer: "I’m equally obsessed with coding, Marvel, and Fortnite" },
 	],
 
-	// ─── CLIPPY ASSISTANT MESSAGES ────────────────────────────
-	clippyMessages: [
-		{ text: "Welcome to my retro computer!", delay: 0 },
-		{ text: "Feel free to explore the apps on the desktop.", delay: 3 },
-		{ text: "Try the terminal — type 'help' to get started.", delay: 6 },
-		{ text: "Check out 'me.txt' to learn about me.", delay: 12 },
-		{ text: "Enjoy your stay! [SYSTEM IDLE]", delay: 13 },
+	// ─── TRAY BALLOON TIPS (shown one after another after logging on) ─
+	balloonTips: [
+		{ title: "Welcome to Portfolio XP", text: "Double-click the icons on the desktop to open them.", seconds: 6 },
+		{ title: "Get to know me", text: "Open 'About Me.txt' or 'My Computer' to learn more about me.", seconds: 6 },
+		{ title: "Try the Command Prompt", text: "Type 'help' to see the commands, or 'ask' to ask me something.", seconds: 7 },
 	],
 
 	// ─── BROWSER IFRAME URL ───────────────────────────────────
@@ -98,13 +101,11 @@ const userConfig = {
 	musicVideoId: "0QKQlf8r7ls",  // lofi hip hop radio
 
 	// ─── WALLPAPER ───────────────────────────────────────────
-	// Supports .gif (animated) or any image format (.png, .jpg, etc.)
-	// Place your wallpaper file in the public/icons/ folder
-	// then set the path below. Examples:
-	//   "icons/sunset-wallpaper.svg" ← animated sunset grid (default)
-	//   "icons/my-wallpaper.gif"     ← animated GIF
-	//   "icons/my-wallpaper.png"     ← static image
-	wallpaper: "icons/sunset-wallpaper.svg",
+	// Any image in public/icons/ works (.svg, .png, .jpg, .gif). Examples:
+	//   "icons/bliss.jpg"           ← the classic hill photo (default)
+	//   "icons/xp/hills.svg"        ← hand-drawn rolling hills
+	//   "icons/my-wallpaper.jpg"    ← your own photo
+	wallpaper: "icons/bliss.jpg",
 
 	// ─── PROFILE PICTURE ────────────────────────────────────
 	// Place your photo in the public/icons/ folder
@@ -113,25 +114,6 @@ const userConfig = {
 	//   "icons/avatar.jpg"  ← any image format works
 	profilePicture: "icons/selfie.png",
 
-	// ─── DESKTOP ICON POSITIONS ──────────────────────────────
-	// Each icon has {x, y} position on the desktop grid.
-	// x = column (0 = far left, 14.5 = far right)
-	// y = row (0 = top, higher = lower)
-	// Adjust these to rearrange your desktop layout.
-	iconPositions: {
-		netscape: { x: 0, y: 0 },
-		terminal: { x: 14.5, y: 0 },
-		myPc: { x: 14.5, y: 1 },
-		txt: { x: 3, y: 3 },
-		synth: { x: 13, y: 1 },
-		paint: { x: 13, y: 2 },
-		kitt: { x: 13, y: 0 },
-		bin: { x: 14.5, y: 6.5 },
-		folder: { x: 14.5, y: 2 },
-		// Social icons start at this position, stacking vertically
-		socialsStartX: 0,
-		socialsStartY: 2,
-	},
 };
 
 export default userConfig;

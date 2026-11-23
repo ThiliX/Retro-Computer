@@ -9,13 +9,12 @@ const Paint = React.forwardRef(({ iconX, iconY, parentRef, ...others }, ref) => 
 			AppRenderer={PaintRenderer}
 			iconX={iconX}
 			iconY={iconY}
-			title="pixelart"
-			icon="icons/new-paint.svg"
+			title="untitled - Paint"
+			iconTitle="Paint"
+			icon="icons/xp/paint.svg"
 			width={650}
 			height={490}
-			backgroundColor="#1a0b1e"
-			topBarColor="var(--sa-titlebar)"
-			titleColor="var(--sa-cream)"
+			backgroundColor="#ece9d8"
 			ref={ref}
 			parentRef={parentRef}
 			overflowY="hidden"

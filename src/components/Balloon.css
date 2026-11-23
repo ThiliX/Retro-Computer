@@ -1,0 +1,79 @@
+.xp-balloon {
+	position: absolute;
+	right: 14px;
+	bottom: 40px;
+	width: 270px;
+	padding: 8px 10px 10px;
+	border: 1px solid #000;
+	border-radius: 7px;
+	background: #ffffe1;
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.35);
+	font-family: var(--xp-font);
+	font-size: 11px;
+	z-index: 15000;
+	animation: xp-fade-in 0.3s ease-out;
+}
+
+/* tail pointing at the tray */
+.xp-balloon::after {
+	content: "";
+	position: absolute;
+	right: 36px;
+	bottom: -15px;
+	width: 16px;
+	height: 15px;
+	background: #ffffe1;
+	clip-path: polygon(0 0, 100% 0, 100% 100%);
+	filter: drop-shadow(1px 0 0 #000);
+}
+
+/* hides the balloon border where the tail joins it */
+.xp-balloon::before {
+	content: "";
+	position: absolute;
+	right: 37px;
+	bottom: -1px;
+	width: 15px;
+	height: 2px;
+	background: #ffffe1;
+	z-index: 1;
+}
+
+.xp-balloon-header {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-weight: bold;
+}
+
+.xp-balloon-header img {
+	width: 16px;
+	height: 16px;
+}
+
+.xp-balloon-header span {
+	flex: 1;
+}
+
+.xp-balloon-header button {
+	width: 16px;
+	height: 16px;
+	padding: 0;
+	border: 1px solid #b0b0a0;
+	border-radius: 3px;
+	background: #ffffe1;
+	font-size: 13px;
+	line-height: 12px;
+	cursor: pointer;
+}
+
+.xp-balloon-header button:hover {
+	background: #e9512b;
+	color: #fff;
+	border-color: #c03a14;
+}
+
+.xp-balloon p {
+	margin: 6px 0 0 22px;
+	line-height: 15px;
+}

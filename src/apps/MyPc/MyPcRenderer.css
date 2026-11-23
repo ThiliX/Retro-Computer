@@ -1,6 +1,149 @@
-.my-pc-renderer-container {
-	width: 100%;
+.sysprop {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 	height: 100%;
-	background-color: #2b1233;
-	border: 1px solid #5a2a3e;
+	box-sizing: border-box;
+	padding: 12px;
+	font-family: var(--xp-font);
+	font-size: 11px;
+	color: #000;
+}
+
+.sysprop-general {
+	display: flex;
+	gap: 18px;
+}
+
+.sysprop-photo {
+	width: 120px;
+	height: 120px;
+	object-fit: cover;
+	border: 1px solid #7f9db9;
+	padding: 3px;
+	background: #fff;
+}
+
+.sysprop-facts h4 {
+	margin: 0 0 3px;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+.sysprop-facts p {
+	margin: 0 0 10px 14px;
+	line-height: 15px;
+}
+
+.sysprop-wordmark {
+	display: flex;
+	justify-content: center;
+	padding: 6px 0;
+	border-radius: 4px;
+	background: linear-gradient(180deg, #2a5fd8, #0a246a);
+}
+
+.sysprop-buttons {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: auto;
+}
+
+.sysprop-fieldset {
+	margin: 0;
+	padding: 8px 10px 10px;
+	border: 1px solid #d0d0bf;
+	border-radius: 4px;
+}
+
+.sysprop-fieldset legend {
+	padding: 0 3px;
+	color: #0046d5;
+}
+
+.sysprop-note {
+	margin: 0 0 8px;
+	line-height: 15px;
+}
+
+.devices {
+	padding: 4px;
+	background: #fff;
+	border: 1px solid #7f9db9;
+}
+
+.devices-group-title {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 2px 0;
+}
+
+.devices-group-title img {
+	width: 16px;
+	height: 16px;
+}
+
+.devices-toggle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 9px;
+	height: 9px;
+	border: 1px solid #919b9c;
+	font-size: 9px;
+	line-height: 1;
+}
+
+.devices-item {
+	display: flex;
+	gap: 8px;
+	padding: 2px 0 2px 34px;
+}
+
+.devices-item:hover {
+	background: var(--xp-select);
+	color: #fff;
+}
+
+.devices-label {
+	width: 92px;
+	color: #555;
+}
+
+.devices-item:hover .devices-label {
+	color: #dbe6f7;
+}
+
+.power-scheme-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.power-scheme-row img {
+	width: 32px;
+	height: 32px;
+}
+
+.xp-select {
+	width: 100%;
+	height: 21px;
+	border: 1px solid #7f9db9;
+	font-family: var(--xp-font);
+	font-size: 11px;
+}
+
+.power-settings {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 6px 10px;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.xp-readonly {
+	padding: 2px 4px;
+	background: #fff;
+	border: 1px solid #7f9db9;
 }
