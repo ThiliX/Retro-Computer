@@ -1,99 +1,51 @@
-# 🎮 ThiliX's Battlestation — a modern gaming room running a 90s PC
+# 🪟 ThiliX's Portfolio XP — an early-2000s desktop in the browser
 
-An interactive 3D portfolio built with React and three.js. You step into a dark, RGB-lit gaming room at night, sit down at a modern gaming PC, and find it running **RetroBox**, an emulator for a fully working 90s operating system called *Sunset OS 98*. It has draggable windows, a terminal, Paint, a synthesizer and more.
-
-**Present-day setup, 1997 soul.**
+An interactive portfolio built with React that boots like a 2001-era PC. There's a boot splash, a blue welcome screen with a user tile, then a full Luna-style desktop with draggable windows, a Start menu, a taskbar, tray balloons and the classic "Turn off computer" dialog that greys the screen.
 
 🔗 **Live:** [thilix.github.io/Retro-Computer](https://thilix.github.io/Retro-Computer/)
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
-![three.js](https://img.shields.io/badge/three.js-r169-000000?logo=threedotjs&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## ✨ Features
 
-### The room (3D)
-- **Modern gaming setup:**
-  - A widescreen monitor and a glass-side tower with spinning RGB fans.
-  - An RGB keyboard, mouse, speakers, a headset stand and a gaming chair.
-- **Lighting:**
-  - Ceiling and desk LED strips, a neon name sign and hexagon light panels.
-  - Bloom glow and a rainy night-city window.
-- **Four RGB colour schemes** (sunset, ember, synthwave, dusk). Click the neon sign or the hex panels to cycle them.
-- **Retro collectibles shelf.** The original beige 90s PC sits there as a display piece. Click it to switch to Classic mode.
-- **Hover labels** name everything you can click.
-- **Everything is procedural.** Every model and texture is generated in code, with no downloaded 3D assets.
-
-### RetroBox (the screen)
-- **Click the monitor to sit down.** The camera glides in, the PC powers on, and RetroBox boots the 90s machine: BIOS memory test, POST beep, floppy seek, then the desktop.
-- **Modern host screen.** The 4:3 retro system runs in an emulator window on a 16:9 host desktop with a dock and clock.
-- **Emulator controls:** 💾 **Disk**, **CRT** scanline filter on/off and ⟲ **Reset**.
-- **Esc or Stand up** returns to the room. The desktop stays live on the monitor.
-
-### Sunset OS 98 (the 90s system)
-- Draggable windows, a taskbar, desktop icons and social links.
-- CRT scanlines, vignette and a rolling refresh band.
-- A Clippy-style assistant with timed messages, and background music via YouTube.
+- **Boot → log on → desktop:** a black boot splash with a sliding progress bar, the welcome screen (click your user name), then "welcome…" while the desktop loads.
+- **Luna windows:** blue title bars, minimize / maximize / close buttons, active and inactive states, drag by the title bar, cascading placement.
+- **Taskbar:** green Start button, one button per window (click to focus, minimize or restore), a system tray with a music toggle and a clock.
+- **Start menu:** two columns with your picture and name, pinned and recent programs, an **All Programs** flyout, places, social links, Help and Run, plus **Log Off** and **Turn Off Computer**.
+- **Power options:** Stand By, Turn Off and Restart, plus Log Off and Switch User (open windows survive a user switch). The desktop fades to grey behind the dialog.
+- **Desktop icons:** select with a click, open with a double-click (or Enter), auto-arranged in columns. Social links show the shortcut arrow.
+- **Tray balloons:** yellow notification tips after logging on.
+- **Message boxes:** for Recycle Bin, My Documents, Help and Support.
 
 ### Sound
-- Generated live with the Web Audio API; there are no sound files.
-- **The room:** modern PC power-on (soft click, fans spinning up, a ready chime) and a fan hum.
-- **Inside RetroBox:** the 90s machine has a power switch, CRT warm-up, POST beep, floppy grind and hard-disk chatter.
-- **Input:** mechanical key clicks while typing, and mouse clicks.
-- **Distance:** sounds are muffled while you stand across the room and clear when you sit down.
+System sounds (startup, shutdown, log on, log off, error ding, notification, minimize/restore whoosh, the bin crumple and a navigation click) are **synthesized live with the Web Audio API**. They are original compositions in the spirit of the era, so the project ships no audio files.
 
-### Classic mode
-- A flat, front-on beige 90s PC with the same working desktop.
-- It's used automatically when the browser has no WebGL, and you can switch to it anytime (top-right button or the shelf PC).
+### Original artwork
+Every icon, the logo and the rolling-hills wallpaper are drawn as SVG in this repo (`public/icons/xp/`).
 
 ## 🕹️ Built-in Apps
 
 | App | Description |
 |-----|-------------|
-| **Terminal** | Command line with `help`, `ask`, `color`, `cls`, `exit` and ↑/↓ history |
-| **me.txt** | A text viewer with a short bio |
-| **My PC** | About me, PC specs and peripherals |
-| **Netscape Browser** | Embedded iframe browser loading a configurable URL |
-| **Paint** | Pixel drawing canvas with pencil, eraser, fill bucket and colour picker |
+| **My Computer** (System Properties) | General (about me), Hardware (Device Manager-style spec list) and Power (playful power schemes) tabs |
+| **About Me.txt** (Notepad) | A short bio |
+| **Command Prompt** | `help`, `ask`, `color`, `cls`, `exit` and ↑/↓ history |
+| **Internet** | A web browser with a working address bar, back/forward, refresh and home |
+| **Paint** | Pixel canvas with pencil, eraser, fill bucket, colour picker and the 28-colour palette |
 | **Synth-80** | Polyphonic synthesizer with 4 waveforms, octave shift, reverb and keyboard input |
-| **K.I.T.T.** | Red Larson scanner with an AI that talks in character |
-
-## ⚡ Performance
-
-The 3D room adapts to the machine it's running on:
-
-- **High quality** (GPU available): soft shadows, bloom, every accent light, 60 fps in the room.
-- **Low-power mode** starts automatically when hardware acceleration is off or the frame rate drops below 30 fps.
-  - It turns off shadows, bloom and the costly accent lights, and renders at a lower resolution.
-  - The room is redrawn at 24 fps.
-  - A small notice suggests Classic mode.
-- **When you're seated,** the 3D scene stops rendering entirely, because the screen covers it. The desktop is then shown with a flat 2D transform, which is cheap to draw and keeps text sharp.
-- **three.js is loaded separately,** only when the 3D room is shown.
-
-To preview a mode, add `?quality=low` or `?quality=high` to the URL.
+| **K.I.T.T.** | Red scanner with an AI that talks in character |
 
 ## 🚀 Getting Started
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v16 or higher)
-- [npm](https://www.npmjs.com/)
-
-### Installation
 
 ```bash
 git clone https://github.com/ThiliX/Retro-Computer.git
 cd Retro-Computer
 npm install
-```
-
-### Running Locally
-
-```bash
 npm start
 ```
 
-Opens at `http://localhost:3000`. Click the monitor to sit down and boot the PC.
+Opens at `http://localhost:3000`. Double-click the boot screen to skip it.
 
 ### Deploy to GitHub Pages
 
@@ -104,10 +56,8 @@ npm run deploy
 ## 🛠️ Tech Stack
 
 - **Framework:** React 18 (Create React App)
-- **3D:** three.js, `@react-three/fiber` and `@react-three/postprocessing` (bloom, vignette)
-- **Screen on the monitor:** CSS 3D transforms, using the same maths as three's CSS3DRenderer. The real React desktop stays interactive on the 3D monitor.
-- **Styling:** vanilla CSS with custom properties (the Sunset Arcade palette)
-- **Audio:** Web Audio API sound engine and the Synth-80 synthesizer
+- **Styling:** vanilla CSS with custom properties (the Luna palette in `src/App.css`)
+- **Audio:** Web Audio API (`src/audio/xpAudio.js`) and the Synth-80 synthesizer
 - **Music:** `react-youtube`
 - **Deployment:** `gh-pages`
 
@@ -115,66 +65,38 @@ npm run deploy
 
 ```
 Retro-Computer/
-├── public/
-│   ├── icons/               # App icons, wallpaper, social icons
-│   └── index.html           # HTML entry point
+├── public/icons/xp/         # Original SVG icons, logo and wallpaper
 ├── src/
-│   ├── world/               # 3D gaming room
-│   │   ├── Room3D.js        # Canvas, quality modes, palettes, overlays
-│   │   ├── GamingRoom.js    # Room, desk setup, RGB, shelf (procedural models)
-│   │   ├── RetroBox.*       # Modern host screen + emulator window
-│   │   ├── RetroPC.js       # Beige 90s PC model (shelf display piece)
-│   │   ├── CameraRig.js     # Room view ↔ seated camera
-│   │   ├── ScreenProjector.js # Pins the HTML screen onto the monitor
-│   │   ├── FrameControl.js  # Frame throttling + frame-rate watcher
-│   │   ├── quality.js       # Hardware-acceleration detection
-│   │   └── textures.js      # Canvas-drawn textures (sky, neon, desk mat…)
-│   ├── audio/               # Web Audio sound engine
-│   ├── apps/                # Sunset OS apps
-│   │   ├── AppCore.js       # Shared window lifecycle (open, close, minimize, drag)
-│   │   ├── Terminal/  Txt/  MyPc/  Browser/  Paint/  Synth/  Kitt/
-│   ├── components/          # Shared UI
-│   │   ├── BootScreen.*     # BIOS POST boot sequence
-│   │   ├── ClassicRig.js    # Flat 2D beige PC (Classic mode)
-│   │   ├── WorldHud.*       # Stand up / power / view switch
-│   │   ├── AppDisplay.*  TaskBarAppDisplay.*  IconDisplay.*
-│   │   ├── Clock.*  Volume.*  Clippy.*  MobileDisclaimer.*
-│   ├── context/             # Window manager context
+│   ├── audio/xpAudio.js     # Synthesized system sounds
+│   ├── apps/                # AppCore (window lifecycle) + each app
+│   ├── components/          # Boot, welcome, taskbar, Start menu, dialogs, windows
+│   ├── context/             # Window manager + desktop selection
 │   ├── userConfig.js        # ⭐ All personal configuration
-│   ├── App.js               # Power/boot state, desktop, view switching
-│   └── App.css              # Theme tokens, CRT screen, Classic rig
+│   ├── App.js               # Phases (boot/login/desktop/shutdown), desktop, taskbar
+│   └── App.css              # Luna theme tokens and shared controls
 └── package.json
 ```
 
 ## ⚙️ Customization
 
-Personal details live in **`src/userConfig.js`**:
+Everything personal lives in **`src/userConfig.js`**:
 
 | Section | What it controls |
 |---------|-----------------|
-| `name`, `tagline`, `age`, `pronouns` | Your identity across apps |
-| `copyright` | Footer text; also used for the neon sign, desk mat and host name |
-| `socials` | Desktop shortcut links (GitHub, X, Spotify, Steam, LinkedIn, YouTube…) |
-| `aboutMe` | Content of the me.txt app |
-| `pcSpecs` / `peripherals` | My PC app |
-| `terminalQA` | Q&A pairs for the terminal `ask` command |
-| `clippyMessages` | Timed assistant messages |
-| `browserUrl` | URL loaded in the Netscape browser |
-| `musicVideoId` | YouTube video ID for background music |
-| `wallpaper` | Sunset OS wallpaper (`.svg`, `.gif`, `.png`, `.jpg`) |
-| `profilePicture` | Your profile picture |
-| `iconPositions` | Desktop icon grid positions |
-
-The RGB colour schemes are defined in `PALETTES` in `src/world/Room3D.js`.
+| `name`, `tagline`, `age`, `pronouns`, `location` | Your identity across the desktop |
+| `osOwner`, `osName`, `osEdition` | The "ThiliX Portfolio xp Developer Edition" wordmark |
+| `socials` | Desktop shortcuts and Start menu links |
+| `aboutMe` | Notepad text |
+| `pcSpecs` / `peripherals` | System Properties tabs |
+| `terminalQA` | Q&A for the `ask` command |
+| `balloonTips` | Tray notifications after logging on |
+| `browserUrl` | Home page of the Internet app |
+| `musicVideoId` | YouTube video for background music |
+| `wallpaper` | Desktop wallpaper (any image in `public/icons/`) |
+| `profilePicture` | User tile and Start menu picture |
 
 ## 📄 License & Credits
 
-This project is licensed under the **MIT License**.
+This project is licensed under the **MIT License**. The look is a homage to early-2000s desktop design; it is not affiliated with or endorsed by Microsoft.
 
-**Credits:** This project was built by extending and customizing the original [my-personal-computer](https://github.com/stefani16bit/my-personal-computer) repository created by [stefani16bit](https://github.com/stefani16bit).
-
----
-
-<p align="center">
-  <b>Thilix©</b> — Built with ☕, RGB and nostalgia
-</p>
+**Credits:** Built by extending and customizing the original [my-personal-computer](https://github.com/stefani16bit/my-personal-computer) repository by [stefani16bit](https://github.com/stefani16bit).

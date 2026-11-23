@@ -1,47 +1,54 @@
-import "./MyPcSetupRenderer.css";
 import "../MyPcRenderer.css";
 import userConfig from "../../../userConfig";
 
-function MyPcSetupRenderer({ appRef }) {
+const SPEC_LABELS = {
+	cpu: "Processor",
+	gpu: "Display adapter",
+	motherboard: "Motherboard",
+	ram: "Memory",
+	storage1: "Disk drive",
+	storage2: "Disk drive",
+	cooling: "Cooling",
+};
+
+const PERIPHERAL_LABELS = {
+	monitor: "Monitor",
+	keyboard: "Keyboard",
+	mouse: "Mouse",
+	headset: "Sound device",
+	mousepad: "Desk mat",
+};
+
+/** "Hardware" tab: a Device Manager style list of the real PC. */
+function MyPcSetupRenderer() {
+	const group = (title, labels, values) => (
+		<div className="devices-group">
+			<div className="devices-group-title">
+				<span className="devices-toggle">−</span>
+				<img src="icons/xp/computer.svg" alt="" />
+				{title}
+			</div>
+			{Object.entries(labels)
+				.filter(([key]) => values[key])
+				.map(([key, label]) => (
+					<div className="devices-item" key={key}>
+						<span className="devices-label">{label}</span>
+						<span>{values[key]}</span>
+					</div>
+				))}
+		</div>
+	);
+
 	return (
-		<div className="my-pc-renderer-container">
-			<div className="my-pc-renderer-title-container">
-				<span className="my-pc-renderer-title">specs</span>
-			</div>
-			<div className="my-pc-renderer-container-2">
-				<div className="my-pc-info-father-container">
-					<div className="my-pc-info-container">
-						<div className="my-pc-title3-container">
-							{userConfig.pcSpecs.gpu}
-							<br/>{userConfig.pcSpecs.cpu}
-							<br/>{userConfig.pcSpecs.motherboard}
-							<br/>{userConfig.pcSpecs.ram}
-							<br/>{userConfig.pcSpecs.storage1}
-							<br/>{userConfig.pcSpecs.storage2}
-							<br/>{userConfig.pcSpecs.cooling}
-						</div>
-						<div>
-							<img src="icons/retro-pc.png" style={{ width: "140px", height: "140px", borderRadius: "4px", border: "2px solid #ffb627", boxShadow: "0 0 15px rgba(255, 182, 39, 0.2)" }} alt="computer"></img>
-						</div>
-					</div>
+		<div className="sysprop">
+			<fieldset className="sysprop-fieldset">
+				<legend>Device Manager</legend>
+				<p className="sysprop-note">The hardware in my real-world setup.</p>
+				<div className="devices">
+					{group("Inside the case", SPEC_LABELS, userConfig.pcSpecs)}
+					{group("On the desk", PERIPHERAL_LABELS, userConfig.peripherals)}
 				</div>
-			</div>
-			<div className="my-pc-renderer-title-container">
-				<span className="my-pc-renderer-title">peripherals</span>
-			</div>
-			<div className="my-pc-renderer-container-2">
-				<div className="my-pc-info-father2-container">
-					<div className="my-pc-setup-info-container">
-						Mouse: {userConfig.peripherals.mouse}
-						<br/>Headset: {userConfig.peripherals.headset}
-						<br/>Monitor: {userConfig.peripherals.monitor}
-					</div>
-					<div className="my-pc-setup-info-container">
-						Keyboard: {userConfig.peripherals.keyboard}
-						<br/>Mousepad: {userConfig.peripherals.mousepad}
-					</div>
-				</div>
-			</div>
+			</fieldset>
 		</div>
 	);
 }

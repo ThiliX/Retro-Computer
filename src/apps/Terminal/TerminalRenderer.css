@@ -1,83 +1,40 @@
 .terminal-renderer-container {
-	color: #ffb627;
-	font-family: 'VT323', 'Share Tech Mono', monospace;
-	background-color: #140812;
-	padding-left: 10px;
-	padding-top: 5px;
-	overflow-y: auto;
 	height: 100%;
-	text-shadow: 0 0 2px rgba(255, 182, 39, 0.15);
+	box-sizing: border-box;
+	padding: 4px 6px;
+	overflow-y: scroll;
+	background-color: #000;
+	color: #c0c0c0;
+	font-family: var(--xp-mono);
+	font-size: 14px;
+	line-height: 17px;
+	user-select: text;
 }
 
-/* ─── Welcome Box ─── */
-.terminal-welcome-box {
-	border: 2px solid #ffb627;
-	padding: 6px 12px;
-	margin: 4px 10px 4px 0;
-	display: inline-block;
-	box-shadow: 0 0 6px rgba(255, 182, 39, 0.1);
-}
-
-.terminal-welcome-line {
-	font-size: 18px;
-	line-height: 1.5;
-	color: inherit;
-}
-
-@keyframes blink {
-	0% {
-		opacity: 1;
-	}
-
-	50% {
-		opacity: 0;
-	}
-
-	100% {
-		opacity: 1;
-	}
-}
-
-.terminal-input {
-	color: #ffb627;
-	background-color: transparent;
-	font-size: 18px;
-	font-family: 'VT323', monospace;
-	border: none;
-	outline: none;
-	width: 100%;
-	caret-color: #ffb627;
-	animation: blink-caret 1s step-end infinite;
-	margin: 0;
-	padding: 0;
-	text-shadow: 0 0 2px rgba(255, 182, 39, 0.15);
+.terminal-line {
+	white-space: pre-wrap;
+	word-break: break-word;
 }
 
 .input-container {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	font-family: 'VT323', monospace;
-	font-size: 18px;
 }
 
 .fixed-text {
-	color: #ffb627;
 	margin: 0;
 	padding: 0;
-	font-size: 18px;
-	line-height: 1.5;
-	text-shadow: 0 0 2px rgba(255, 182, 39, 0.15);
+	white-space: pre;
 }
 
-@keyframes blink-caret {
-
-	from,
-	to {
-		border-right-color: transparent;
-	}
-
-	50% {
-		border-right-color: #ffb627;
-	}
+.terminal-input {
+	flex: 1;
+	margin: 0;
+	padding: 0;
+	border: none;
+	outline: none;
+	background-color: transparent;
+	font-family: var(--xp-mono);
+	font-size: 14px;
 }

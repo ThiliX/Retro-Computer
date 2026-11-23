@@ -6,6 +6,9 @@ import PageWithOptions from "./PageWithOptions";
 
 import { useAppsManager } from "../context/AppsManagerContext";
 
+export const TITLE_BAR_HEIGHT = 30;
+
+/** A Luna-style window: blue title bar, minimize / maximize / close, beige frame. */
 const AppDisplay = React.forwardRef(
 	(
 		{
@@ -18,9 +21,6 @@ const AppDisplay = React.forwardRef(
 			x,
 			y,
 			backgroundColor,
-			topBarColor,
-			titleColor,
-			children,
 			onClick,
 			onMinimizeButtonClick,
 			onCloseButtonClick,
@@ -38,6 +38,7 @@ const AppDisplay = React.forwardRef(
 		const { focusedApp } = useAppsManager();
 
 		const appDisplayRef = useRef(null);
+		const isActive = focusedApp?.current === appDisplayRef?.current;
 
 		useEffect(() => {
 			setDisplayRef(appDisplayRef);
@@ -53,51 +54,40 @@ const AppDisplay = React.forwardRef(
 			onCloseButtonClick();
 		}
 
+		const contentHeight = height - TITLE_BAR_HEIGHT;
+
 		return (
 			<div
-				className="app-interface-container"
+				className={`xp-window ${isActive ? "active" : "inactive"}`}
 				style={{
 					left: `${x}px`,
 					top: `${y}px`,
-					height: height,
-					width: width,
-					position: "absolute",
-					backgroundColor: backgroundColor,
-					zIndex: focusedApp?.current === appDisplayRef?.current ? 10000 : 9990,
-					display: isMinimized ? "none" : "block",
+					// +3 for the bottom frame edge, so the content keeps its full height
+					height: height + 3,
+					width: width + 6,
+					zIndex: isActive ? 10000 : 9990,
+					display: isMinimized ? "none" : "flex",
 				}}
 				ref={appDisplayRef}
-				onClick={onClick}
+				onMouseDown={onClick}
 			>
-				<div
-					draggable
-					className="app-interface-top-bar-container"
-					style={{ background: topBarColor, width: "100%", height: "30px" }}
-					onDragStart={onTopBarDragStart}
-					onDragEnd={onTopBarDragEnd}
-					onDrag={onTopBarDrag}
-				>
-					<div className="app-interface-top-bar-left-icons-container">
-						<img src={icon} className="app-interface-top-bar-icon" alt="" />
-						<div className="app-interface-top-bar-title" style={{ color: titleColor }}>
-							{title}
-						</div>
-					</div>
-					<div className="app-interface-right-icons-container">
-						<div className="app-interface-top-bar-min-btn" onClick={handleMinimizeClick} title="Minimize" />
-						<div className="app-interface-top-bar-close-btn" onClick={handleCloseClick} title="Close" />
+				<div draggable className="xp-titlebar" onDragStart={onTopBarDragStart} onDragEnd={onTopBarDragEnd} onDrag={onTopBarDrag}>
+					<img src={icon} className="xp-titlebar-icon" alt="" draggable={false} />
+					<div className="xp-titlebar-title">{title}</div>
+					<div className="xp-titlebar-buttons">
+						<button className="xp-caption-btn minimize" onMouseDown={(e) => e.stopPropagation()} onClick={handleMinimizeClick} title="Minimize" aria-label="Minimize" />
+						<button className="xp-caption-btn maximize" disabled title="Maximize" aria-label="Maximize" />
+						<button className="xp-caption-btn close" onMouseDown={(e) => e.stopPropagation()} onClick={handleCloseClick} title="Close" aria-label="Close" />
 					</div>
 				</div>
 
-				{options ? (
-					<div className="app-interface-content-container" style={{ width: "100%", height: `${height - 30}px`, overflow: `${overflowY}` }}>
+				<div className="xp-window-body" style={{ height: `${contentHeight}px`, overflowY, backgroundColor }}>
+					{options ? (
 						<PageWithOptions appCoreRef={appCoreRef} AppRenderer={AppRenderer} options={options} initialOption={initialOption} appDisplayRef={ref} />
-					</div>
-				) : (
-					<div className="app-interface-content-container" style={{ width: "100%", height: `${height - 30 - (options ? 30 : 0)}px`, overflow: `${overflowY}` }}>
+					) : (
 						<AppRenderer appCoreRef={appCoreRef} />
-					</div>
-				)}
+					)}
+				</div>
 			</div>
 		);
 	}

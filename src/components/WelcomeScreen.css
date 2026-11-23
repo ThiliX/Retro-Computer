@@ -1,0 +1,175 @@
+.xp-welcome {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	background: #5a7edc;
+	font-family: var(--xp-font);
+	color: #fff;
+	user-select: none;
+	animation: xp-fade-in 0.4s ease-out;
+}
+
+.xp-welcome-top {
+	flex: 0 0 78px;
+	background: #00309c;
+	position: relative;
+}
+
+.xp-welcome-top::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: -2px;
+	height: 2px;
+	background: linear-gradient(90deg, #5a7edc 0%, #fff 40%, #fff 60%, #5a7edc 100%);
+}
+
+.xp-welcome-middle {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: radial-gradient(ellipse at 15% 10%, #91b1ef 0%, #6d8fe3 25%, #5a7edc 60%);
+}
+
+.xp-welcome-left {
+	flex: 0 1 380px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 26px;
+	padding-right: 36px;
+}
+
+.xp-welcome-left p {
+	margin: 0;
+	font-size: 17px;
+}
+
+.xp-welcome-divider {
+	align-self: stretch;
+	width: 1px;
+	margin: 70px 0;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #fff 50%, rgba(255, 255, 255, 0) 100%);
+}
+
+.xp-welcome-right {
+	flex: 0 1 380px;
+	padding-left: 36px;
+}
+
+.xp-user-tile {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	width: 330px;
+	padding: 8px;
+	border: none;
+	border-radius: 8px;
+	background: transparent;
+	color: #fff;
+	text-align: left;
+	cursor: pointer;
+	transition: background 0.15s;
+}
+
+.xp-user-tile:hover,
+.xp-user-tile:focus-visible {
+	outline: none;
+	background: linear-gradient(90deg, #00309c 0%, rgba(90, 126, 220, 0) 100%);
+}
+
+.xp-user-tile img {
+	width: 58px;
+	height: 58px;
+	object-fit: cover;
+	border: 3px solid #fff;
+	border-radius: 6px;
+	background: #fff;
+	opacity: 0.85;
+}
+
+.xp-user-tile:hover img {
+	opacity: 1;
+	border-color: #ffcf4a;
+}
+
+.xp-user-tile-text {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.xp-user-tile-name {
+	font-size: 20px;
+}
+
+.xp-user-tile-hint {
+	font-size: 11px;
+	color: #d6e2ff;
+}
+
+.xp-welcome-status {
+	width: 100%;
+	max-width: 760px;
+	padding-left: 8%;
+}
+
+.xp-welcome-status span {
+	font-family: var(--xp-title-font);
+	font-size: 64px;
+	font-weight: bold;
+	font-style: italic;
+	text-shadow: 3px 3px 6px rgba(0, 0, 60, 0.45);
+}
+
+.xp-welcome-bottom {
+	flex: 0 0 78px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 34px;
+	background: linear-gradient(180deg, #00309c 0%, #003399 100%);
+	position: relative;
+}
+
+.xp-welcome-bottom::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: -2px;
+	height: 2px;
+	background: linear-gradient(90deg, #5a7edc 0%, #f99736 40%, #f99736 60%, #5a7edc 100%);
+}
+
+.xp-welcome-power {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 4px;
+	border: none;
+	background: none;
+	color: #fff;
+	font-family: var(--xp-font);
+	font-size: 15px;
+	cursor: pointer;
+}
+
+.xp-welcome-power img {
+	width: 28px;
+	height: 28px;
+}
+
+.xp-welcome-power:hover span {
+	text-decoration: underline;
+}
+
+.xp-welcome-note {
+	font-size: 12px;
+	line-height: 17px;
+	text-align: right;
+	color: #dbe6ff;
+}

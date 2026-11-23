@@ -1,99 +1,177 @@
-.browser-container {
+.ie {
 	display: flex;
 	flex-direction: column;
+	height: 100%;
+	background: var(--xp-face);
+	font-family: var(--xp-font);
+	font-size: 11px;
+}
+
+.ie-toolbar {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	padding: 2px 4px;
+	border-bottom: 1px solid #d0ccb8;
+}
+
+.ie-tool {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	height: 30px;
+	padding: 0 5px;
+	border: 1px solid transparent;
+	border-radius: 3px;
+	background: none;
+	font-family: var(--xp-font);
+	font-size: 11px;
+	cursor: default;
+}
+
+.ie-tool:hover {
+	border-color: #c0bca8;
+	background: #f6f5ef;
+}
+
+.ie-round {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	color: #fff;
+	font-size: 9px;
+}
+
+.ie-round.green {
+	background: radial-gradient(circle at 35% 30%, #a5e58c, #3c9b2a 60%, #2a7a1c);
+	box-shadow: inset 0 0 0 1px #2a7a1c;
+}
+
+.ie-glyph {
+	font-size: 20px;
+	line-height: 1;
+	color: #2a6fd6;
+}
+
+.ie-glyph.star {
+	color: #f0b419;
+	text-shadow: 0 0 1px #a07000;
+}
+
+.ie-divider {
+	width: 1px;
+	height: 24px;
+	margin: 0 3px;
+	background: #c0bca8;
+	box-shadow: 1px 0 0 #fff;
+}
+
+.ie-address {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 2px 4px;
+	border-bottom: 1px solid #d0ccb8;
+}
+
+.ie-address-label {
+	color: #555;
+}
+
+.ie-address-field {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 3px;
+	height: 20px;
+	padding: 0 3px;
+	background: #fff;
+	border: 1px solid #7f9db9;
+}
+
+.ie-address-field img {
+	width: 14px;
+	height: 14px;
+}
+
+.ie-address-field input {
+	flex: 1;
+	border: none;
+	outline: none;
+	font-family: var(--xp-font);
+	font-size: 11px;
+}
+
+.ie-go {
+	display: flex;
+	align-items: center;
+	gap: 3px;
+	padding: 0 4px;
+	border: none;
+	background: none;
+	font-family: var(--xp-font);
+	font-size: 11px;
+	cursor: default;
+}
+
+.ie-go-arrow {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	border-radius: 3px;
+	background: linear-gradient(180deg, #5fc14a, #2f8a1e);
+	color: #fff;
+	font-size: 10px;
+}
+
+.ie-content {
+	flex: 1;
+	min-height: 0;
+	background: #fff;
+	border: 1px solid #7f9db9;
+	margin: 0 1px;
+}
+
+.ie-content iframe {
 	width: 100%;
 	height: 100%;
-	background: #1a0b1e;
-}
-
-.browser-top-container {
-	display: flex;
-	flex-direction: column;
-}
-
-.browser-header-container {
-	display: flex;
-	align-items: center;
-	padding: 3px 5px;
-	gap: 8px;
-	background: #2b1233;
-	border-bottom: 1px solid #5a2a3e;
-}
-
-.browser-header-container a {
-	color: #ff7a1a;
-	font-family: 'VT323', monospace;
-	font-size: 14px;
-	cursor: pointer;
-	transition: color 0.2s;
-}
-
-.browser-header-container a:hover {
-	color: #ffb627;
-	text-shadow: 0 0 3px rgba(255, 182, 39, 0.2);
-}
-
-.browser-header-container .bar {
-	width: 3px;
-	height: 20px;
-	background: #5a2a3e;
-}
-
-.divisor {
-	height: 1px;
-	background: #5a2a3e;
-}
-
-.browser-address-container {
-	display: flex;
-	align-items: center;
-	padding: 3px 5px;
-	gap: 8px;
-	background: #2b1233;
-	border-bottom: 1px solid #ffb627;
-}
-
-.browser-address-container a {
-	color: #ff7a1a;
-	font-family: 'VT323', monospace;
-	font-size: 14px;
-}
-
-.browser-address-container .bar {
-	width: 3px;
-	height: 20px;
-	background: #5a2a3e;
-}
-
-.browser-address-field {
-	display: flex;
-	align-items: center;
-	flex: 1;
-	background: #1a0b1e;
-	border: 1px solid #ffb627;
-	padding: 2px 5px;
-	gap: 5px;
-}
-
-.browser-address-field a {
-	color: #ffb627;
-	font-family: 'VT323', monospace;
-	font-size: 14px;
-	text-shadow: 0 0 2px rgba(255, 182, 39, 0.15);
-	flex: 1;
-}
-
-.browser-bottom-container {
-	flex: 1;
-	display: flex;
-}
-
-.browser-content {
-	flex: 1;
-	background: #1a0b1e;
-}
-
-.browser-content iframe {
 	border: none;
-	filter: sepia(0.5) saturate(1.4) hue-rotate(-15deg);
+	display: block;
+}
+
+.ie-status {
+	display: flex;
+	align-items: center;
+	height: 20px;
+	padding: 0 3px;
+	gap: 3px;
+}
+
+.ie-status-text {
+	flex: 1;
+	padding: 0 4px;
+	border: 1px solid;
+	border-color: #aca899 #fff #fff #aca899;
+	line-height: 16px;
+}
+
+.ie-status-zone {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	width: 120px;
+	padding: 0 4px;
+	border: 1px solid;
+	border-color: #aca899 #fff #fff #aca899;
+	line-height: 16px;
+}
+
+.ie-status-zone img {
+	width: 14px;
+	height: 14px;
 }

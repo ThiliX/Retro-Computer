@@ -3,35 +3,9 @@
 	flex-direction: column;
 	width: 100%;
 	height: 100%;
-	background-color: #2b1233;
-}
-
-.paint-topbar-container {
-	display: flex;
-	width: 100%;
-}
-
-.paint-topbar {
-	display: flex;
-	column-gap: 10px;
-	padding: 5px;
-}
-
-.paint-topbar>a {
-	font-size: 13px;
-	color: #ff7a1a;
-	font-family: 'VT323', monospace;
-	cursor: pointer;
-	transition: color 0.2s;
-}
-
-.paint-topbar>a:hover {
-	color: #ffb627;
-	text-shadow: 0 0 3px rgba(255, 182, 39, 0.2);
-}
-
-.paint-topbar>a::first-letter {
-	text-decoration: underline;
+	background-color: var(--xp-face);
+	font-family: var(--xp-font);
+	font-size: 11px;
 }
 
 .paint-canvas-container {
@@ -39,135 +13,73 @@
 	width: 100%;
 	flex: 1 1 auto;
 	min-height: 0;
-	column-gap: 5px;
 }
 
 .paint-tools-container {
-	display: flex;
-	width: 30px;
-	height: 380px;
-	flex-direction: column;
+	display: grid;
+	grid-template-columns: 25px 25px;
+	grid-auto-rows: 25px;
+	align-content: start;
+	gap: 1px;
+	padding: 4px;
+	border-right: 1px solid #fff;
+	box-shadow: 1px 0 0 #aca899;
 }
 
-.paint-tools-container>button {
+.paint-tools-container > button {
 	display: flex;
 	align-items: center;
-	height: 30px;
-	background-color: #2b1233;
-	border: 1px solid #5a2a3e;
-	transition: all 0.2s ease;
+	justify-content: center;
+	padding: 0;
+	background: var(--xp-face);
+	border: 1px solid transparent;
+	border-radius: 2px;
+	cursor: default;
 }
 
-.paint-tools-container>button:hover {
-	background-color: rgba(255, 182, 39, 0.1);
-	border: 1px solid #ffb627;
-	cursor: pointer;
+.paint-tools-container > button:hover {
+	border-color: #fff #aca899 #aca899 #fff;
 }
 
-.paint-tools-container>button.active {
-	background-color: rgba(255, 122, 26, 0.25);
-	border: 1px solid #ff7a1a;
-	box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.5);
+.paint-tools-container > button.active {
+	background: #fff;
+	border-color: #aca899 #fff #fff #aca899;
 }
 
-.paint-tools-container>button img {
-	filter: brightness(0) invert(0.7) sepia(1) saturate(5) hue-rotate(-12deg);
+.paint-tools-container > button img {
+	width: 16px !important;
+	height: 16px !important;
+	image-rendering: pixelated;
 }
 
+/* Grey work area holding the white canvas */
 .html-paint-canvas-container {
 	position: relative;
 	display: flex;
-	width: 100%;
+	flex: 1;
 	min-height: 0;
+	background: #808080;
+	border: 1px solid;
+	border-color: #aca899 #fff #fff #aca899;
+	margin: 2px;
 }
 
-/* Fill the available area without stretching the window; the palette stays visible below */
 #paint-canvas {
 	position: absolute;
-	inset: 0;
+	inset: 4px;
 	box-sizing: border-box;
-	background-color: #140812;
-	width: 100%;
-	height: 100%;
+	width: calc(100% - 8px);
+	height: calc(100% - 8px);
+	background-color: #fff;
+	box-shadow: 1px 1px 0 #404040;
 	transform-origin: top left;
-	border: 1px solid #ffb627;
-}
-
-.paint-pallette-container {
-	display: flex;
-	gap: 2px;
-}
-
-.paint-pallette-container>button {
-	width: 20px;
-	height: 20px;
-	border: 1px solid #5a2a3e;
-	cursor: pointer;
-	transition: all 0.15s ease;
-}
-
-.paint-pallette-container>button:hover {
-	border-color: #ffb627;
-	box-shadow: 0 0 6px rgba(255, 182, 39, 0.3);
-}
-
-.divisor {
-	display: flex;
-	width: 100%;
-	height: 1px;
-	background-color: #5a2a3e;
-}
-
-.white-paint {
-	background-color: white;
-}
-
-.black-paint {
-	background-color: black;
-}
-
-.gray-paint {
-	background-color: gray;
-}
-
-.brown-paint {
-	background-color: brown;
-}
-
-.red-paint {
-	background-color: red;
-}
-
-.pink-paint {
-	background-color: pink;
-}
-
-.orange-paint {
-	background-color: orange;
-}
-
-.yellow-paint {
-	background-color: yellow;
-}
-
-.blue-paint {
-	background-color: blue;
-}
-
-.green-paint {
-	background-color: #ffb627;
-}
-
-.paint-tools-container>input {
-	display: flex;
-	width: 30px;
-	height: 30px;
 }
 
 .paint-color-container {
 	display: flex;
 	align-items: center;
-	column-gap: 5px;
+	gap: 6px;
+	padding: 4px 4px 2px;
 }
 
 .paint-color-selected-container {
@@ -176,13 +88,39 @@
 	height: 30px;
 	justify-content: center;
 	align-items: center;
-	border: 1px solid #ffb627;
-	background-color: #1a0b1e;
+	background: #fff;
+	border: 1px solid;
+	border-color: #aca899 #fff #fff #aca899;
 }
 
 .paint-color-selected {
-	display: flex;
-	width: 20px;
-	height: 20px;
-	border: 1px solid #5a2a3e;
+	width: 16px;
+	height: 16px;
+	border: 1px solid #808080;
+}
+
+.paint-pallette-container {
+	display: grid;
+	grid-template-columns: repeat(14, 15px);
+	grid-template-rows: 15px 15px;
+	gap: 1px;
+}
+
+.paint-pallette-container > button {
+	padding: 0;
+	border: 1px solid;
+	border-color: #808080 #fff #fff #808080;
+	cursor: default;
+}
+
+.paint-pallette-container > button:hover {
+	outline: 1px solid #000;
+}
+
+.paint-status {
+	padding: 2px 6px;
+	margin: 2px;
+	border: 1px solid;
+	border-color: #aca899 #fff #fff #aca899;
+	color: #000;
 }

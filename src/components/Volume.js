@@ -3,32 +3,26 @@ import YouTube from "react-youtube";
 import "./Volume.css";
 import userConfig from "../userConfig";
 
+/** Tray speaker: toggles the background music. */
 function Volume() {
 	const [isVolumeOn, setIsVolumeOn] = useState(false);
 
-	const toggleVolume = () => {
-		setIsVolumeOn(!isVolumeOn);
-	};
-
 	const onPlayerReady = (event) => {
-		event.target.setVolume(5);
+		event.target.setVolume(8);
 		event.target.playVideo();
 	};
 
 	return (
-		<div className="volume-icon-container" >
-			{isVolumeOn ? (
-				<>
-					<img className="volume-on-icon" onClick={toggleVolume} src="icons/volume-on.png" alt="Volume On" />
+		<>
+			<button className="xp-tray-icon" onClick={() => setIsVolumeOn((on) => !on)} title={isVolumeOn ? "Music: on (click to mute)" : "Music: off (click to play)"}>
+				<img src={isVolumeOn ? "icons/xp/speaker.svg" : "icons/xp/speaker-muted.svg"} alt={isVolumeOn ? "Volume on" : "Volume off"} />
+			</button>
+			{isVolumeOn && (
+				<div className="xp-music-player">
 					<YouTube videoId={userConfig.musicVideoId} opts={{ width: "0", height: "0", playerVars: { autoplay: 0 } }} onReady={onPlayerReady} />
-					<div className="easter-egg">
-						<img src="icons/laindancing.gif" style={{ width: "100px", height: "93px" }} alt=""></img>
-					</div>
-				</>
-			) : (
-				<img className="volume-off-icon" onClick={toggleVolume} src="icons/volume-off.png" alt="Volume Off" />
+				</div>
 			)}
-		</div>
+		</>
 	);
 }
 

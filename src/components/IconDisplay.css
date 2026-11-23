@@ -1,14 +1,56 @@
-.icon-display-container {
-	transition: all 0.15s ease;
-	border-radius: 3px;
-	padding: 3px;
+.xp-desktop-icon {
+	position: absolute;
+	width: 74px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 3px;
+	padding-top: 2px;
+	outline: none;
+	cursor: default;
+	user-select: none;
+	z-index: 10;
 }
 
-.icon-display-container:hover {
-	background: rgba(255, 182, 39, 0.1);
-	box-shadow: 0 0 8px rgba(255, 182, 39, 0.15);
+.xp-desktop-icon-image {
+	position: relative;
+	width: 32px;
+	height: 32px;
 }
 
-.icon-display-container a {
-	text-shadow: 0 0 3px rgba(255, 182, 39, 0.25), 1px 1px 2px rgba(0, 0, 0, 0.8);
+.xp-desktop-icon-image img {
+	width: 32px;
+	height: 32px;
+	filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.35));
+}
+
+.xp-desktop-icon-image .xp-desktop-icon-shortcut {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 11px;
+	height: 11px;
+	filter: none;
+}
+
+.xp-desktop-icon-label {
+	max-width: 74px;
+	padding: 1px 2px;
+	font-family: var(--xp-font);
+	font-size: 11px;
+	line-height: 13px;
+	color: #fff;
+	text-align: center;
+	text-shadow: 1px 1px 1px #000, 0 0 2px #000;
+	word-wrap: break-word;
+}
+
+.xp-desktop-icon.selected .xp-desktop-icon-image img:first-child {
+	filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.35)) brightness(0.7) sepia(1) hue-rotate(180deg) saturate(3);
+}
+
+.xp-desktop-icon.selected .xp-desktop-icon-label {
+	background: #0b61ff;
+	text-shadow: none;
+	outline: 1px dotted #fff;
 }

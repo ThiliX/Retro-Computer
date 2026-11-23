@@ -9,16 +9,15 @@ const Txt = React.forwardRef(({ iconX, iconY, parentRef, ...others }, ref) => {
 			AppRenderer={TxtRenderer}
 			iconX={iconX}
 			iconY={iconY}
-			title="me.txt"
-			icon="icons/new-txt.svg"
-			width={340}
-			height={450}
-			backgroundColor="#1a0b1e"
-			topBarColor="var(--sa-titlebar)"
-			titleColor="var(--sa-cream)"
+			title="About Me.txt - Notepad"
+			iconTitle="About Me.txt"
+			icon="icons/xp/notepad.svg"
+			width={440}
+			height={420}
+			backgroundColor="#fff"
 			ref={ref}
 			parentRef={parentRef}
-			overflowY="auto"
+			overflowY="hidden"
 			{...others}
 		/>
 	);

@@ -1,35 +1,46 @@
-import "./MyPcConfigRenderer.css";
 import "../MyPcRenderer.css";
 import Button from "../../../components/Button";
+import Wordmark from "../../../components/Wordmark";
 import userConfig from "../../../userConfig";
 
+/** "General" tab: who this computer belongs to. */
 function MyPcConfigRenderer({ appRef }) {
 	return (
-		<div className="my-pc-renderer-container">
-			<div className="my-pc-renderer-title-container">
-				<span className="my-pc-renderer-title">about me</span>
-			</div>
-			<div className="my-pc-renderer-container-2">
-				<div className="my-pc-info-father-container">
-					<div className="my-pc-info-container">
-						<div>
-							<img src={userConfig.profilePicture} style={{ width: "140px", height: "140px", border: "1px solid #ffb627", boxShadow: "0 0 10px rgba(255, 182, 39,0.2)" }} alt="selfie"></img>
-						</div>
-						<div className="my-pc-title2-container">
-							<span className="my-pc-title">{userConfig.name}</span>
-							<span>{userConfig.pronouns} ➧ {userConfig.age}y ➧ {userConfig.tagline}</span>
-						</div>
-					</div>
-					<div className="my-pc-info-container-2">
-						<div className="my-pc-title2-container">
-							<span className="my-pc-title-2">Stacks:</span>
-							<span>{userConfig.stacks}</span>
-						</div>
-					</div>
+		<div className="sysprop">
+			<div className="sysprop-general">
+				<div className="sysprop-logo">
+					<img className="sysprop-photo" src={userConfig.profilePicture} alt="" />
+				</div>
+				<div className="sysprop-facts">
+					<h4>System:</h4>
+					<p>
+						{userConfig.osOwner} {userConfig.osName} XP
+						<br />
+						{userConfig.osEdition}
+					</p>
+					<h4>Registered to:</h4>
+					<p>
+						{userConfig.name}
+						<br />
+						{userConfig.pronouns} · {userConfig.age} · {userConfig.location}
+						<br />
+						{userConfig.tagline}
+					</p>
+					<h4>Stacks:</h4>
+					<p>{userConfig.stacks}</p>
+					<h4>Computer:</h4>
+					<p>
+						{userConfig.pcSpecs.cpu}
+						<br />
+						{userConfig.pcSpecs.ram}
+					</p>
 				</div>
 			</div>
-			<div className="my-pc-config-button-container">
-				<Button text={"Ok"} width={"70px"} height={"22px"} onClick={() => appRef?.current?.close()} />
+			<div className="sysprop-wordmark">
+				<Wordmark size="small" />
+			</div>
+			<div className="sysprop-buttons">
+				<Button text="OK" onClick={() => appRef?.current?.close()} />
 			</div>
 		</div>
 	);

@@ -1,18 +1,8 @@
-.date-time-container {
-	display: flex;
-	align-items: end;
-	flex-direction: column;
-	position: absolute;
-	width: 780px;
-	margin-top: 568px;
-	z-index: 6500;
-}
-
-.date-time-container span {
-	color: var(--sa-cream) !important;
-	font-family: 'VT323', monospace !important;
-	font-size: 15px !important;
-	font-weight: normal !important;
-	letter-spacing: 0.5px;
-	text-shadow: none !important;
+.xp-tray-clock {
+	padding: 0 4px 0 6px;
+	font-family: var(--xp-font);
+	font-size: 11px;
+	color: #fff;
+	white-space: nowrap;
+	cursor: default;
 }
