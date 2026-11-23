@@ -25,7 +25,7 @@ function MyPcSetupRenderer() {
 		<div className="devices-group">
 			<div className="devices-group-title">
 				<span className="devices-toggle">−</span>
-				<img src="icons/xp/computer.svg" alt="" />
+				<img src="icons/xp/My computer.ico" alt="" />
 				{title}
 			</div>
 			{Object.entries(labels)

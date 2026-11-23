@@ -10,7 +10,7 @@ const Browser = React.forwardRef(({ iconX, iconY, parentRef, ...others }, ref) =
 			iconX={iconX}
 			iconY={iconY}
 			title="Internet"
-			icon="icons/xp/internet.svg"
+			icon="icons/xp/Network.ico"
 			width={640}
 			height={440}
 			backgroundColor="#ece9d8"

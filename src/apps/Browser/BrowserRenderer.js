@@ -62,7 +62,7 @@ function BrowserRenderer() {
 			>
 				<span className="ie-address-label">Address</span>
 				<div className="ie-address-field">
-					<img src="icons/xp/internet.svg" alt="" />
+					<img src="icons/xp/Network.ico" alt="" />
 					<input value={address} onChange={(event) => setAddress(event.target.value)} onKeyDown={(event) => event.stopPropagation()} spellCheck={false} />
 				</div>
 				<button type="submit" className="ie-go">
@@ -77,7 +77,7 @@ function BrowserRenderer() {
 			<div className="ie-status">
 				<span className="ie-status-text">{status}</span>
 				<span className="ie-status-zone">
-					<img src="icons/xp/internet.svg" alt="" /> Internet
+					<img src="icons/xp/Network.ico" alt="" /> Internet
 				</span>
 			</div>
 		</div>
