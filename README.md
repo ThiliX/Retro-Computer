@@ -21,8 +21,9 @@ An interactive portfolio built with React that boots like a 2001-era PC. There's
 ### Sound
 System sounds (startup, shutdown, log on, log off, error ding, notification, minimize/restore whoosh, the bin crumple and a navigation click) are **synthesized live with the Web Audio API**. They are original compositions in the spirit of the era, so the project ships no audio files.
 
-### Original artwork
-Every icon, the logo and the rolling-hills wallpaper are drawn as SVG in this repo (`public/icons/xp/`).
+### Artwork
+- **Drawn for this project:** the logo, app icons (Notepad, Paint, Command Prompt, Synth-80, K.I.T.T.), power and dialog icons, as SVG in `public/icons/xp/`.
+- **Original Windows XP assets:** the desktop icons (My Computer, My Documents, Recycle Bin), the Start button and the Bliss wallpaper. These belong to Microsoft and are included only as a non-commercial homage.
 
 ## 🕹️ Built-in Apps
 
@@ -65,7 +66,7 @@ npm run deploy
 
 ```
 Retro-Computer/
-├── public/icons/xp/         # Original SVG icons, logo and wallpaper
+├── public/icons/xp/         # SVG icons and logo, plus the XP desktop icons and Start button
 ├── src/
 │   ├── audio/xpAudio.js     # Synthesized system sounds
 │   ├── apps/                # AppCore (window lifecycle) + each app
