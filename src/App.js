@@ -119,6 +119,11 @@ function App() {
 
 	useEffect(() => () => timeoutsRef.current.forEach(clearTimeout), []);
 
+	// Start downloading the wallpaper during boot so the desktop doesn't open on black.
+	useEffect(() => {
+		new Image().src = userConfig.wallpaper;
+	}, []);
+
 	function closeAllApps() {
 		for (const app of openedApps) app.close();
 		setOpenState({});
