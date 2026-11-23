@@ -18,7 +18,7 @@ const MyPc = React.forwardRef(({ iconX, iconY, parentRef, ...others }, ref) => {
 			iconY={iconY}
 			title="System Properties"
 			iconTitle="My Computer"
-			icon="icons/xp/computer.svg"
+			icon="icons/xp/My computer.ico"
 			width={420}
 			height={470}
 			backgroundColor="#ece9d8"

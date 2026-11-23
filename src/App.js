@@ -83,6 +83,7 @@ function App() {
 	const [powerDialog, setPowerDialog] = useState(null); // "turnOff" | "logOff" | null
 	const [messageBox, setMessageBox] = useState(null);
 	const [selectedIcon, setSelectedIcon] = useState(null);
+	const [isBinFull, setIsBinFull] = useState(true);
 
 	const [openState, setOpenState] = useState({});
 	const [minimizedState, setMinimizedState] = useState({});
@@ -183,6 +184,11 @@ function App() {
 	}
 
 	function emptyRecycleBin() {
+		if (!isBinFull) {
+			showMessage({ title: "Recycle Bin", kind: "info", message: "The Recycle Bin is already empty." });
+			return;
+		}
+		setIsBinFull(false);
 		sound.playRecycle();
 		setMessageBox({
 			title: "Recycle Bin",
@@ -263,8 +269,8 @@ function App() {
 
 				<div className="xp-desktop-icons">
 					{myPcIcon}
-					<IconDisplay icon="icons/xp/documents.svg" title="My Documents" x={docs.x} y={docs.y} onIconClicked={openMyDocuments} />
-					<IconDisplay icon="icons/xp/recycle-bin.svg" title="Recycle Bin" x={bin.x} y={bin.y} onIconClicked={emptyRecycleBin} />
+					<IconDisplay icon="icons/xp/Documents.ico" title="My Documents" x={docs.x} y={docs.y} onIconClicked={openMyDocuments} />
+					<IconDisplay icon={isBinFull ? "icons/xp/Full Recycle Bin.ico" : "icons/xp/Empty Recycle Bin.ico"} title="Recycle Bin" x={bin.x} y={bin.y} onIconClicked={emptyRecycleBin} />
 					{browserIcon}
 					{txtIcon}
 					{terminalIcon}
@@ -288,7 +294,7 @@ function App() {
 	function renderTaskbar() {
 		const item = (label, icon, action, extra = {}) => ({ label, icon, action, ...extra });
 		const programs = [
-			item("Internet", "icons/xp/internet.svg", () => openApp(browserRef), { subtitle: "Web Browser", bold: true }),
+			item("Internet", "icons/xp/Network.ico", () => openApp(browserRef), { subtitle: "Web Browser", bold: true }),
 			item("Command Prompt", "icons/xp/cmd.svg", () => openApp(terminalRef), { subtitle: "Type 'help' to start", bold: true }),
 		];
 		const recent = [
@@ -299,23 +305,20 @@ function App() {
 		];
 		const allPrograms = [
 			item("Command Prompt", "icons/xp/cmd.svg", () => openApp(terminalRef)),
-			item("Internet", "icons/xp/internet.svg", () => openApp(browserRef)),
+			item("Internet", "icons/xp/Network.ico", () => openApp(browserRef)),
 			item("K.I.T.T.", "icons/xp/kitt.svg", () => openApp(kittRef)),
 			item("Notepad", "icons/xp/notepad.svg", () => openApp(txtRef)),
 			item("Paint", "icons/xp/paint.svg", () => openApp(paintRef)),
 			item("Synth-80", "icons/xp/synth.svg", () => openApp(synthRef)),
-			item("System Properties", "icons/xp/computer.svg", () => openApp(myPcRef)),
+			item("System Properties", "icons/xp/My computer.ico", () => openApp(myPcRef)),
 		];
-		const places = [item("My Documents", "icons/xp/documents.svg", openMyDocuments), item("My Computer", "icons/xp/computer.svg", () => openApp(myPcRef))];
+		const places = [item("My Documents", "icons/xp/Documents.ico", openMyDocuments), item("My Computer", "icons/xp/My computer.ico", () => openApp(myPcRef))];
 		const links = SOCIAL_LINKS.map(({ key, icon, title }) => ({ label: title, icon, href: userConfig.socials[key] }));
 		const system = [item("Help and Support", "icons/xp/help.svg", showHelp), item("Run...", "icons/xp/run.svg", () => openApp(terminalRef))];
 
 		return (
 			<div className="xp-taskbar" style={{ height: TASKBAR_HEIGHT }} onMouseDown={(e) => e.stopPropagation()}>
-				<button className={`xp-start-button ${isStartMenuOpen ? "pressed" : ""}`} onClick={() => setIsStartMenuOpen((open) => !open)}>
-					<img src="icons/xp/logo.svg" alt="" />
-					<span>start</span>
-				</button>
+				<button className={`xp-start-button ${isStartMenuOpen ? "pressed" : ""}`} onClick={() => setIsStartMenuOpen((open) => !open)} aria-label="start" style={{ backgroundImage: "url(icons/xp/start.png)" }} />
 
 				<div className="xp-taskbar-apps">
 					{openedApps.map((appRef) => {
